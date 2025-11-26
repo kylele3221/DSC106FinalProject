@@ -1,7 +1,3 @@
-// -----------------------------
-// Globe code (your existing logic)
-// -----------------------------
-
 const globeElement = document.getElementById("monsoon-globe");
 
 if (globeElement) {
@@ -21,16 +17,12 @@ if (globeElement) {
     step.addEventListener("click", () => {
       const key = step.dataset.monsoon;
       const loc = locations[key];
-      globe.pointOfView(loc, 1000);
+      if (loc) globe.pointOfView(loc, 1000);
     });
   });
 }
 
-// -----------------------------
-// Shared Radial Chart Engine
-// -----------------------------
-
-function createRadialChart(config) {
+function createRadialChartMulti(config) {
   const svg = document.getElementById(config.svgId);
   const slider = document.getElementById(config.sliderId);
   const label = document.getElementById(config.labelId);
@@ -43,19 +35,20 @@ function createRadialChart(config) {
   const cx = width / 2;
   const cy = height / 2;
   const maxR = 140;
+  svg.setAttribute("viewBox", "0 0 " + width + " " + height);
 
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-
-  let dataByYear = {};
-  let years = [];
+  const seriesList = config.series;
+  const seriesData = seriesList.map(() => ({ dataByYear: {} }));
+  let allYears = new Set();
   let maxPr = 0;
 
-  function parseCsv(text) {
+  function parseCsv(text, idx) {
     const lines = text.trim().split(/\r?\n/);
     const header = lines.shift().split(",");
     const yearIdx = header.indexOf("year");
     const monthIdx = header.indexOf("month");
     const prIdx = header.indexOf("pr");
+    const store = seriesData[idx].dataByYear;
 
     lines.forEach((line) => {
       if (!line) return;
@@ -63,15 +56,11 @@ function createRadialChart(config) {
       const y = parseInt(cols[yearIdx], 10);
       const m = parseInt(cols[monthIdx], 10);
       const pr = parseFloat(cols[prIdx]);
-
-      if (!dataByYear[y]) dataByYear[y] = {};
-      dataByYear[y][m] = pr;
-
-      if (!years.includes(y)) years.push(y);
+      if (!store[y]) store[y] = {};
+      store[y][m] = pr;
+      if (!isNaN(y)) allYears.add(y);
       if (!isNaN(pr) && pr > maxPr) maxPr = pr;
     });
-
-    years.sort((a, b) => a - b);
   }
 
   function createAxes() {
@@ -89,10 +78,8 @@ function createRadialChart(config) {
     }
 
     const labels = ["J","F","M","A","M","J","J","A","S","O","N","D"];
-
     for (let i = 0; i < 12; i++) {
       const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
-
       const x2 = cx + maxR * Math.cos(angle);
       const y2 = cy + maxR * Math.sin(angle);
 
@@ -106,7 +93,6 @@ function createRadialChart(config) {
 
       const lx = cx + (maxR + 16) * Math.cos(angle);
       const ly = cy + (maxR + 16) * Math.sin(angle) + 4;
-
       const text = document.createElementNS(NS, "text");
       text.setAttribute("x", lx);
       text.setAttribute("y", ly);
@@ -119,61 +105,64 @@ function createRadialChart(config) {
   }
 
   const dataGroup = document.createElementNS(NS, "g");
-  const path = document.createElementNS(NS, "path");
-  const dotsGroup = document.createElementNS(NS, "g");
-
-  path.setAttribute("class", "radial-path");
-  dotsGroup.setAttribute("class", "radial-dots");
-
-  dataGroup.appendChild(path);
-  dataGroup.appendChild(dotsGroup);
+  dataGroup.setAttribute("class", "radial-data");
   svg.appendChild(dataGroup);
 
-  function drawYear(year) {
-    const months = dataByYear[year];
-    if (!months) return;
+  const seriesGraphics = seriesList.map((s) => {
+    const path = document.createElementNS(NS, "path");
+    path.setAttribute("class", "radial-path " + s.pathClass);
+    const dots = document.createElementNS(NS, "g");
+    dots.setAttribute("class", "radial-dots");
+    dataGroup.appendChild(path);
+    dataGroup.appendChild(dots);
+    return { path, dots };
+  });
 
-    label.textContent = year;
-    let d = "";
-    dotsGroup.innerHTML = "";
-
-    const points = [];
-
-    for (let i = 0; i < 12; i++) {
-      const m = i + 1;
-      const pr = months[m] || 0;
-      const r = maxPr ? (pr / maxPr) * maxR : 0;
-      const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
-
-      const x = cx + r * Math.cos(angle);
-      const y = cy + r * Math.sin(angle);
-      points.push([x, y]);
-
-      const dot = document.createElementNS(NS, "circle");
-      dot.setAttribute("cx", x);
-      dot.setAttribute("cy", y);
-      dot.setAttribute("r", 3);
-      dot.setAttribute("class", "radial-dot");
-      dotsGroup.appendChild(dot);
-    }
-
-    points.forEach((p, i) => {
-      d += (i === 0 ? "M " : "L ") + p[0] + " " + p[1] + " ";
-    });
-
-    d += "Z";
-    path.setAttribute("d", d.trim());
-  }
-
+  let years = [];
   let playTimer = null;
 
-  function startPlay() {
-    if (playTimer) return;
-    playBtn.textContent = "Pause";
+  function drawYear(year) {
+    label.textContent = year;
+    seriesList.forEach((s, idx) => {
+      const store = seriesData[idx].dataByYear;
+      const months = store[year] || {};
+      const g = seriesGraphics[idx];
+      const pts = [];
+      g.dots.innerHTML = "";
 
+      for (let i = 0; i < 12; i++) {
+        const m = i + 1;
+        const pr = months[m] || 0;
+        const r = maxPr ? (pr / maxPr) * maxR : 0;
+        const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
+        const x = cx + r * Math.cos(angle);
+        const y = cy + r * Math.sin(angle);
+        pts.push([x, y]);
+
+        const dot = document.createElementNS(NS, "circle");
+        dot.setAttribute("cx", x);
+        dot.setAttribute("cy", y);
+        dot.setAttribute("r", 3);
+        dot.setAttribute("class", "radial-dot " + s.dotClass);
+        g.dots.appendChild(dot);
+      }
+
+      if (!pts.length) return;
+      let d = "";
+      pts.forEach((p, i) => {
+        d += (i === 0 ? "M " : "L ") + p[0] + " " + p[1] + " ";
+      });
+      d += "Z";
+      g.path.setAttribute("d", d.trim());
+    });
+  }
+
+  function startPlay() {
+    if (playTimer || !years.length) return;
+    playBtn.textContent = "Pause";
     playTimer = setInterval(() => {
-      const current = parseInt(slider.value, 10);
-      const idx = years.indexOf(current);
+      const cur = parseInt(slider.value, 10);
+      const idx = years.indexOf(cur);
       const next = years[(idx + 1) % years.length];
       slider.value = next;
       drawYear(next);
@@ -197,40 +186,57 @@ function createRadialChart(config) {
     else startPlay();
   });
 
-  fetch(config.csvFile)
-    .then((r) => r.text())
-    .then((text) => {
-      parseCsv(text);
+  Promise.all(seriesList.map((s, idx) =>
+    fetch(s.csvFile).then((r) => r.text()).then((t) => parseCsv(t, idx))
+  ))
+    .then(() => {
+      years = Array.from(allYears).sort((a, b) => a - b);
       if (!years.length) return;
-
       slider.min = years[0];
       slider.max = years[years.length - 1];
       slider.value = years[0];
-
       createAxes();
       drawYear(years[0]);
     })
-    .catch((err) => console.error("CSV failed:", err));
+    .catch((e) => console.error(e));
 }
 
-// -----------------------------
-// Start everything on load
-// -----------------------------
-
 window.addEventListener("load", () => {
-  createRadialChart({
+  createRadialChartMulti({
     svgId: "ism-radial-svg",
     sliderId: "ism-year-slider",
     labelId: "ism-year-label",
     playId: "ism-play",
-    csvFile: "ISM_historic.csv"
+    series: [
+      {
+        csvFile: "ISM_historic.csv",
+        pathClass: "radial-path-ism",
+        dotClass: "radial-dot-ism",
+      },
+      {
+        csvFile: "WAM_historic.csv",
+        pathClass: "radial-path-wam",
+        dotClass: "radial-dot-wam",
+      },
+      {
+        csvFile: "SAM_historic.csv",
+        pathClass: "radial-path-sam",
+        dotClass: "radial-dot-sam",
+      }
+    ],
   });
 
-  createRadialChart({
+  createRadialChartMulti({
     svgId: "ism-future-radial-svg",
     sliderId: "ism-future-year-slider",
     labelId: "ism-future-year-label",
     playId: "ism-future-play",
-    csvFile: "ISM_future.csv"
+    series: [
+      {
+        csvFile: "ISM_future.csv",
+        pathClass: "radial-path-ism",
+        dotClass: "radial-dot-ism",
+      }
+    ],
   });
 });
