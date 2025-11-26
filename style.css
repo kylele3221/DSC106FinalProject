@@ -481,3 +481,66 @@ a:hover {
 .radial-dot {
   fill: var(--accent-strong);
 }
+
+.radial-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.4rem;
+  margin-bottom: 1.2rem;
+}
+
+.radial-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-subtle);
+}
+
+.radial-legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.legend-ism {
+  background: var(--accent-strong);
+}
+
+.legend-wam {
+  background: var(--accent);
+}
+
+.legend-sam {
+  background: var(--danger);
+}
+
+/* series-specific overrides (paths/dots) */
+.radial-path-ism {
+  stroke: var(--accent-strong);
+  fill: rgba(255, 209, 102, 0.22);
+}
+
+.radial-dot-ism {
+  fill: var(--accent-strong);
+}
+
+.radial-path-wam {
+  stroke: var(--accent);
+  fill: rgba(158, 231, 255, 0.22);
+}
+
+.radial-dot-wam {
+  fill: var(--accent);
+}
+
+.radial-path-sam {
+  stroke: var(--danger);
+  fill: rgba(255, 107, 107, 0.22);
+}
+
+.radial-dot-sam {
+  fill: var(--danger);
+}
+
