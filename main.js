@@ -95,7 +95,7 @@ window.addEventListener("load", () => {
   worldGlobe
     .globeImageUrl(
       "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-    ) // bright, realistic but light texture
+    )
     .bumpImageUrl(null)
     .backgroundColor("rgba(0,0,0,0)")
     .showAtmosphere(false)
@@ -114,20 +114,20 @@ window.addEventListener("load", () => {
     .pointLat("lat")
     .pointLng("lng")
     .pointAltitude(0.08)
-    .pointRadius(0.75) // bigger dots
+    .pointRadius(0.75)
     .pointColor((d) => d.color)
     .pointResolution(32)
     .pointLabel((d) => d.name);
 
   // Initial view
-  const INITIAL_ALT = 1.35; // closer = bigger globe
+  const INITIAL_ALT = 1.35;
   worldGlobe.pointOfView({ lat: 5, lng: 0, altitude: INITIAL_ALT }, 0);
 
   const controls = worldGlobe.controls();
   controls.autoRotate = true;
   controls.autoRotateSpeed = 0.6;
-  controls.enableZoom = false; // no zoom
-  controls.enablePan = false; // optional: lock pan
+  controls.enableZoom = false;
+  controls.enablePan = false;
 
   // Fit globe to container
   function resizeGlobe() {
@@ -398,6 +398,7 @@ function createRadialChartMulti(config) {
 
 // separate load listener just for the charts
 window.addEventListener("load", () => {
+  // Historic: 3 regions
   createRadialChartMulti({
     svgId: "ism-radial-svg",
     sliderId: "ism-year-slider",
@@ -422,6 +423,7 @@ window.addEventListener("load", () => {
     ],
   });
 
+  // Future: 3 regions (ISM, WAM, SAM)
   createRadialChartMulti({
     svgId: "ism-future-radial-svg",
     sliderId: "ism-future-year-slider",
@@ -432,6 +434,16 @@ window.addEventListener("load", () => {
         csvFile: "ISM_future.csv",
         pathClass: "radial-path-ism",
         dotClass: "radial-dot-ism",
+      },
+      {
+        csvFile: "WAM_future.csv",
+        pathClass: "radial-path-wam",
+        dotClass: "radial-dot-wam",
+      },
+      {
+        csvFile: "SAM_future.csv",
+        pathClass: "radial-path-sam",
+        dotClass: "radial-dot-sam",
       },
     ],
   });
