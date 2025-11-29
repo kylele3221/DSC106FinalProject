@@ -633,3 +633,137 @@ html {
     padding: 1.4rem 1.2rem;
   }
 }
+
+/* 3-column decadal slideshow */
+.monsoon-slides-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 4rem auto;
+  align-items: start;
+}
+
+/* Each "column" panel */
+.monsoon-panel {
+  text-align: center;
+}
+
+.monsoon-panel h3 {
+  margin-bottom: 0.75rem;
+}
+
+/* Keep images responsive and aligned */
+.monsoon-panel img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.monsoon-slideshow {
+  margin: 4rem auto;
+  max-width: 900px;
+  text-align: center;
+}
+
+.slideshow-graphic {
+  position: relative;
+}
+
+.slideshow-graphic img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
+
+.slideshow-caption {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+
+.slideshow-controls {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.slideshow-controls button {
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.slideshow-controls button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 900px) {
+  .monsoon-slides-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===========================
+   REGIONAL DEEP DIVES FIXES
+=========================== */
+
+.section-title {
+  position: relative;
+  z-index: 6;
+  background: linear-gradient(to bottom, var(--navy-soft), #010413);
+  text-align: center;
+}
+
+/* Main title */
+.deep-dive-title {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin: 2.5rem 0 0;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+
+/* Slideshow container must rise above scrolly layers */
+.section-monsoon-slides {
+  position: relative;
+  z-index: 6;
+  background: linear-gradient(to bottom, var(--navy-soft), #010413);
+}
+
+/* Grid layout */
+.monsoon-slides-grid {
+  position: relative;
+  z-index: 6;
+}
+
+
+/* Each column */
+.monsoon-panel {
+  position: relative;
+  z-index: 6;
+}
+
+/* ACTUAL FIX FOR HIDDEN IMAGES */
+.monsoon-panel img {
+  position: relative;
+  z-index: 10;
+
+  max-width: 100%;
+  display: block;
+
+  border-radius: 12px;
+  background: transparent;
+}
+

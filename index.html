@@ -153,6 +153,38 @@
       </div>
     </section>
 
+    <!-- ===== REGIONAL DEEP DIVES TITLE ===== -->
+    <section class="section section-title">
+      <h2 class="deep-dive-title">Regional Deep Dives</h2>
+    </section>
+
+    <section id="monsoon-slides" class="section section-monsoon-slides">
+      <div class="monsoon-slides-grid">
+        <!-- ISM -->
+        <div class="monsoon-panel">
+          <h3>Indian Summer Monsoon</h3>
+          <img id="ism-slideshow-frame" alt="ISM rainfall frame" />
+          <p id="ism-slideshow-caption">ISM rainfall frame</p>
+        </div>
+
+        <!-- WAM -->
+        <div class="monsoon-panel">
+          <h3>West African Monsoon</h3>
+          <img id="wam-slideshow-frame" alt="WAM rainfall frame" />
+          <p id="wam-slideshow-caption">WAM rainfall frame</p>
+        </div>
+
+        <!-- SAMS -->
+        <div class="monsoon-panel">
+          <h3>South American Monsoon</h3>
+          <img id="sam-slideshow-frame" alt="SAMS rainfall frame" />
+          <p id="sam-slideshow-caption">SAMS rainfall frame</p>
+        </div>
+      </div>
+    </section>
+
+
+
     <!-- FULL-WIDTH SCROLLY RESEARCH SECTION -->
     <section id="impact-research" class="section section-impact">
       <div class="impact-scrolly">
@@ -361,20 +393,135 @@
       <div class="climate-wrapper">
         <h2>Writeup</h2>
         <p class="climate-intro">
-          1. What have you done so far? 
-          So far, we have created the landing page of our project website, which has rain animation that reflects our monsoon topic. We also have created the next part, where we introduce what is a monsoon and the three specific monsoons we will focus on. We have implemented a rotating globe, in which when you click on each monsoon explanation section, the globe will rotate to the center of the monsoon. We have also created a radial plot of historic precipitation every month for years 1995~2014 to show how monsoons normally behave. Finally, we added some of the research we did on why focusing on monsoon patterns matter.
+          1. What have you done so far?
+          So far, we have created the landing page of our project website, which
+          has rain animation that reflects our monsoon topic. We also have
+          created the next part, where we introduce what is a monsoon and the
+          three specific monsoons we will focus on. We have implemented a
+          rotating globe, in which when you click on each monsoon explanation
+          section, the globe will rotate to the center of the monsoon. We have
+          also created a radial plot of historic precipitation every month for
+          years 1995~2014 to show how monsoons normally behave. Finally, we
+          added some of the research we did on why focusing on monsoon patterns
+          matter.
         </p>
         <p class="climate-intro">
-          2. What will be the most challenging of your project to design and why?
-          We believe the most challenging part of our project is to create three of everything because we are focusing on three major monsoons. Specifically, at the very end of the website we plan to have a world map with all the data, similar to our project 3. However, unlike project 3 where it did not zoom in, we are going to create a zoom in feature for all three of the monsoons and compare two SSPs. This requires a lot of data and involves a lot of interactive elements, which we believe will be the most challenging.
+          2. What will be the most challenging of your project to design and
+          why? We believe the most challenging part of our project is to create
+          three of everything because we are focusing on three major monsoons.
+          Specifically, at the very end of the website we plan to have a world
+          map with all the data, similar to our project 3. However, unlike
+          project 3 where it did not zoom in, we are going to create a zoom in
+          feature for all three of the monsoons and compare two SSPs. This
+          requires a lot of data and involves a lot of interactive elements,
+          which we believe will be the most challenging.
         </p>
       </div>
     </section>
-    
 
     <!-- Libraries then your script -->
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/globe.gl@2.45.0/dist/globe.gl.min.js"></script>
     <script src="main.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const ism    = document.getElementById("ism-slideshow-frame");
+      const wam    = document.getElementById("wam-slideshow-frame");
+      const sam    = document.getElementById("sam-slideshow-frame");
+
+      const ismCap = document.getElementById("ism-slideshow-caption");
+      const wamCap = document.getElementById("wam-slideshow-caption");
+      const samCap = document.getElementById("sam-slideshow-caption");
+
+      // Decades you have data for
+      const decades = [
+        "1850s","1860s","1870s","1880s","1890s",
+        "1900s","1910s","1920s","1930s","1940s",
+        "1950s","1960s","1970s","1980s","1990s",
+        "2000s","2010s","2020s","2030s","2050s",
+        "2060s","2070s","2080s","2090s","2100s"
+      ];
+
+      // Monsoon-season months (using 3-letter codes from filenames)
+      const ISM_MONTHS  = ["Jun","Jul","Aug","Sep"];              // June–September
+      const SAMS_MONTHS = ["Jun","Jul","Aug","Sep"];              // June–September
+      const WAM_MONTHS  = ["Oct","Nov","Dec","Jan","Feb","Mar"];  // October–March
+
+      // Optional pretty labels (can tweak if you want “September” instead of “Sep”)
+      const MONTH_LABEL = {
+        Jan: "January",
+        Feb: "February",
+        Mar: "March",
+        Apr: "April",
+        May: "May",
+        Jun: "June",
+        Jul: "July",
+        Aug: "August",
+        Sep: "September",
+        Oct: "October",
+        Nov: "November",
+        Dec: "December"
+      };
+
+      const BASE = "monsoon/"; // index.html and monsoon/ are siblings
+
+      // Build [ {month, decade}, ... ] in the order you want:
+      // 1850s Jun, 1850s Jul, 1850s Aug, 1850s Sep, 1860s Jun, ...
+      function buildFrames(monthsArray) {
+        const frames = [];
+        for (const decade of decades) {
+          for (const m of monthsArray) {
+            frames.push({ month: m, decade });
+          }
+        }
+        return frames;
+      }
+
+      const framesISM  = buildFrames(ISM_MONTHS);
+      const framesSAMS = buildFrames(SAMS_MONTHS);
+      const framesWAM  = buildFrames(WAM_MONTHS);
+
+      let idxISM = 0;
+      let idxWAM = 0;
+      let idxSAMS = 0;
+
+      const SPEED = 1500; // ms per step; change if too fast/slow
+
+      function show() {
+        const fISM  = framesISM[idxISM];
+        const fWAM  = framesWAM[idxWAM];
+        const fSAMS = framesSAMS[idxSAMS];
+
+        // Build file paths according to your naming convention
+        const ismPath  = `${BASE}ISM/ISM_${fISM.month}_${fISM.decade}.png`;
+        const wamPath  = `${BASE}WAM/WAM_${fWAM.month}_${fWAM.decade}.png`;
+        const samsPath = `${BASE}SAMS/SAMS_${fSAMS.month}_${fSAMS.decade}.png`;
+
+        console.log("ISM:", ismPath, "WAM:", wamPath, "SAMS:", samsPath);
+
+        ism.src = ismPath;
+        wam.src = wamPath;
+        sam.src = samsPath;
+
+        ismCap.textContent  = `${MONTH_LABEL[fISM.month] || fISM.month} · Indian Summer Monsoon – ${fISM.decade}`;
+        wamCap.textContent  = `${MONTH_LABEL[fWAM.month] || fWAM.month} · West African Monsoon – ${fWAM.decade}`;
+        samCap.textContent  = `${MONTH_LABEL[fSAMS.month] || fSAMS.month} · South American Monsoon – ${fSAMS.decade}`;
+      }
+
+      // Initial frame
+      show();
+
+      // Advance each monsoon through its own full (month, decade) sequence
+      setInterval(() => {
+        idxISM  = (idxISM  + 1) % framesISM.length;
+        idxWAM  = (idxWAM  + 1) % framesWAM.length;
+        idxSAMS = (idxSAMS + 1) % framesSAMS.length;
+        show();
+      }, SPEED);
+    });
+    </script>
+
+
+
   </body>
 </html>
