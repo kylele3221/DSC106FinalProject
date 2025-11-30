@@ -767,6 +767,10 @@ html {
   background: transparent;
 }
 
+/* =========================================
+ * DISASTER MORTALITY - FULL TWO COLUMN LAYOUT
+ * ========================================= */
+
 .fatality-two-col {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -775,6 +779,7 @@ html {
   max-width: 1200px;
   margin: 0 auto;
   align-items: start;
+  padding: 2rem 1rem;
 }
 
 .fatality-country-list {
@@ -786,7 +791,7 @@ html {
 .country-card {
   padding: 1rem 1.5rem;
   border-radius: 0.8rem;
-  background: rgba(50, 50, 50, 0.3); /* default color */
+  background: rgba(50, 50, 50, 0.3); /* neutral card color */
   color: #fff;
   cursor: pointer;
   text-align: center;
@@ -807,13 +812,13 @@ html {
 }
 
 .country-card.active {
-  background: var(--accent); /* highlight selected card */
+  background: var(--accent);
   color: var(--navy);
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-
+/* Right column visualization */
 .fatality-viz {
   display: flex;
   flex-direction: column;
@@ -821,7 +826,7 @@ html {
 }
 
 .fatality-title {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
   margin-bottom: 1rem;
 }
@@ -832,19 +837,60 @@ html {
   gap: 4px;
 }
 
+.person {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
 .person svg {
   width: 100%;
   height: 100%;
-  fill: #bbb; /* default gray */
+  fill: #bbb; /* gray by default */
+  transition: fill 0.3s ease;
 }
 
-.person.flood { fill: #4A90E2; }
-.person.storm { fill: #F5A623; }
-.person.drought { fill: #D0021B; }
-.person.other { fill: #bbb; }
+.person.flood svg { fill: #4A90E2; }
+.person.storm svg { fill: #F5A623; }
+.person.drought svg { fill: #D0021B; }
+.person.other svg { fill: #bbb; }
 
+/* Legend */
+.legend {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  align-items: center;
+}
+
+.legend-box {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+}
+
+.legend-box.flood { background: #4A90E2; }
+.legend-box.storm { background: #F5A623; }
+.legend-box.drought { background: #D0021B; }
+.legend-box.other { background: #bbb; }
+
+/* Raw numbers */
 .raw-numbers {
   font-weight: 600;
   font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .fatality-two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .people-grid {
+    grid-template-columns: repeat(10, 1fr);
+  }
 }
 
