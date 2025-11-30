@@ -508,9 +508,25 @@ window.addEventListener("load", () => {
   const peopleGrid = document.getElementById("people-grid");
   const rawNumbers = document.getElementById("raw-numbers");
 
+  // All gray people by default
+  function generateGrayPeople() {
+    peopleGrid.innerHTML = "";
+    for (let i = 0; i < 100; i++) {
+      const div = document.createElement("div");
+      div.classList.add("person", "other"); // gray
+      div.innerHTML = `
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="6" r="4"></circle>
+          <rect x="8" y="10" width="8" height="10" rx="3"></rect>
+        </svg>`;
+      peopleGrid.appendChild(div);
+    }
+    rawNumbers.innerHTML = "Select a country to see disaster mortality breakdown.";
+  }
+
+  // Generate colored people for selected country
   function generatePeople(countryKey) {
     const d = data[countryKey];
-
     peopleGrid.innerHTML = "";
 
     let flood = Math.round(d.flood);
@@ -541,25 +557,23 @@ window.addEventListener("load", () => {
       Flood: ${d.flood}%<br>
       Storm: ${d.storm}%<br>
       Drought: ${d.drought}%<br>
-      Other: ${d.other}%<br>
+      Other: ${d.other}%
     `;
   }
 
+  // Handle card clicks
   countryCards.forEach(card => {
     card.addEventListener("click", () => {
       const selected = card.dataset.country;
 
-      // remove active from all
+      // Highlight active card
       countryCards.forEach(c => c.classList.remove("active"));
       card.classList.add("active");
 
-      // update visualization
       generatePeople(selected);
     });
   });
 
-  // INITIAL STATE: nothing selected
-  peopleGrid.innerHTML = "";
-  rawNumbers.innerHTML = "Select a country to see disaster mortality breakdown.";
+  // Initial state: no card active, all gray people
+  generateGrayPeople();
 });
-
