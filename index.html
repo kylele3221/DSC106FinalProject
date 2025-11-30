@@ -390,29 +390,34 @@
 
     <!-- Impact Visualization -->
     <section class="impact-visualization">
-  <h3>Disaster Mortality Breakdown</h3>
-
-  <label for="country-select">Select a Country:</label>
-  <select id="country-select">
-    <option value="india">India</option>
-    <option value="brazil">Brazil</option>
-    <option value="niger">Niger</option>
-  </select>
-
-  <!-- Visualization Grid -->
-  <div id="people-grid" class="people-grid"></div>
-
-  <!-- Legend -->
-  <div class="legend">
-    <div><span class="legend-box flood"></span> Flood</div>
-    <div><span class="legend-box storm"></span> Storm</div>
-    <div><span class="legend-box drought"></span> Drought</div>
-    <div><span class="legend-box other"></span> Other / Remaining</div>
+    <div class="fatality-two-col">
+    
+    <!-- LEFT COLUMN: COUNTRY CARDS -->
+    <div class="fatality-country-list">
+      <div class="country-card" data-country="india">India</div>
+      <div class="country-card" data-country="brazil">Brazil</div>
+      <div class="country-card" data-country="niger">Niger</div>
+    </div>
+  
+    <!-- RIGHT COLUMN: VISUALIZATION -->
+    <div class="fatality-viz">
+      <div class="fatality-title">Disaster Mortality Breakdown</div>
+  
+      <div id="people-grid" class="people-grid"></div>
+  
+      <div class="legend">
+        <span><span class="legend-box flood"></span> Flood</span>
+        <span><span class="legend-box storm"></span> Storm</span>
+        <span><span class="legend-box drought"></span> Drought</span>
+        <span><span class="legend-box other"></span> Other</span>
+      </div>
+  
+      <div id="raw-numbers" class="raw-numbers"></div>
+    </div>
+  
   </div>
-
-  <!-- Raw numbers -->
-  <div id="raw-numbers" class="raw-numbers"></div>
-</section>
+  
+  </section>
 
 
     <!-- WRITEUP SECTION -->
