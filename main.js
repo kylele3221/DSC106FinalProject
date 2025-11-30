@@ -496,30 +496,12 @@ window.addEventListener("load", () => {
   initImpactScrolly();
 });
 
-/* =========================================
- * 6. DISASTER MORTALITY PERSON VISUALIZATION
- * =======================================*/
 window.addEventListener("load", () => {
 
   const data = {
-    india: {
-      flood: 35.1,
-      storm: 40.2,
-      drought: 12.5,
-      other: 12.2
-    },
-    brazil: {
-      flood: 47.8,
-      storm: 30.1,
-      drought: 10.4,
-      other: 11.7
-    },
-    niger: {
-      flood: 56.3,
-      storm: 18.2,
-      drought: 20.9,
-      other: 4.6
-    }
+    india: { flood: 35.1, storm: 40.2, drought: 12.5, other: 12.2 },
+    brazil: { flood: 47.8, storm: 30.1, drought: 10.4, other: 11.7 },
+    niger: { flood: 56.3, storm: 18.2, drought: 20.9, other: 4.6 }
   };
 
   const countryCards = document.querySelectorAll(".country-card");
@@ -555,6 +537,7 @@ window.addEventListener("load", () => {
     });
 
     rawNumbers.innerHTML = `
+      <strong>Disaster Mortality Breakdown:</strong><br>
       Flood: ${d.flood}%<br>
       Storm: ${d.storm}%<br>
       Drought: ${d.drought}%<br>
@@ -566,16 +549,17 @@ window.addEventListener("load", () => {
     card.addEventListener("click", () => {
       const selected = card.dataset.country;
 
+      // remove active from all
       countryCards.forEach(c => c.classList.remove("active"));
       card.classList.add("active");
 
+      // update visualization
       generatePeople(selected);
     });
   });
 
-  // Load India by default
-  generatePeople("india");
-  document.querySelector('.country-card[data-country="india"]').classList.add("active");
-
+  // INITIAL STATE: nothing selected
+  peopleGrid.innerHTML = "";
+  rawNumbers.innerHTML = "Select a country to see disaster mortality breakdown.";
 });
 
