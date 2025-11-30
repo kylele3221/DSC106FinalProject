@@ -500,71 +500,82 @@ window.addEventListener("load", () => {
  * 6. DISASTER MORTALITY PERSON VISUALIZATION
  * =======================================*/
 window.addEventListener("load", () => {
-  const grid = document.getElementById("people-grid");
-  const rawNumbersDiv = document.getElementById("raw-numbers");
-  const select = document.getElementById("country-select");
-
-  if (!grid || !rawNumbersDiv || !select) return; // Safety check
 
   const data = {
     india: {
-      flood: { deaths: 60733, share: 35.1 },
-      drought: { deaths: 320, share: 0.2 },
-      storm: { deaths: 26313, share: 15.2 },
+      flood: 35.1,
+      storm: 40.2,
+      drought: 12.5,
+      other: 12.2
     },
     brazil: {
-      flood: { deaths: 5575, share: 71.3 },
-      storm: { deaths: 772, share: 9.9 },
-      drought: { deaths: 20, share: 0.3 },
+      flood: 47.8,
+      storm: 30.1,
+      drought: 10.4,
+      other: 11.7
     },
     niger: {
-      flood: { deaths: 1333, share: 11.9 },
-      storm: { deaths: 4, share: 0.0 },
-      drought: { deaths: 0, share: 0.0 },
+      flood: 56.3,
+      storm: 18.2,
+      drought: 20.9,
+      other: 4.6
     }
   };
 
-  const svgPerson = `
-    <svg viewBox="0 0 24 24">
-      <path d="M12 2a3 3 0 110 6 3 3 0 010-6zm-.5 7h1c2.8 0 5 2.2 5 5v7h-2v-6h-1v6h-2v-6h-1v6h-2v-7c0-2.8 2.2-5 5-5z"/>
-    </svg>
-  `;
+  const countryCards = document.querySelectorAll(".country-card");
+  const peopleGrid = document.getElementById("people-grid");
+  const rawNumbers = document.getElementById("raw-numbers");
 
-  function render(country) {
-    const c = data[country];
+  function generatePeople(countryKey) {
+    const d = data[countryKey];
 
-    const floodCount = Math.round(c.flood.share);
-    const stormCount = Math.round(c.storm.share);
-    const droughtCount = Math.round(c.drought.share);
-    const used = floodCount + stormCount + droughtCount;
-    const otherCount = 100 - used;
+    peopleGrid.innerHTML = "";
 
-    const people = [
-      ...Array(floodCount).fill("flood"),
-      ...Array(stormCount).fill("storm"),
-      ...Array(droughtCount).fill("drought"),
-      ...Array(otherCount).fill("other")
+    let flood = Math.round(d.flood);
+    let storm = Math.round(d.storm);
+    let drought = Math.round(d.drought);
+    let other = 100 - (flood + storm + drought);
+
+    const types = [
+      ...Array(flood).fill("flood"),
+      ...Array(storm).fill("storm"),
+      ...Array(drought).fill("drought"),
+      ...Array(other).fill("other")
     ];
 
-    grid.innerHTML = "";
-
-    people.forEach(type => {
+    types.forEach(type => {
       const div = document.createElement("div");
       div.classList.add("person", type);
-      div.innerHTML = svgPerson;
-      grid.appendChild(div);
+      div.innerHTML = `
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="6" r="4"></circle>
+          <rect x="8" y="10" width="8" height="10" rx="3"></rect>
+        </svg>`;
+      peopleGrid.appendChild(div);
     });
 
-    rawNumbersDiv.innerHTML = `
-      <p><strong>Raw Death Counts:</strong></p>
-      <p>Flood: ${c.flood.deaths}</p>
-      <p>Storm: ${c.storm.deaths}</p>
-      <p>Drought: ${c.drought.deaths}</p>
+    rawNumbers.innerHTML = `
+      Flood: ${d.flood}%<br>
+      Storm: ${d.storm}%<br>
+      Drought: ${d.drought}%<br>
+      Other: ${d.other}%<br>
     `;
   }
 
-  // Initial render
-  render("india");
-  select.addEventListener("change", e => render(e.target.value));
+  countryCards.forEach(card => {
+    card.addEventListener("click", () => {
+      const selected = card.dataset.country;
+
+      countryCards.forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+
+      generatePeople(selected);
+    });
+  });
+
+  // Load India by default
+  generatePeople("india");
+  document.querySelector('.country-card[data-country="india"]').classList.add("active");
+
 });
 
