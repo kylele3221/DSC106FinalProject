@@ -503,6 +503,12 @@ window.addEventListener("load", () => {
     niger: { flood: 56.3, storm: 18.2, drought: 20.9, other: 4.6 }
   };
 
+  const raw_data = {
+    india: { flood: 60733, storm: 320, drought: 26313},
+    brazil: { flood: 5575, storm: 772, drought: 20},
+    niger: { flood: 1333, storm: 4, drought: 0}
+  };
+
   const countryCards = document.querySelectorAll(".country-card");
   const peopleGrid = document.getElementById("people-grid");
   const rawNumbers = document.getElementById("raw-numbers");
@@ -510,6 +516,7 @@ window.addEventListener("load", () => {
   function generatePeople(countryKey) {
     peopleGrid.innerHTML = "";
     const d = data[countryKey];
+    const e = raw_data[countryKey];
 
     // Round percentages
     const flood = Math.round(d.flood);
@@ -537,10 +544,9 @@ window.addEventListener("load", () => {
 
     rawNumbers.innerHTML = `
       <strong>Raw Death Counts:</strong><br>
-      Flood: ${d.flood}%<br>
-      Storm: ${d.storm}%<br>
-      Drought: ${d.drought}%<br>
-      Other: ${d.other}%<br>
+      Flood: ${e.flood}<br>
+      Storm: ${e.storm}<br>
+      Drought: ${e.drought}<br>
     `;
   }
 
