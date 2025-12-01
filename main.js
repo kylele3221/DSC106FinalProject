@@ -2,7 +2,7 @@
 
 /***********************
  * 1. RAIN ANIMATION   *
- ************************/
+ ***********************/
 const rainContainer = document.querySelector(".rain");
 const NUM_DROPS = 140;
 
@@ -50,7 +50,6 @@ window.addEventListener("load", () => {
   const globeEl = document.getElementById("monsoon-globe");
   if (!globeEl || typeof Globe === "undefined") return;
 
-  // Monsoon regions (for centers only)
   const monsoonRegions = [
     {
       id: "ISM",
@@ -91,7 +90,6 @@ window.addEventListener("load", () => {
 
   const worldGlobe = Globe()(globeEl);
 
-  // Blue globe WITH countries visible, no grid lines
   worldGlobe
     .globeImageUrl(
       "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
@@ -101,45 +99,41 @@ window.addEventListener("load", () => {
     .showAtmosphere(false)
     .showGraticules(false);
 
-  // LIGHT BLUE TINT
   const mat = worldGlobe.globeMaterial();
-  mat.color = new THREE.Color("#6aa0ff"); // light blue tint
-  mat.emissive = new THREE.Color("#1a2e6f"); // soft navy glow
+  mat.color = new THREE.Color("#6aa0ff");
+  mat.emissive = new THREE.Color("#1a2e6f");
   mat.emissiveIntensity = 0.55;
   mat.specular = new THREE.Color("#000000");
 
-  // Big clickable points for each monsoon
   worldGlobe
     .pointsData(monsoonPoints)
     .pointLat("lat")
     .pointLng("lng")
     .pointAltitude(0.16)
     .pointRadius(1)
-    .pointColor(d => d.color)
+    .pointColor((d) => d.color)
     .pointResolution(32)
-    .pointLabel(d => d.name);
+    .pointLabel((d) => d.name);
 
   worldGlobe
-  .ringsData(monsoonPoints)
-  .ringLat("lat")
-  .ringLng("lng")
-  .ringAltitude(0.01)
-  .ringMaxRadius(1.6) // how far the glow spreads
-  .ringPropagationSpeed(1.5)
-  .ringRepeatPeriod(1300)
-  .ringColor(d => t => {
-    // define RGB based on monsoon ID
-    const colors = {
-      ISM: "255, 179, 71",   // orange
-      WAM: "255, 107, 107",  // reddish pink
-      SAMS: "158, 231, 255"  // light blue
-    };
-    const rgb = colors[d.id] || "255,255,255";
-    const alpha = 0.7 * (1 - t); // fade out as t increases
-    return `rgba(${rgb}, ${alpha})`;
-  });
+    .ringsData(monsoonPoints)
+    .ringLat("lat")
+    .ringLng("lng")
+    .ringAltitude(0.01)
+    .ringMaxRadius(1.6)
+    .ringPropagationSpeed(1.5)
+    .ringRepeatPeriod(1300)
+    .ringColor((d) => (t) => {
+      const colors = {
+        ISM: "255, 179, 71",
+        WAM: "255, 107, 107",
+        SAMS: "158, 231, 255",
+      };
+      const rgb = colors[d.id] || "255,255,255";
+      const alpha = 0.7 * (1 - t);
+      return `rgba(${rgb}, ${alpha})`;
+    });
 
-  // Initial view
   const INITIAL_ALT = 1.35;
   worldGlobe.pointOfView({ lat: 5, lng: 0, altitude: INITIAL_ALT }, 0);
 
@@ -149,7 +143,6 @@ window.addEventListener("load", () => {
   controls.enableZoom = false;
   controls.enablePan = false;
 
-  // Fit globe to container
   function resizeGlobe() {
     const { clientWidth, clientHeight } = globeEl;
     if (clientWidth && clientHeight) {
@@ -160,9 +153,6 @@ window.addEventListener("load", () => {
   window.addEventListener("resize", resizeGlobe);
   resizeGlobe();
 
-  /**********************************
-   * 4. CLICK-DRIVEN FOCUS          *
-   **********************************/
   const stepEls = document.querySelectorAll(".monsoon-step");
   let activeMonsoonId = "ISM";
   let autoRotateStopped = false;
@@ -202,7 +192,6 @@ window.addEventListener("load", () => {
     setActiveCard(id);
   }
 
-  // Clicking cards
   stepEls.forEach((step) => {
     step.addEventListener("click", () => {
       const id = step.getAttribute("data-monsoon");
@@ -211,14 +200,12 @@ window.addEventListener("load", () => {
     });
   });
 
-  // Clicking points on the globe
   worldGlobe.onPointClick((d) => {
     if (!d || !d.id) return;
     stopAutoRotateOnce();
     focusMonsoon(d.id, true);
   });
 
-  // Initial state
   focusMonsoon("ISM", false);
 });
 
@@ -241,9 +228,35 @@ function createRadialChartMulti(config) {
   const maxR = 140;
   svg.setAttribute("viewBox", "0 0 " + width + " " + height);
 
+  // Tooltip (one per chart, created in JS)
+  const tooltip = document.createElement("div");
+  tooltip.className = "radial-tooltip";
+  Object.assign(tooltip.style, {
+    position: "fixed",
+    pointerEvents: "none",
+    background: "rgba(3, 8, 30, 0.95)",
+    color: "#f5f7ff",
+    fontSize: "0.75rem",
+    padding: "4px 8px",
+    borderRadius: "6px",
+    border: "1px solid rgba(158, 231, 255, 0.6)",
+    transform: "translate(-50%, -120%)",
+    whiteSpace: "nowrap",
+    zIndex: 20,
+    opacity: 0,
+    transition: "opacity 0.12s ease-out",
+  });
+  document.body.appendChild(tooltip);
+
   const seriesList = config.series;
   const seriesData = seriesList.map(() => ({ dataByYear: {} }));
   let maxPr = 0;
+
+  const MONTH_SHORT = ["J","F","M","A","M","J","J","A","S","O","N","D"];
+  const MONTH_FULL = [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
+  ];
 
   function parseCsv(text, idx) {
     const lines = text.trim().split(/\r?\n/);
@@ -279,7 +292,6 @@ function createRadialChartMulti(config) {
       g.appendChild(circle);
     }
 
-    const labels = ["J","F","M","A","M","J","J","A","S","O","N","D"];
     for (let i = 0; i < 12; i++) {
       const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
       const x2 = cx + maxR * Math.cos(angle);
@@ -299,7 +311,7 @@ function createRadialChartMulti(config) {
       text.setAttribute("x", lx);
       text.setAttribute("y", ly);
       text.setAttribute("class", "radial-month-label");
-      text.textContent = labels[i];
+      text.textContent = MONTH_SHORT[i];
       g.appendChild(text);
     }
 
@@ -325,6 +337,7 @@ function createRadialChartMulti(config) {
 
   function drawYear(year) {
     label.textContent = year;
+    tooltip.style.opacity = 0;
 
     seriesList.forEach((s, idx) => {
       const store = seriesData[idx].dataByYear;
@@ -347,6 +360,26 @@ function createRadialChartMulti(config) {
         dot.setAttribute("cy", y);
         dot.setAttribute("r", 3);
         dot.setAttribute("class", "radial-dot " + s.dotClass);
+
+        if (tooltip) {
+          dot.addEventListener("mouseenter", (evt) => {
+            const seriesName = s.name || `Series ${idx + 1}`;
+            const monthName = MONTH_FULL[m - 1] || m;
+            const prDisplay = isNaN(pr) ? "N/A" : pr.toFixed(3);
+            tooltip.textContent = `${seriesName} · ${monthName} ${year}: ${prDisplay} m/day`;
+            tooltip.style.opacity = 1;
+            tooltip.style.left = `${evt.clientX}px`;
+            tooltip.style.top = `${evt.clientY - 12}px`;
+          });
+          dot.addEventListener("mousemove", (evt) => {
+            tooltip.style.left = `${evt.clientX}px`;
+            tooltip.style.top = `${evt.clientY - 12}px`;
+          });
+          dot.addEventListener("mouseleave", () => {
+            tooltip.style.opacity = 0;
+          });
+        }
+
         g.dots.appendChild(dot);
       }
 
@@ -431,7 +464,6 @@ function initImpactScrolly() {
     });
   };
 
-  // When a scroll step is in view, activate its slide
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -448,7 +480,6 @@ function initImpactScrolly() {
 
   steps.forEach((step) => observer.observe(step));
 
-  // Clicking dots scrolls to the matching step
   dots.forEach((dot) => {
     dot.addEventListener("click", () => {
       const slideId = dot.dataset.slide;
@@ -466,33 +497,60 @@ function initImpactScrolly() {
 }
 
 window.addEventListener("load", () => {
-  // Historic: 3 regions
   createRadialChartMulti({
     svgId: "ism-radial-svg",
     sliderId: "ism-year-slider",
     labelId: "ism-year-label",
     playId: "ism-play",
     series: [
-      { csvFile: "ISM_historic.csv", pathClass: "radial-path-ism", dotClass: "radial-dot-ism" },
-      { csvFile: "WAM_historic.csv", pathClass: "radial-path-wam", dotClass: "radial-dot-wam" },
-      { csvFile: "SAM_historic.csv", pathClass: "radial-path-sam", dotClass: "radial-dot-sam" },
+      {
+        csvFile: "ISM_historic.csv",
+        pathClass: "radial-path-ism",
+        dotClass: "radial-dot-ism",
+        name: "Indian Summer Monsoon",
+      },
+      {
+        csvFile: "WAM_historic.csv",
+        pathClass: "radial-path-wam",
+        dotClass: "radial-dot-wam",
+        name: "West African Monsoon",
+      },
+      {
+        csvFile: "SAM_historic.csv",
+        pathClass: "radial-path-sam",
+        dotClass: "radial-dot-sam",
+        name: "South American Monsoon",
+      },
     ],
   });
 
-  // Future: 3 regions
   createRadialChartMulti({
     svgId: "ism-future-radial-svg",
     sliderId: "ism-future-year-slider",
     labelId: "ism-future-year-label",
     playId: "ism-future-play",
     series: [
-      { csvFile: "ISM_future.csv", pathClass: "radial-path-ism", dotClass: "radial-dot-ism" },
-      { csvFile: "WAM_future.csv", pathClass: "radial-path-wam", dotClass: "radial-dot-wam" },
-      { csvFile: "SAM_future.csv", pathClass: "radial-path-sam", dotClass: "radial-dot-sam" },
+      {
+        csvFile: "ISM_future.csv",
+        pathClass: "radial-path-ism",
+        dotClass: "radial-dot-ism",
+        name: "Indian Summer Monsoon",
+      },
+      {
+        csvFile: "WAM_future.csv",
+        pathClass: "radial-path-wam",
+        dotClass: "radial-dot-wam",
+        name: "West African Monsoon",
+      },
+      {
+        csvFile: "SAM_future.csv",
+        pathClass: "radial-path-sam",
+        dotClass: "radial-dot-sam",
+        name: "South American Monsoon",
+      },
     ],
   });
 
-  // Sticky scrollytelling research slides
   initImpactScrolly();
 });
 
@@ -500,13 +558,13 @@ window.addEventListener("load", () => {
   const data = {
     india: { flood: 35.1, storm: 40.2, drought: 12.5, other: 12.2 },
     brazil: { flood: 47.8, storm: 30.1, drought: 10.4, other: 11.7 },
-    niger: { flood: 56.3, storm: 18.2, drought: 20.9, other: 4.6 }
+    niger: { flood: 56.3, storm: 18.2, drought: 20.9, other: 4.6 },
   };
 
   const raw_data = {
-    india: { flood: 60733, storm: 320, drought: 26313},
-    brazil: { flood: 5575, storm: 772, drought: 20},
-    niger: { flood: 1333, storm: 4, drought: 0}
+    india: { flood: 60733, storm: 320, drought: 26313 },
+    brazil: { flood: 5575, storm: 772, drought: 20 },
+    niger: { flood: 1333, storm: 4, drought: 0 },
   };
 
   const countryCards = document.querySelectorAll(".country-card");
@@ -518,7 +576,6 @@ window.addEventListener("load", () => {
     const d = data[countryKey];
     const e = raw_data[countryKey];
 
-    // Round percentages
     const flood = Math.round(d.flood);
     const storm = Math.round(d.storm);
     const drought = Math.round(d.drought);
@@ -528,10 +585,10 @@ window.addEventListener("load", () => {
       ...Array(flood).fill("flood"),
       ...Array(storm).fill("storm"),
       ...Array(drought).fill("drought"),
-      ...Array(other).fill("other")
+      ...Array(other).fill("other"),
     ];
 
-    types.forEach(type => {
+    types.forEach((type) => {
       const div = document.createElement("div");
       div.classList.add("person", type);
       div.innerHTML = `
@@ -550,25 +607,29 @@ window.addEventListener("load", () => {
     `;
   }
 
-  countryCards.forEach(card => {
+  countryCards.forEach((card) => {
     card.addEventListener("click", () => {
       const selected = card.dataset.country;
 
-      countryCards.forEach(c => c.classList.remove("active"));
+      countryCards.forEach((c) => c.classList.remove("active"));
       card.classList.add("active");
 
       generatePeople(selected);
     });
   });
 
-  // Do NOT generate any country on load (all gray)
-  peopleGrid.innerHTML = Array(100).fill(0).map(() => `
+  peopleGrid.innerHTML = Array(100)
+    .fill(0)
+    .map(
+      () => `
     <div class="person other">
       <svg viewBox="0 0 24 24">
         <circle cx="12" cy="6" r="4"></circle>
         <rect x="8" y="10" width="8" height="10" rx="3"></rect>
       </svg>
-    </div>`).join("");
+    </div>`
+    )
+    .join("");
 
   rawNumbers.innerHTML = `<strong>Raw Death Counts:</strong><br> - <br> - <br> - <br> -`;
 });
@@ -577,7 +638,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const coll = document.querySelector(".collapsible");
   const content = document.querySelector(".content-collapsible");
 
-  if (!coll || !content) return; // prevents errors if section isn't on the page
+  if (!coll || !content) return;
 
   coll.addEventListener("click", function () {
     this.classList.toggle("active");
@@ -591,5 +652,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-
-
