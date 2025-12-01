@@ -953,7 +953,7 @@ html {
 }
 
 .collapsible {
-  background-color: #4a4a4a;
+  background-color: #050d2b;
   color: white;
   cursor: pointer;
   padding: 12px 20px;
@@ -967,7 +967,7 @@ html {
 }
 
 .collapsible:hover {
-  background-color: #5c5c5c;
+  background-color: #081547;
 }
 
 .content-collapsible {
