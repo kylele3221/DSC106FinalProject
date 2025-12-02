@@ -256,23 +256,23 @@ function createRadialChartMulti(config) {
   const seriesData = seriesList.map(() => ({ dataByYear: {} }));
   let maxPr = 0;
 
+  // *** KEY PART: ignore header row, assume cols are year,month,pr ***
   function parseCsv(text, idx) {
     const lines = text.trim().split(/\r?\n/);
-    const header = lines.shift().split(",");
-    const yearIdx = header.indexOf("year");
-    const monthIdx = header.indexOf("month");
-    const prIdx = header.indexOf("pr");
+    lines.shift(); // drop header line (year,month,pr)
     const store = seriesData[idx].dataByYear;
 
     lines.forEach((line) => {
       if (!line) return;
       const cols = line.split(",");
-      const y = parseInt(cols[yearIdx], 10);
-      const m = parseInt(cols[monthIdx], 10);
-      const pr = parseFloat(cols[prIdx]);
+      if (cols.length < 3) return;
+      const y = parseInt(cols[0], 10);
+      const m = parseInt(cols[1], 10);
+      const pr = parseFloat(cols[2]);
+      if (isNaN(y) || isNaN(m) || isNaN(pr)) return;
       if (!store[y]) store[y] = {};
       store[y][m] = pr;
-      if (!isNaN(pr) && pr > maxPr) maxPr = pr;
+      if (pr > maxPr) maxPr = pr;
     });
   }
 
