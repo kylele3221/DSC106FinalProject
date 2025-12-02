@@ -336,17 +336,20 @@ function createRadialChartMulti(config) {
 
   function showTooltip(evt, year, monthIndex, prVal) {
     if (isNaN(prVal)) return;
+    const mmPerDay = prVal * 1000; // convert m/day → mm/day
+  
     tooltip.style.visibility = "visible";
     tooltip.textContent =
       monthNames[monthIndex - 1] +
       " " +
       year +
       ": " +
-      prVal.toFixed(2) +
+      mmPerDay.toFixed(3) +   // a few decimals so it's not all 0
       " mm/day";
     tooltip.style.left = evt.clientX + 14 + "px";
     tooltip.style.top = evt.clientY + 14 + "px";
   }
+
 
   function hideTooltip() {
     tooltip.style.visibility = "hidden";
