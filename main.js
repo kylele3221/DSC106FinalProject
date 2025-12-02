@@ -335,6 +335,60 @@ function createRadialChartMulti(config) {
     return { path, dots };
   });
 
+  // === Legend click: show only one monsoon at a time ===
+  const legendISM = document.querySelector(".legend-ism");
+  const legendWAM = document.querySelector(".legend-wam");
+  const legendSAM = document.querySelector(".legend-sam");
+
+  let activeLegendId = null;
+
+  function updateSeriesVisibility(activeId) {
+    seriesList.forEach((s, idx) => {
+      const g = seriesGraphics[idx];
+      const show = !activeId || s.id === activeId;
+      const display = show ? "" : "none";
+      g.path.style.display = display;
+      g.dots.style.display = display;
+    });
+  }
+
+  function setLegendActive(id) {
+    [legendISM, legendWAM, legendSAM].forEach((el) => {
+      if (!el) return;
+      el.classList.remove("legend-active");
+    });
+
+    if (id === "ISM" && legendISM) legendISM.classList.add("legend-active");
+    if (id === "WAM" && legendWAM) legendWAM.classList.add("legend-active");
+    if (id === "SAM" && legendSAM) legendSAM.classList.add("legend-active");
+  }
+
+  function handleLegendClick(id) {
+    if (activeLegendId === id) {
+      // clicked again -> reset to "show all"
+      activeLegendId = null;
+      setLegendActive(null);
+      updateSeriesVisibility(null);
+    } else {
+      activeLegendId = id;
+      setLegendActive(id);
+      updateSeriesVisibility(id);
+    }
+  }
+
+  if (legendISM) {
+    legendISM.style.cursor = "pointer";
+    legendISM.addEventListener("click", () => handleLegendClick("ISM"));
+  }
+  if (legendWAM) {
+    legendWAM.style.cursor = "pointer";
+    legendWAM.addEventListener("click", () => handleLegendClick("WAM"));
+  }
+  if (legendSAM) {
+    legendSAM.style.cursor = "pointer";
+    legendSAM.addEventListener("click", () => handleLegendClick("SAM"));
+  }
+
   function showTooltip(evt, year, monthIndex, prVal) {
     if (isNaN(prVal)) return;
     const mmPerDay = prVal * 1000; // m/day → mm/day
@@ -378,7 +432,7 @@ function createRadialChartMulti(config) {
         const m = i + 1;
         const raw = months[m];
         const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0;
-        const r = maxPr ? (pr / maxPr) * maxR : 0;  // ✅ correct scaling
+        const r = maxPr ? (pr / maxPr) * maxR : 0;  // correct scaling
         const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
         const x = cx + r * Math.cos(angle);
         const y = cy + r * Math.sin(angle);
@@ -581,9 +635,6 @@ function createRadialChartMulti(config) {
     .catch((e) => console.error("Error loading radial CSVs:", e));
 }
 
-
-
-
 /* =========================================
  * 5. IMPACT SCROLLY
  * =======================================*/
@@ -648,16 +699,19 @@ window.addEventListener("load", () => {
     playId: "ism-play",
     series: [
       {
+        id: "ISM",
         csvFile: "ISM_historic.csv",
         pathClass: "radial-path-ism",
         dotClass: "radial-dot-ism",
       },
       {
+        id: "WAM",
         csvFile: "WAM_historic.csv",
         pathClass: "radial-path-wam",
         dotClass: "radial-dot-wam",
       },
       {
+        id: "SAM",
         csvFile: "SAM_historic.csv",
         pathClass: "radial-path-sam",
         dotClass: "radial-dot-sam",
