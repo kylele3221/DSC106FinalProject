@@ -228,35 +228,29 @@ function createRadialChartMulti(config) {
   const maxR = 140;
   svg.setAttribute("viewBox", "0 0 " + width + " " + height);
 
-  // Tooltip (one per chart, created in JS)
-  const tooltip = document.createElement("div");
-  tooltip.className = "radial-tooltip";
-  Object.assign(tooltip.style, {
-    position: "fixed",
-    pointerEvents: "none",
-    background: "rgba(3, 8, 30, 0.95)",
-    color: "#f5f7ff",
-    fontSize: "0.75rem",
-    padding: "4px 8px",
-    borderRadius: "6px",
-    border: "1px solid rgba(158, 231, 255, 0.6)",
-    transform: "translate(-50%, -120%)",
-    whiteSpace: "nowrap",
-    zIndex: 20,
-    opacity: 0,
-    transition: "opacity 0.12s ease-out",
-  });
-  document.body.appendChild(tooltip);
+  let tooltip = document.querySelector(".radial-tooltip");
+  if (!tooltip) {
+    tooltip = document.createElement("div");
+    tooltip.className = "radial-tooltip";
+    const s = tooltip.style;
+    s.position = "fixed";
+    s.pointerEvents = "none";
+    s.visibility = "hidden";
+    s.padding = "6px 10px";
+    s.background = "rgba(7, 14, 40, 0.95)";
+    s.border = "1px solid rgba(158, 231, 255, 0.7)";
+    s.borderRadius = "6px";
+    s.color = "#f5f7ff";
+    s.fontSize = "0.8rem";
+    s.zIndex = "999";
+    document.body.appendChild(tooltip);
+  }
+
+  const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
   const seriesList = config.series;
   const seriesData = seriesList.map(() => ({ dataByYear: {} }));
   let maxPr = 0;
-
-  const MONTH_SHORT = ["J","F","M","A","M","J","J","A","S","O","N","D"];
-  const MONTH_FULL = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December"
-  ];
 
   function parseCsv(text, idx) {
     const lines = text.trim().split(/\r?\n/);
@@ -292,6 +286,7 @@ function createRadialChartMulti(config) {
       g.appendChild(circle);
     }
 
+    const labels = ["J","F","M","A","M","J","J","A","S","O","N","D"];
     for (let i = 0; i < 12; i++) {
       const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
       const x2 = cx + maxR * Math.cos(angle);
@@ -311,7 +306,7 @@ function createRadialChartMulti(config) {
       text.setAttribute("x", lx);
       text.setAttribute("y", ly);
       text.setAttribute("class", "radial-month-label");
-      text.textContent = MONTH_SHORT[i];
+      text.textContent = labels[i];
       g.appendChild(text);
     }
 
@@ -335,9 +330,26 @@ function createRadialChartMulti(config) {
   let years = [];
   let playTimer = null;
 
+  function showTooltip(evt, year, monthIndex, prVal) {
+    if (isNaN(prVal)) return;
+    tooltip.style.visibility = "visible";
+    tooltip.textContent =
+      monthNames[monthIndex - 1] +
+      " " +
+      year +
+      ": " +
+      prVal.toFixed(2) +
+      " mm/day";
+    tooltip.style.left = evt.clientX + 14 + "px";
+    tooltip.style.top = evt.clientY + 14 + "px";
+  }
+
+  function hideTooltip() {
+    tooltip.style.visibility = "hidden";
+  }
+
   function drawYear(year) {
     label.textContent = year;
-    tooltip.style.opacity = 0;
 
     seriesList.forEach((s, idx) => {
       const store = seriesData[idx].dataByYear;
@@ -348,7 +360,8 @@ function createRadialChartMulti(config) {
 
       for (let i = 0; i < 12; i++) {
         const m = i + 1;
-        const pr = months[m] || 0;
+        const raw = months[m];
+        const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0;
         const r = maxPr ? (pr / maxPr) * maxR : 0;
         const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
         const x = cx + r * Math.cos(angle);
@@ -361,24 +374,13 @@ function createRadialChartMulti(config) {
         dot.setAttribute("r", 3);
         dot.setAttribute("class", "radial-dot " + s.dotClass);
 
-        if (tooltip) {
-          dot.addEventListener("mouseenter", (evt) => {
-            const seriesName = s.name || `Series ${idx + 1}`;
-            const monthName = MONTH_FULL[m - 1] || m;
-            const prDisplay = isNaN(pr) ? "N/A" : pr.toFixed(3);
-            tooltip.textContent = `${seriesName} · ${monthName} ${year}: ${prDisplay} m/day`;
-            tooltip.style.opacity = 1;
-            tooltip.style.left = `${evt.clientX}px`;
-            tooltip.style.top = `${evt.clientY - 12}px`;
-          });
-          dot.addEventListener("mousemove", (evt) => {
-            tooltip.style.left = `${evt.clientX}px`;
-            tooltip.style.top = `${evt.clientY - 12}px`;
-          });
-          dot.addEventListener("mouseleave", () => {
-            tooltip.style.opacity = 0;
-          });
-        }
+        dot.addEventListener("mouseenter", (evt) =>
+          showTooltip(evt, year, m, pr)
+        );
+        dot.addEventListener("mousemove", (evt) =>
+          showTooltip(evt, year, m, pr)
+        );
+        dot.addEventListener("mouseleave", hideTooltip);
 
         g.dots.appendChild(dot);
       }
@@ -448,6 +450,7 @@ function createRadialChartMulti(config) {
     })
     .catch((e) => console.error("Error loading radial CSVs:", e));
 }
+
 
 function initImpactScrolly() {
   const cards = document.querySelectorAll(".impact-viewport .impact-card");
