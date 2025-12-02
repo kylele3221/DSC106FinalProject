@@ -291,15 +291,6 @@ html {
   margin-top: 0;
 }
 
-.climate-wrapper {
-  max-width: 900px;
-  margin: 0 auto;
-  background: rgba(3, 8, 30, 0.9);
-  border-radius: 1rem;
-  border: 1px solid rgba(158, 231, 255, 0.2);
-  padding: 2rem 1.8rem;
-}
-
 .section-climate h2 {
   font-size: clamp(1.6rem, 3vw, 2rem);
   margin-bottom: 0.9rem;
@@ -469,14 +460,6 @@ html {
    RADIAL PLOTS + LEGEND
    =========================== */
 
-.radial-block {
-  margin-bottom: 3rem;
-  background: rgba(7, 14, 40, 0.95);
-  border: 1px solid rgba(158, 231, 255, 0.2);
-  padding: 1.6rem 1.3rem;
-  border-radius: 0.9rem;
-}
-
 .radial-description {
   font-size: 0.9rem;
   color: var(--text-subtle);
@@ -554,11 +537,6 @@ html {
   color: var(--navy);
 }
 
-.radial-svg-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 #ism-radial-svg,
 #ism-future-radial-svg {
