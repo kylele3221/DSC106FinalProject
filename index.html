@@ -73,46 +73,37 @@ A<!DOCTYPE html>
       </div>
     </section>
 
-    <!-- CLIMATE CHANGE & RAINFALL SHIFT: RADIAL PLOTS ONLY -->
-    <section id="climate-impact" class="section section-climate">
-      <div class="climate-wrapper">
-        <!-- HISTORIC RADIAL: ISM + WAM + SAM -->
-        <div id="ism-radial-block" class="radial-block">
-          <h3>Historic Monsoon Rainfall Cycle (Monsoon Regions)</h3>
-          <p class="radial-description">
-            Monthly precipitation for three monsoon regions plotted together.
-            Use the slider or Play to move through years and compare how their
-            seasonal cycles differ.
-          </p>
-
-          <div class="radial-legend">
-            <div class="radial-legend-item">
-              <span class="radial-legend-swatch legend-ism"></span>
-              <span>Indian Summer Monsoon (ISM)</span>
-            </div>
-            <div class="radial-legend-item">
-              <span class="radial-legend-swatch legend-wam"></span>
-              <span>West African Monsoon (WAM)</span>
-            </div>
-            <div class="radial-legend-item">
-              <span class="radial-legend-swatch legend-sam"></span>
-              <span>South American Monsoon (SAMS)</span>
-            </div>
-          </div>
-
-          <div class="radial-controls">
-            <span class="radial-year-label">
-              Year: <span id="ism-year-label"></span>
-            </span>
-            <input type="range" id="ism-year-slider" />
-            <button id="ism-play" type="button">Play</button>
-          </div>
-
-          <div class="radial-svg-wrapper">
-            <svg id="ism-radial-svg"></svg>
-          </div>
-        </div>
+    <!-- CLEAN RADIAL PLOT SECTION – NO CONTAINERS -->
+    <section id="climate-impact">
+    
+      <h3 style="text-align:center; margin-top:40px;">
+        Historic Monsoon Rainfall Cycle (Monsoon Regions)
+      </h3>
+    
+      <p style="text-align:center; margin-bottom:20px;">
+        Monthly precipitation for three monsoon regions. Use the slider or Play to move through years.
+      </p>
+    
+      <!-- Controls -->
+      <div style="text-align:center; margin-bottom:10px;">
+        Year: <span id="ism-year-label"></span>
+        <br/>
+        <input type="range" id="ism-year-slider" />
+        <button id="ism-play" type="button" style="margin-left:10px;">Play</button>
       </div>
+    
+      <!-- Legend (kept clean + inline) -->
+      <div style="text-align:center; margin-bottom:20px;">
+        <span class="radial-legend-swatch legend-ism"></span> ISM &nbsp;&nbsp;
+        <span class="radial-legend-swatch legend-wam"></span> WAM &nbsp;&nbsp;
+        <span class="radial-legend-swatch legend-sam"></span> SAM
+      </div>
+    
+      <!-- SVG itself - now free floating -->
+      <div style="display:flex; justify-content:center; margin-bottom:40px;">
+        <svg id="ism-radial-svg" style="width:420px; height:420px;"></svg>
+      </div>
+    
     </section>
 
     <!-- ===== REGIONAL DEEP DIVES TITLE ===== -->
