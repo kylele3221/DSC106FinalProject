@@ -255,6 +255,9 @@ function createRadialChartMulti(config) {
   const seriesList = config.series;
   const seriesData = seriesList.map(() => ({ dataByYear: {} }));
   let maxPr = 0;
+  let isAnimating = false;
+  let years = [];
+  let playTimer = null;
 
   // CSV: year,month,pr
   function parseCsv(text, idx) {
@@ -324,17 +327,13 @@ function createRadialChartMulti(config) {
   const seriesGraphics = seriesList.map((s) => {
     const path = document.createElementNS(NS, "path");
     path.setAttribute("class", "radial-path " + s.pathClass);
-    path.style.fillOpacity = 0; // start with no fill visible
+    path.style.fillOpacity = 0; // start transparent
     const dots = document.createElementNS(NS, "g");
     dots.setAttribute("class", "radial-dots");
     dataGroup.appendChild(path);
     dataGroup.appendChild(dots);
     return { path, dots };
   });
-
-  let years = [];
-  let playTimer = null;
-  let isAnimating = false;
 
   function showTooltip(evt, year, monthIndex, prVal) {
     if (isNaN(prVal)) return;
@@ -379,7 +378,7 @@ function createRadialChartMulti(config) {
         const m = i + 1;
         const raw = months[m];
         const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0;
-        const r = maxPr ? (pr / maxR) * maxR : 0; // keep relative
+        const r = maxPr ? (pr / maxPr) * maxR : 0;  // ✅ correct scaling
         const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
         const x = cx + r * Math.cos(angle);
         const y = cy + r * Math.sin(angle);
@@ -446,12 +445,11 @@ function createRadialChartMulti(config) {
 
               // fade in fill after the line draws
               setTimeout(() => {
-                g.path.style.fillOpacity = 0.25; // tweak strength if you want
+                g.path.style.fillOpacity = 0.25;
               }, lineDuration);
             });
           });
 
-          // mark anim over after everything is done
           setTimeout(() => {
             isAnimating = false;
           }, totalAnim + 200);
@@ -485,7 +483,6 @@ function createRadialChartMulti(config) {
   }
 
   function resetLineAndFill() {
-    // hide line & fill, keep dots as-is
     seriesGraphics.forEach((g) => {
       try {
         const len = g.path.getTotalLength();
@@ -568,10 +565,8 @@ function createRadialChartMulti(config) {
                 if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
                   if (isAnimating) return;
                   isAnimating = true;
-                  // redraw with animation (dots stagger + line draw + fill fade)
                   drawYear(currentYear, { animate: true });
                 } else if (!entry.isIntersecting) {
-                  // left viewport: reset line & fill so coming back replays
                   resetLineAndFill();
                   isAnimating = false;
                 }
@@ -585,6 +580,7 @@ function createRadialChartMulti(config) {
     })
     .catch((e) => console.error("Error loading radial CSVs:", e));
 }
+
 
 
 
