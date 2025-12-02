@@ -445,7 +445,7 @@ function createRadialChartMulti(config) {
 
               // fade in fill after the line draws
               setTimeout(() => {
-                g.path.style.fillOpacity = 0.25;
+                g.path.style.fillOpacity = 0.45;
               }, lineDuration);
             });
           });
