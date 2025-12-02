@@ -255,11 +255,12 @@ function createRadialChartMulti(config) {
   const seriesList = config.series;
   const seriesData = seriesList.map(() => ({ dataByYear: {} }));
   let maxPr = 0;
+  let hasAnimatedOnce = false;
 
-  // *** KEY PART: ignore header row, assume cols are year,month,pr ***
+  // CSV: year,month,pr
   function parseCsv(text, idx) {
     const lines = text.trim().split(/\r?\n/);
-    lines.shift(); // drop header line (year,month,pr)
+    lines.shift(); // header
     const store = seriesData[idx].dataByYear;
 
     lines.forEach((line) => {
@@ -336,26 +337,27 @@ function createRadialChartMulti(config) {
 
   function showTooltip(evt, year, monthIndex, prVal) {
     if (isNaN(prVal)) return;
-    const mmPerDay = prVal * 1000; // convert m/day → mm/day
-  
+    const mmPerDay = prVal * 1000; // m/day → mm/day
+
     tooltip.style.visibility = "visible";
     tooltip.textContent =
       monthNames[monthIndex - 1] +
       " " +
       year +
       ": " +
-      mmPerDay.toFixed(3) +   // a few decimals so it's not all 0
+      mmPerDay.toFixed(3) +
       " mm/day";
     tooltip.style.left = evt.clientX + 14 + "px";
     tooltip.style.top = evt.clientY + 14 + "px";
   }
 
-
   function hideTooltip() {
     tooltip.style.visibility = "hidden";
   }
 
-  function drawYear(year) {
+  function drawYear(year, options) {
+    const animate = options && options.animate;
+
     label.textContent = year;
 
     seriesList.forEach((s, idx) => {
@@ -399,6 +401,31 @@ function createRadialChartMulti(config) {
       });
       d += "Z";
       g.path.setAttribute("d", d.trim());
+
+      if (animate) {
+        try {
+          const len = g.path.getTotalLength();
+          g.path.style.transition = "none";
+          g.path.style.strokeDasharray = `${len} ${len}`;
+          g.path.style.strokeDashoffset = `${len}`;
+
+          // Two RAFs to ensure the initial style is committed
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              g.path.style.transition = "stroke-dashoffset 1.4s ease-out";
+              g.path.style.strokeDashoffset = "0";
+            });
+          });
+        } catch (e) {
+          // if path length fails, just show normally
+          g.path.style.strokeDasharray = "";
+          g.path.style.strokeDashoffset = "";
+        }
+      } else {
+        g.path.style.transition = "none";
+        g.path.style.strokeDasharray = "";
+        g.path.style.strokeDashoffset = "";
+      }
     });
   }
 
@@ -453,7 +480,33 @@ function createRadialChartMulti(config) {
       slider.value = years[0];
 
       createAxes();
-      drawYear(years[0]);
+      drawYear(years[0]); // initial static draw
+
+      // One-time animation when radial comes into view
+      if ("IntersectionObserver" in window) {
+        const target = document.getElementById(config.svgId);
+        if (target) {
+          const obs = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (
+                  entry.isIntersecting &&
+                  !hasAnimatedOnce &&
+                  years.length
+                ) {
+                  hasAnimatedOnce = true;
+                  const currentYear =
+                    parseInt(slider.value, 10) || years[0];
+                  drawYear(currentYear, { animate: true });
+                  obs.disconnect();
+                }
+              });
+            },
+            { threshold: 0.4 }
+          );
+          obs.observe(target);
+        }
+      }
     })
     .catch((e) => console.error("Error loading radial CSVs:", e));
 }
