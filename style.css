@@ -1195,3 +1195,43 @@ html {
 .content-collapsible p {
   margin-bottom: 12px;
 }
+
+/* ================
+   TAKEAWAY SECTION
+   ================ */
+
+.section-takeaway {
+  text-align: center;
+  padding: 80px 8% 90px;
+  background: linear-gradient(
+    to bottom,
+    #020822,
+    #030d35
+  );
+}
+
+.takeaway-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.takeaway-title {
+  color: #b6ecff;
+  font-size: 2.4rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+.takeaway-text {
+  color: #e9f4ff;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+.takeaway-highlight {
+  margin-top: 28px;
+  font-size: 1.15rem;
+  color: #ffffff;
+}
