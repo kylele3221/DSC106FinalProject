@@ -637,55 +637,76 @@ function createRadialChartMulti(config) {
 }
 
 /* =========================================
- * 5. IMPACT SCROLLY
+ * 5. IMPACT SLIDE NAVIGATION (REPLACES SCROLLY)
  * =======================================*/
 
 function initImpactScrolly() {
-  const cards = document.querySelectorAll(".impact-viewport .impact-card");
-  const steps = document.querySelectorAll(".impact-scroll-steps .impact-step");
-  const dots = document.querySelectorAll(".impact-dot");
-  if (!cards.length || !steps.length) return;
+  const cards = Array.from(document.querySelectorAll(".impact-viewport .impact-card"));
+  const dots = Array.from(document.querySelectorAll(".impact-dot"));
 
-  const activate = (slideId) => {
-    cards.forEach((card) => {
-      card.classList.toggle("is-active", card.dataset.slide === slideId);
-    });
-    dots.forEach((dot) => {
-      dot.classList.toggle("is-active", dot.dataset.slide === slideId);
-    });
-  };
+  const leftBtn  = document.querySelector(".impact-nav-left");
+  const rightBtn = document.querySelector(".impact-nav-right");
+  const restartBtn = document.querySelector(".restart-btn");
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const slideId = entry.target.dataset.slide;
-          if (slideId != null) activate(slideId);
-        }
-      });
-    },
-    {
-      threshold: 0.5,
+  if (!cards.length) return;
+
+  let index = 0; // current slide
+
+  function updateUI() {
+    // activate slide
+    cards.forEach((c, i) => {
+      c.classList.toggle("is-active", i === index);
+    });
+
+    // update dots
+    dots.forEach((d, i) => {
+      d.classList.toggle("is-active", i === index);
+    });
+
+    // hide left arrow on first slide
+    leftBtn.style.visibility = index === 0 ? "hidden" : "visible";
+
+    // right arrow becomes ✔ on last slide
+    if (index === cards.length - 1) {
+      rightBtn.textContent = "✔";
+    } else {
+      rightBtn.textContent = "›";
     }
-  );
+  }
 
-  steps.forEach((step) => observer.observe(step));
+  leftBtn.addEventListener("click", () => {
+    if (index > 0) {
+      index--;
+      updateUI();
+    }
+  });
 
-  dots.forEach((dot) => {
+  rightBtn.addEventListener("click", () => {
+    if (index < cards.length - 1) {
+      index++;
+      updateUI();
+    } else {
+      // already on last slide; do nothing or trigger flip if desired
+    }
+  });
+
+  dots.forEach((dot, i) => {
     dot.addEventListener("click", () => {
-      const slideId = dot.dataset.slide;
-      const targetStep = document.querySelector(
-        `.impact-step[data-slide="${slideId}"]`
-      );
-      if (targetStep) {
-        targetStep.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
+      index = i;
+      updateUI();
     });
   });
+
+  if (restartBtn) {
+    restartBtn.addEventListener("click", () => {
+      index = 0;
+      updateUI();
+    });
+  }
+
+  updateUI();
 }
+
 
 /* =========================================
  * 6. INIT – RADIAL + SCROLLY
