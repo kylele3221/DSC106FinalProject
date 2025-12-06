@@ -983,153 +983,156 @@ html {
   background: transparent;
 }
 
-/********************************************
- * FATALITY PEOPLE GRID — FULL REQUIRED CSS
- ********************************************/
-
+/* =============== Fatality two-column layout =============== */
 .fatality-two-col {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 3rem;
+  gap: 2.5rem;
   width: 100%;
   max-width: 1300px;
   margin: 0 auto;
+  padding: 2rem 1rem;
+  align-items: start;
 }
 
+/* Left column */
 .fatality-left {
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  gap: 1rem;
+  min-width: 220px;
 }
 
 .region-block label {
+  display:block;
+  margin-bottom: 6px;
   font-weight: 700;
-  font-size: 1.05rem;
-  margin-bottom: 4px;
-  display: block;
-  color: #fff;
+  font-size: 1rem;
+  color: var(--text-main);
 }
 
 .country-select {
   width: 100%;
-  padding: 0.7rem 1rem;
-  border-radius: 0.6rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
   border: none;
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-  font-size: 1rem;
+  background: rgba(255,255,255,0.04);
+  color: var(--text-main);
+  font-size: 0.95rem;
   cursor: pointer;
 }
 
+/* Mode toggle */
 .mode-toggle {
-  display: flex;
-  gap: 0.7rem;
-  margin-top: 0.4rem;
+  display:flex;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
 }
-
-.toggle {
-  flex: 1;
-  padding: 0.6rem 1rem;
-  border-radius: 0.5rem;
-  border: none;
+.mode-btn {
+  flex:1;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-main);
+  font-weight: 700;
   cursor: pointer;
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  font-weight: 600;
-  transition: 0.2s;
 }
-
-.toggle.active {
+.mode-btn.active {
   background: var(--accent);
   color: var(--navy);
+  border-color: rgba(0,0,0,0.06);
 }
 
-.legend {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  font-size: 0.95rem;
+/* Legend */
+.legend-block {
+  display:flex;
+  flex-direction:column;
+  gap:0.45rem;
+  margin-top: 0.75rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-main);
 }
-
+.legend-row {
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+  font-size: 0.95rem;
+}
 .legend-box {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-  margin-right: 6px;
+  width:14px;
+  height:14px;
+  border-radius:3px;
+  display:inline-block;
 }
-
-.legend-box.flood { background: #4A90E2; }
-.legend-box.storm { background: #F5A623; }
-.legend-box.drought { background: #D0021B; }
-.legend-box.other { background: #9e9e9e; }
+.legend-box.flood { background:#4A90E2; }
+.legend-box.storm { background:#F5A623; }
+.legend-box.drought { background:#D0021B; }
+.legend-box.other { background:#9e9e9e; }
 
 .raw-note {
-  opacity: 0.7;
-  font-size: 0.8rem;
-  color: #ddd;
+  margin-top: 6px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-subtle);
 }
+.hidden { display:none; }
 
-.raw-note.hidden {
-  display: none;
-}
-
+/* Raw numbers styling */
 .raw-numbers {
-  margin-top: 0.5rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: #fff;
+  margin-top: 0.7rem;
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 0.95rem;
+  line-height: 1.45;
 }
 
-/********************************************
- * THE ACTUAL PEOPLE GRID (THE PART YOU SAID WAS MISSING)
- ********************************************/
+/* Right column title */
+.fatality-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
+}
 
+/* People grid */
 .people-grid {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   gap: 6px;
   width: 100%;
-  max-width: 420px;
+  /* let it flow vertically; long raw counts will grow the container */
+  align-items: start;
 }
 
-/* Each icon wrapper */
+/* Each person tile */
 .person {
   width: 100%;
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  aspect-ratio: 1 / 1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: transparent;
+  border-radius: 6px;
 }
 
-/* Base SVG */
-.person svg {
-  width: 100%;
-  height: 100%;
-  fill: #bbb; /* default */
-  transition: 0.2s ease;
-}
+/* Base SVG fill (gray default) */
+.person svg { width: 100%; height: 100%; fill: #bbb; transition: fill 200ms ease; }
 
-/* Colors applied dynamically */
+/* Color classes */
 .person.flood svg { fill: #4A90E2; }
 .person.storm svg { fill: #F5A623; }
 .person.drought svg { fill: #D0021B; }
 .person.other svg { fill: #9e9e9e; }
 
-/********************************************
- * RIGHT SIDE TITLE
- ********************************************/
-
-.fatality-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-align: left;
-  color: #fff;
+/* Responsive */
+@media (max-width: 900px) {
+  .fatality-two-col { grid-template-columns: 1fr; }
+  .people-grid { grid-template-columns: repeat(8, 1fr); }
 }
-
+@media (max-width: 520px) {
+  .people-grid { grid-template-columns: repeat(6, 1fr); gap:4px; }
+}
 
 /* ================
    TAKEAWAY SECTION
