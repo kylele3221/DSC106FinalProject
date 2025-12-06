@@ -770,10 +770,19 @@ window.addEventListener("load", () => {
 
   // -- helper to build SVG person (simple human icon) --
   function personSVG() {
-    return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M12 2a3 3 0 110 6 3 3 0 010-6zm-1 8h2c2.5 0 4 1.7 4 4v6h-2v-6c0-.6-.4-1-1-1h-4c-.6 0-1 .4-1 1v6H9v-6c0-2.3 1.5-4 4-4z"/>
+  return `<svg 
+      viewBox="0 0 24 24" 
+      width="24" 
+      height="24" 
+      fill="currentColor" 
+      xmlns="http://www.w3.org/2000/svg" 
+      aria-hidden="true" 
+      focusable="false">
+      <circle cx="12" cy="5" r="3"/>
+      <path d="M12 10c-3 0-5 2-5 5v4h2v-4c0-1.7 1.3-3 3-3s3 1.3 3 3v4h2v-4c0-3-2-5-5-5z"/>
     </svg>`;
-  }
+}
+
 
   // fill grid with 100 gray people by default
   function loadEmptyGrid() {
