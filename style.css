@@ -1097,41 +1097,26 @@ html {
 
 /* Container grid for people icons */
 .people-grid {
-  display: grid; /* use CSS Grid */
-  grid-template-columns: repeat(auto-fill, minmax(18px, 1fr)); /* auto-flow columns */
-  gap: 4px; /* space between icons */
+  display: grid; 
+  grid-auto-flow: row;      /* fill rows first */
+  grid-template-columns: repeat(auto-fit, min-content); /* cell fits content */
+  gap: 4px; 
 }
 
 /* Smaller grid for raw-count display */
 .people-grid.raw {
-  grid-template-columns: repeat(auto-fill, minmax(12px, 1fr));
   gap: 2px;
 }
 
 /* Individual person tiles */
 .person {
-  width: 100%;
-  aspect-ratio: 1 / 1; /* keeps squares */
+  width: 18px;    /* normal size */
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
   border-radius: 6px;
-}
-
-/* SVG inside each person tile */
-.people-grid .person svg {
-  width: 100%;
-  height: 100%;
-  display: block;  /* avoids extra space around SVG */
-  overflow: visible;
-  fill: #ccc;      /* color of the figurine */
-}
-
-/* Normal size (proportional mode) */
-.people-grid .person {
-  width: 18px;
-  height: 18px;
 }
 
 /* Smaller size for raw-count display */
@@ -1140,10 +1125,13 @@ html {
   height: 12px;
 }
 
-/* Specific override for raw-numbers container if used separately */
-#raw-numbers .person svg {
-  width: 12px;
-  height: 12px;
+/* SVG inside each person tile */
+.person svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  fill: #ccc;
 }
 
 /* Base SVG fill (gray default) */
