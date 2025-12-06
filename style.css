@@ -1095,7 +1095,31 @@ html {
   margin-bottom: 0.8rem;
 }
 
-/* People grid */
+/* Container grid for people icons */
+.people-grid {
+  display: grid; /* use CSS Grid */
+  grid-template-columns: repeat(auto-fill, minmax(18px, 1fr)); /* auto-flow columns */
+  gap: 4px; /* space between icons */
+}
+
+/* Smaller grid for raw-count display */
+.people-grid.raw {
+  grid-template-columns: repeat(auto-fill, minmax(12px, 1fr));
+  gap: 2px;
+}
+
+/* Individual person tiles */
+.person {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* keeps squares */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-radius: 6px;
+}
+
+/* SVG inside each person tile */
 .people-grid .person svg {
   width: 100%;
   height: 100%;
@@ -1116,20 +1140,10 @@ html {
   height: 12px;
 }
 
+/* Specific override for raw-numbers container if used separately */
 #raw-numbers .person svg {
   width: 12px;
   height: 12px;
-}
-
-/* Each person tile */
-.person {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: transparent;
-  border-radius: 6px;
 }
 
 /* Base SVG fill (gray default) */
