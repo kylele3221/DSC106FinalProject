@@ -983,218 +983,153 @@ html {
   background: transparent;
 }
 
-/* =========================================
- * DISASTER MORTALITY - FULL TWO COLUMN LAYOUT
- * ========================================= */
+/********************************************
+ * FATALITY PEOPLE GRID — FULL REQUIRED CSS
+ ********************************************/
 
 .fatality-two-col {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 3rem;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
-  align-items: start;
-  padding: 2rem 1rem;
 }
 
-.fatality-country-list {
+.fatality-left {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.4rem;
 }
 
-.country-card {
-  padding: 1rem 1.5rem;
-  border-radius: 0.8rem;
-  background: rgba(50, 50, 50, 0.3); /* neutral card color */
+.region-block label {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+  display: block;
   color: #fff;
+}
+
+.country-select {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 0.6rem;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 1rem;
   cursor: pointer;
-  text-align: center;
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 0.4rem;
+}
+
+.toggle {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
   font-weight: 600;
-  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
-  user-select: none;
+  transition: 0.2s;
 }
 
-.country-card:hover {
-  background: rgba(50, 50, 50, 0.55);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-.country-card:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.country-card.active {
+.toggle.active {
   background: var(--accent);
   color: var(--navy);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* Right column visualization */
-.fatality-viz {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.fatality-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.people-grid {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 4px;
-}
-
-.person {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-}
-
-.person svg {
-  width: 100%;
-  height: 100%;
-  fill: #bbb; /* gray by default */
-  transition: fill 0.3s ease;
-}
-
-.person.flood svg { fill: #4A90E2; }
-.person.storm svg { fill: #F5A623; }
-.person.drought svg { fill: #D0021B; }
-.person.other svg { fill: #bbb; }
-
-/* ======================
- * Left Column Styling
- * ====================== */
-.fatality-left-col {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-/* Legend wrapper */
-.fatality-legend-wrapper {
-  margin-top: 1rem;
-  padding: 1rem;
-  border-radius: 0.8rem;
-  background: rgba(50, 50, 50, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-/* Section title */
-.legend-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--accent);
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Legend items */
 .legend {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.4rem;
   font-size: 0.95rem;
-  align-items: center;
+  font-weight: 600;
+  color: #fff;
 }
 
 .legend-box {
-  width: 16px;
-  height: 16px;
   display: inline-block;
-  border-radius: 3px;
-  margin-right: 0.5rem;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  margin-right: 6px;
 }
 
 .legend-box.flood { background: #4A90E2; }
 .legend-box.storm { background: #F5A623; }
 .legend-box.drought { background: #D0021B; }
-.legend-box.other { background: #bbb; }
+.legend-box.other { background: #9e9e9e; }
 
-/* Raw numbers */
+.raw-note {
+  opacity: 0.7;
+  font-size: 0.8rem;
+  color: #ddd;
+}
+
+.raw-note.hidden {
+  display: none;
+}
+
 .raw-numbers {
+  margin-top: 0.5rem;
   font-weight: 600;
-  font-size: 1rem;
   line-height: 1.4;
-  color: var(--text-main);
+  color: #fff;
 }
 
-/* Right column stays the same */
-.fatality-viz {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
+/********************************************
+ * THE ACTUAL PEOPLE GRID (THE PART YOU SAID WAS MISSING)
+ ********************************************/
 
-/* People grid */
 .people-grid {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
-  gap: 4px;
+  gap: 6px;
+  width: 100%;
+  max-width: 420px;
 }
 
+/* Each icon wrapper */
+.person {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Base SVG */
 .person svg {
   width: 100%;
   height: 100%;
-  fill: #bbb; /* default gray */
-  transition: fill 0.3s ease;
+  fill: #bbb; /* default */
+  transition: 0.2s ease;
 }
 
+/* Colors applied dynamically */
 .person.flood svg { fill: #4A90E2; }
 .person.storm svg { fill: #F5A623; }
 .person.drought svg { fill: #D0021B; }
-.person.other svg { fill: #bbb; }
+.person.other svg { fill: #9e9e9e; }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .fatality-two-col {
-    grid-template-columns: 1fr;
-  }
+/********************************************
+ * RIGHT SIDE TITLE
+ ********************************************/
 
-  .people-grid {
-    grid-template-columns: repeat(10, 1fr);
-  }
-}
-
-.collapsible {
-  background-color: #050d2b;
-  color: white;
-  cursor: pointer;
-  padding: 12px 20px;
-  width: 100%;
-  border: none;
+.fatality-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
   text-align: left;
-  font-size: 1.2rem;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  transition: background-color 0.3s;
+  color: #fff;
 }
 
-.collapsible:hover {
-  background-color: #081547;
-}
-
-.content-collapsible {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease-out;
-}
-
-.content-collapsible p {
-  margin-bottom: 12px;
-}
 
 /* ================
    TAKEAWAY SECTION
