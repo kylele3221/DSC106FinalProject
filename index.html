@@ -290,6 +290,9 @@
       <div class="impact-scrolly">
         <!-- Sticky viewport with full-screen slides -->
         <div class="impact-viewport">
+          <button class="impact-nav impact-nav-left" aria-label="Previous slide">‹</button>
+          <button class="impact-nav impact-nav-right" aria-label="Next slide">›</button>
+
           <!-- Slide 0: overview -->
           <div class="impact-card is-active" data-slide="0">
             <h2>Well, Why Does this Even Matter?</h2>
@@ -452,39 +455,24 @@
               </div>
             </div>
           </div>
+            <div class="impact-card impact-final" data-slide="4">
+              <div class="final-content">
+              <div class="final-check">✔</div>
+              <p>You’ve viewed all slides.</p>
+              <button class="restart-btn">Restart</button>
+            </div>
+        </div>
         </div>
 
-        <!-- Scroll steps that drive which slide is active -->
-        <div class="impact-scroll-steps">
-          <div class="impact-step" data-slide="0"></div>
-          <div class="impact-step" data-slide="1"></div>
-          <div class="impact-step" data-slide="2"></div>
-          <div class="impact-step" data-slide="3"></div>
-        </div>
 
-        <!-- Dots at bottom of research section -->
-        <div class="impact-dots">
-          <button
-            class="impact-dot is-active"
-            data-slide="0"
-            aria-label="Slide 1"
-          ></button>
-          <button
-            class="impact-dot"
-            data-slide="1"
-            aria-label="Slide 2"
-          ></button>
-          <button
-            class="impact-dot"
-            data-slide="2"
-            aria-label="Slide 3"
-          ></button>
-          <button
-            class="impact-dot"
-            data-slide="3"
-            aria-label="Slide 4"
-          ></button>
-        </div>
+      <!-- DOTS: now 5 dots total -->
+      <div class="impact-dots">
+        <button class="impact-dot is-active" data-slide="0" aria-label="Slide 1"></button>
+        <button class="impact-dot" data-slide="1" aria-label="Slide 2"></button>
+        <button class="impact-dot" data-slide="2" aria-label="Slide 3"></button>
+        <button class="impact-dot" data-slide="3" aria-label="Slide 4"></button>
+        <button class="impact-dot" data-slide="4" aria-label="Slide 5"></button>
+      </div>
       </div>
     </section>
 
