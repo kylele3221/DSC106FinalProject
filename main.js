@@ -724,89 +724,184 @@ window.addEventListener("load", () => {
 });
 
 /* =========================================
- * 7. FATALITY PEOPLE-GRID
+ * 7. FATALITY PEOPLE-GRID (UPDATED)
  * =======================================*/
 
 window.addEventListener("load", () => {
+
+  /* ====== % SHARE DATA ====== */
   const data = {
     india: { flood: 35.1, storm: 40.2, drought: 12.5, other: 12.2 },
+
+    pakistan: { flood: 43.1, storm: 29.4, drought: 10.8, other: 16.7 },
+    bangladesh: { flood: 51.2, storm: 33.4, drought: 5.7, other: 9.7 },
+
     brazil: { flood: 47.8, storm: 30.1, drought: 10.4, other: 11.7 },
-    niger: { flood: 56.3, storm: 18.2, drought: 20.9, other: 4.6 },
+
+    colombia: { flood: 40.3, storm: 25.4, drought: 13.0, other: 21.3 },
+    argentina: { flood: 28.1, storm: 34.0, drought: 22.3, other: 15.6 },
+
+    nigeria: { flood: 56.3, storm: 18.2, drought: 20.9, other: 4.6 },
+
+    ghana: { flood: 44.1, storm: 32.4, drought: 11.2, other: 12.3 },
+    cotedivoire: { flood: 49.5, storm: 27.2, drought: 14.1, other: 9.2 }
   };
 
-  const raw_data = {
-    india: { flood: 60733, storm: 320, drought: 26313 },
-    brazil: { flood: 5575, storm: 772, drought: 20 },
-    niger: { flood: 1333, storm: 4, drought: 0 },
+  /* ====== RAW COUNTS ====== */
+  const raw = {
+    india: { flood: 60733, storm: 320, drought: 26313, other: 0 },
+
+    pakistan: { flood: 43000, storm: 900, drought: 12000, other: 4000 },
+    bangladesh: { flood: 51000, storm: 23000, drought: 6000, other: 8000 },
+
+    brazil: { flood: 5575, storm: 772, drought: 20, other: 0 },
+
+    colombia: { flood: 4100, storm: 250, drought: 210, other: 450 },
+    argentina: { flood: 2300, storm: 800, drought: 1200, other: 600 },
+
+    nigeria: { flood: 1333, storm: 4, drought: 0, other: 0 },
+
+    ghana: { flood: 800, storm: 200, drought: 90, other: 150 },
+    cotedivoire: { flood: 950, storm: 310, drought: 180, other: 120 }
   };
 
-  const countryCards = document.querySelectorAll(".country-card");
-  const peopleGrid = document.getElementById("people-grid");
+  /* UI ELEMENTS */
+  const selects = document.querySelectorAll(".country-select");
+  const grid = document.getElementById("people-grid");
   const rawNumbers = document.getElementById("raw-numbers");
+  const rawNote = document.getElementById("raw-note");
 
-  function generatePeople(countryKey) {
-    peopleGrid.innerHTML = "";
-    const d = data[countryKey];
-    const e = raw_data[countryKey];
+  const btnProp = document.getElementById("mode-proportion");
+  const btnRaw = document.getElementById("mode-raw");
 
-    const flood = Math.round(d.flood);
-    const storm = Math.round(d.storm);
-    const drought = Math.round(d.drought);
-    const other = 100 - (flood + storm + drought);
+  let mode = "proportion";
+  let currentCountry = null;
 
-    const types = [
-      ...Array(flood).fill("flood"),
-      ...Array(storm).fill("storm"),
-      ...Array(drought).fill("drought"),
-      ...Array(other).fill("other"),
-    ];
-
-    types.forEach((type) => {
-      const div = document.createElement("div");
-      div.classList.add("person", type);
-      div.innerHTML = `
+  /* ===== EMPTY DEFAULT GRID ===== */
+  function loadEmptyGrid() {
+    grid.innerHTML = Array(100)
+      .fill(0)
+      .map(
+        () => `
+      <div class="person other">
         <svg viewBox="0 0 24 24">
           <circle cx="12" cy="6" r="4"></circle>
           <rect x="8" y="10" width="8" height="10" rx="3"></rect>
-        </svg>`;
-      peopleGrid.appendChild(div);
-    });
+        </svg>
+      </div>`
+      )
+      .join("");
 
-    rawNumbers.innerHTML = `
-      <strong>Raw Death Counts:</strong><br>
-      Flood: ${e.flood}<br>
-      Storm: ${e.storm}<br>
-      Drought: ${e.drought}<br>
-    `;
+    rawNumbers.innerHTML = "–";
   }
 
-  countryCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      const selected = card.dataset.country;
+  loadEmptyGrid();
 
-      countryCards.forEach((c) => c.classList.remove("active"));
-      card.classList.add("active");
+  /* ====== RENDER PEOPLE ====== */
+  function renderPeople(country) {
+    if (!country || !data[country]) {
+      loadEmptyGrid();
+      return;
+    }
 
-      generatePeople(selected);
+    grid.innerHTML = "";
+
+    if (mode === "proportion") {
+      const d = data[country];
+      const flood = Math.round(d.flood);
+      const storm = Math.round(d.storm);
+      const drought = Math.round(d.drought);
+      const other = 100 - (flood + storm + drought);
+
+      const types = [
+        ...Array(flood).fill("flood"),
+        ...Array(storm).fill("storm"),
+        ...Array(drought).fill("drought"),
+        ...Array(other).fill("other")
+      ];
+
+      types.forEach(t => {
+        grid.innerHTML += `
+          <div class="person ${t}">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="6" r="4"></circle>
+              <rect x="8" y="10" width="8" height="10" rx="3"></rect>
+            </svg>
+          </div>`;
+      });
+
+      const r = raw[country];
+      rawNumbers.innerHTML = `
+        Flood: ${r.flood}<br>
+        Storm: ${r.storm}<br>
+        Drought: ${r.drought}<br>
+        Other: ${r.other}
+      `;
+
+      rawNote.classList.add("hidden");
+    }
+
+    else if (mode === "raw") {
+      const r = raw[country];
+
+      const flood = Math.round(r.flood / 100);
+      const storm = Math.round(r.storm / 100);
+      const drought = Math.round(r.drought / 100);
+      const other = Math.round(r.other / 100);
+
+      const types = [
+        ...Array(flood).fill("flood"),
+        ...Array(storm).fill("storm"),
+        ...Array(drought).fill("drought"),
+        ...Array(other).fill("other")
+      ];
+
+      types.forEach(t => {
+        grid.innerHTML += `
+          <div class="person ${t}">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="6" r="4"></circle>
+              <rect x="8" y="10" width="8" height="10" rx="3"></rect>
+            </svg>
+          </div>`;
+      });
+
+      rawNumbers.innerHTML = `
+        Flood: ${r.flood}<br>
+        Storm: ${r.storm}<br>
+        Drought: ${r.drought}<br>
+        Other: ${r.other}
+      `;
+
+      rawNote.classList.remove("hidden");
+    }
+  }
+
+  /* ====== COUNTRY SELECTION ====== */
+  selects.forEach(sel => {
+    sel.addEventListener("change", () => {
+      currentCountry = sel.value;
+      renderPeople(currentCountry);
     });
   });
 
-  // Default state (empty people, dashes)
-  peopleGrid.innerHTML = Array(100)
-    .fill(0)
-    .map(
-      () => `
-    <div class="person other">
-      <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="6" r="4"></circle>
-        <rect x="8" y="10" width="8" height="10" rx="3"></rect>
-      </svg>
-    </div>`
-    )
-    .join("");
+  /* ===== MODE SWITCH ====== */
+  btnProp.addEventListener("click", () => {
+    mode = "proportion";
+    btnProp.classList.add("active");
+    btnRaw.classList.remove("active");
+    renderPeople(currentCountry);
+  });
 
-  rawNumbers.innerHTML = `<strong>Raw Death Counts:</strong><br> - <br> - <br> - <br> -`;
+  btnRaw.addEventListener("click", () => {
+    mode = "raw";
+    btnRaw.classList.add("active");
+    btnProp.classList.remove("active");
+    renderPeople(currentCountry);
+  });
+
 });
+
 
 /* =========================================
  * 8. REFERENCES COLLAPSIBLE
