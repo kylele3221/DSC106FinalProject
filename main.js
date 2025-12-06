@@ -771,13 +771,12 @@ window.addEventListener("load", () => {
   // -- helper to build SVG person (simple human icon) --
   function personSVG() {
   return `<svg 
-      viewBox="0 0 24 24" 
-      width="24" 
-      height="24" 
+      viewBox="0 0 24 24"
       fill="currentColor" 
       xmlns="http://www.w3.org/2000/svg" 
       aria-hidden="true" 
-      focusable="false">
+      focusable="false"
+      style="width:100%;height:100%">
       <circle cx="12" cy="5" r="3"/>
       <path d="M12 10c-3 0-5 2-5 5v4h2v-4c0-1.7 1.3-3 3-3s3 1.3 3 3v4h2v-4c0-3-2-5-5-5z"/>
     </svg>`;
