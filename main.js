@@ -728,13 +728,13 @@ window.addEventListener("load", () => {
  * =======================================*/
 (function () {
   // ---- DATA: proportions (percent) and raw death counts ----
-  const proportionData = {
+  const proportions = {
     india:      { flood: 35.1, storm: 15.2, drought: 0.2 },     // other = 100 - sum
     pakistan:   { flood: 15.5, storm: 1.9, drought: 0.2 },
     bangladesh: { flood: 7.0,  storm: 86.4, drought: 0.0 },
 
     brazil:     { flood: 71.3, storm: 9.9, drought: 0.3 },
-    colombia:   { flood:  ? , storm:  ? , drought:  ? }, // we'll fill from numbers below
+    colombia:   { flood:  9.6 , storm:  0.2 , drought:  0.0 }, // we'll fill from numbers below
     argentina:  { flood: 45.7, storm: 17.2, drought: 1.1 },
 
     nigeria:    { flood: 11.9, storm: 0.0, drought: 0.0 },
@@ -742,63 +742,19 @@ window.addEventListener("load", () => {
     cotedivoire: { flood: 28.1, storm: 0.0, drought: 0.0 }
   };
 
-  // Raw numbers you provided earlier (exactly as you gave them)
-  // NOTE: a few countries didn't have raw numbers provided earlier (like Colombia in your feed),
-  // I will compute reasonable raw numbers from the percentages when missing by using a small base.
-  const rawData = {
+  const raws = {
     india:      { flood: 60733, storm: 26313, drought: 320 },
     pakistan:   { flood: 15018, storm: 1843, drought: 220 },
     bangladesh: { storm: 167859, flood: 13602, drought: 0 },
 
     brazil:     { flood: 5575, storm: 772, drought: 20 },
     argentina:  { flood: 342, storm: 129, drought: 8 },
-    // Mexico was in your earlier list — but you asked for Argentina/Colombia; if Colombia raw numbers not
-    // provided I will calculate a proxy - but you said you gave all numbers. I will set Colombia based on your earlier messages:
-    colombia:   { flood:  ?, storm: ?, drought: ? },
+    colombia:   { flood: 2869, storm: 73, drought: 0 },
 
     nigeria:    { flood: 3255, storm: 162, drought: 0 },
     ghana:      { flood: 534, storm: 20, drought: 0 },
     cotedivoire:{ flood: 244, storm: 0, drought: 0 }
   };
-
-  // Because your messages included all country numbers earlier, I'm going to use the precise list you sent.
-  // To avoid confusion, I'll overwrite proportionData and rawData with the authoritative values you gave earlier:
-  const proportions = {
-    // South Asia (you gave):
-    india:      { flood: 35.1, storm: 15.2, drought: 0.2 },
-    pakistan:   { flood: 15.5, storm: 1.9, drought: 0.2 },
-    bangladesh: { storm: 86.4, flood: 7.0, drought: 0.0 },
-
-    // South America (you gave):
-    brazil:     { flood: 71.3, storm: 2.7, drought: 0.3 },
-    colombia:   { flood: 0, storm: 0, drought: 0 }, // you didn't give Colombia exact percentages earlier
-    argentina:  { flood: 45.7, storm: 17.2, drought: 1.1 },
-    // NOTE: You earlier mentioned "Mexico" in places; I left it out per your final list.
-
-    // West Africa (you gave):
-    nigeria:    { flood: 10.1, storm: 0.5, drought: 0.0 },
-    cotedivoire:{ flood: 28.1, storm: 0.0, drought: 0.0 },
-    ghana:      { flood: 29.1, storm: 1.1, drought: 0.0 }
-  };
-
-  const raws = {
-    // South Asia
-    india:      { flood: 60733, storm: 26313, drought: 320 },
-    pakistan:   { flood: 15018, storm: 1843, drought: 220 },
-    bangladesh: { storm: 167859, flood: 13602, drought: 0 },
-
-    // South America
-    brazil:     { flood: 5575, storm: 772, drought: 20 },
-    argentina:  { flood: 342, storm: 129, drought: 8 },
-    colombia:   { flood: 0, storm: 0, drought: 0 }, // no explicit raw numbers provided — left zero
-
-    // West Africa
-    nigeria:    { flood: 3255, storm: 4, drought: 0 },
-    ghana:      { flood: 534, storm: 20, drought: 0 },
-    cotedivoire:{ flood: 244, storm: 0, drought: 0 }
-  };
-
-  // If any proportions missing, compute a basic fallback 'other' later.
 
   // ---- UI refs ----
   const selects = Array.from(document.querySelectorAll(".country-select"));
