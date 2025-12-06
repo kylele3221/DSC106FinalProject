@@ -918,14 +918,20 @@ window.addEventListener("load", () => {
     mode = "proportion";
     btnProp.classList.add("active");
     btnRaw.classList.remove("active");
+  
+    grid.classList.remove("raw");   // <-- add this
     renderCountry(selected);
   });
+  
   btnRaw.addEventListener("click", () => {
     mode = "raw";
     btnRaw.classList.add("active");
     btnProp.classList.remove("active");
+  
+    grid.classList.add("raw");      // <-- add this
     renderCountry(selected);
   });
+
 
 })();
 
