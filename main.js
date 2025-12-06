@@ -853,10 +853,11 @@ window.addEventListener("load", () => {
 
       // show raw counts if available (raws)
       const r = raws[key] || { flood: "-", storm: "-", drought: "-", other: "-" };
+      const pr = proportions[key] || { flood: "-", storm: "-", drought: "-", other: "-" };
       rawNumbers.innerHTML = `
-        <div>Flood: ${r.flood !== undefined ? r.flood : "-"}</div>
-        <div>Storm: ${r.storm !== undefined ? r.storm : "-"}</div>
-        <div>Drought: ${r.drought !== undefined ? r.drought : "-"}</div>
+        <div>Flood: ${r.flood ?? "-"} (${pr.flood != null ? pr.flood + "%" : "-"})</div>
+        <div>Storm: ${r.storm ?? "-"} (${pr.storm != null ? pr.storm + "%" : "-"})</div>
+        <div>Drought: ${r.drought ?? "-"} (${pr.drought != null ? pr.drought + "%" : "-"})</div>
       `;
       rawNote.classList.add("hidden");
     } else {
