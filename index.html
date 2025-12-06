@@ -492,9 +492,8 @@
   <section class="impact-visualization">
     <div class="fatality-two-col">
   
-      <!-- LEFT SIDE -->
+      <!-- LEFT: dropdowns, mode, legend, raw numbers -->
       <div class="fatality-left">
-  
         <div class="region-block">
           <label>South Asia</label>
           <select class="country-select" data-region="south-asia">
@@ -521,36 +520,38 @@
             <option value="">Select Country</option>
             <option value="nigeria">Nigeria</option>
             <option value="ghana">Ghana</option>
-            <option value="cotedivoire">Cote d'Ivoire</option>
+            <option value="cotedivoire">Côte d'Ivoire</option>
           </select>
         </div>
   
-        <!-- MODE TOGGLE -->
-        <div class="mode-toggle">
-          <button id="mode-proportion" class="toggle active">Proportion View</button>
-          <button id="mode-raw" class="toggle">Raw Count View</button>
+        <!-- Mode toggle -->
+        <div class="mode-toggle" role="tablist" aria-label="Visualization mode">
+          <button id="mode-proportion" class="mode-btn active" role="tab">Proportion View</button>
+          <button id="mode-raw" class="mode-btn" role="tab">Raw Count View</button>
         </div>
   
-        <!-- LEGEND -->
-        <div class="legend">
-          <div><span class="legend-box flood"></span> Flood</div>
-          <div><span class="legend-box storm"></span> Storm</div>
-          <div><span class="legend-box drought"></span> Drought</div>
-          <div><span class="legend-box other"></span> Other</div>
-          <div id="raw-note" class="raw-note hidden">* Each icon = 100 deaths</div>
+        <!-- Legend -->
+        <div class="legend-block">
+          <div class="legend-row"><span class="legend-box flood"></span> Flood</div>
+          <div class="legend-row"><span class="legend-box storm"></span> Storm</div>
+          <div class="legend-row"><span class="legend-box drought"></span> Drought</div>
+          <div class="legend-row"><span class="legend-box other"></span> Other</div>
+          <div id="raw-note" class="raw-note hidden">* In Raw Count View, each figurine ≈ 100 deaths</div>
         </div>
   
-        <div id="raw-numbers" class="raw-numbers">–</div>
+        <!-- Raw numbers area -->
+        <div id="raw-numbers" class="raw-numbers">Select a country to view counts.</div>
       </div>
   
-      <!-- RIGHT SIDE -->
+      <!-- RIGHT: people grid -->
       <div class="fatality-viz">
-        <div class="fatality-title">Disaster Mortality Breakdown</div>
-        <div id="people-grid" class="people-grid"></div>
+        <div class="fatality-title">Disaster Mortality Visualization</div>
+        <div id="people-grid" class="people-grid" aria-live="polite"></div>
       </div>
   
     </div>
   </section>
+
 
   <!-- ===== TAKEAWAY SECTION ===== -->
   <section id="takeaway" class="section section-takeaway">
