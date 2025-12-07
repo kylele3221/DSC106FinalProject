@@ -1306,10 +1306,10 @@ else {
 .collapsible:hover {
   background: var(--accent);
   color: var(--navy);
-  border-color: var(--accent-strong);
+  border-color: var(--navy);
 }
 
 .collapsible.active {
-  background: var(--accent-strong);
+  background: var(--accent);
   color: var(--navy);
 }
