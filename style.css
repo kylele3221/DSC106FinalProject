@@ -1232,6 +1232,48 @@ else {
   right: 50px;
 }
 
+.impact-nav-tick {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 28px;
+  display: none; /* hidden by default */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* FINAL SLIDE — bigger text and button */
+.impact-card[data-slide="4"] .final-content {
+  text-align: center;
+  padding: 2rem;
+}
+
+.impact-card[data-slide="4"] .final-content p {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.impact-card[data-slide="4"] .restart-btn {
+  font-size: 1.4rem;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.impact-card[data-slide="4"] .final-check {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+
 /* Ensure the viewport creates a positioning context */
 .impact-viewport {
   position: relative;
