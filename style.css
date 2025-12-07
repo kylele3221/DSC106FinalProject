@@ -1268,6 +1268,11 @@ else {
   lastSlide.classList.add("flip");
 }
 
+@keyframes subtleBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
 /* Arrow Buttons */
 .impact-nav {
   position: absolute;
@@ -1280,16 +1285,22 @@ else {
   border-radius: 50%;
   border: none;
 
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
 
-  font-size: 32px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 
   cursor: pointer;
+
+  font-size: 3rem;               /* bigger arrow */
+  font-weight: 700;
+  background: white;
+  color: var(--navy);
+  padding: 0.2em 0.4em;
+  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.15s ease, background 0.2s ease;
 }
 
 .impact-nav-left {
@@ -1298,6 +1309,7 @@ else {
 
 .impact-nav-right {
   right: 50px;
+  animation: subtleBounce 1.6s ease-in-out infinite;
 }
 
 .impact-nav-tick {
@@ -1305,16 +1317,21 @@ else {
   top: 50%;
   right: 20px;
   transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  font-size: 28px;
-  display: none; /* hidden by default */
+  width: 50px;               /* match arrow size */
+  height: 50px;              /* match arrow size */
+  border-radius: 50%;        /* match arrows */
+  background: rgba(0,0,0,0.4); /* same color as arrows */
+  color: white;              /* same text color */
+  font-size: 32px;           /* same icon size */
+  display: none;             /* stays hidden until slide 3 */
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  animation: subtleBounce 1.6s ease-in-out infinite; /* keep bounce */
+}
+
+.impact-nav-tick:hover {
+  background: rgba(0,0,0,0.55);
 }
 
 /* FINAL SLIDE — bigger text and button */
