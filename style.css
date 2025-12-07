@@ -626,6 +626,74 @@ html {
   }
 }
 
+/* ===========================
+   RADIAL SECTION LAYOUT
+   =========================== */
+
+.section-radial {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(to bottom, var(--navy-soft), #010413);
+}
+
+.radial-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+  gap: clamp(2rem, 4vw, 4rem);
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.radial-text h3 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  margin-bottom: 1rem;
+}
+
+.radial-text p {
+  font-size: 0.95rem;
+  color: var(--text-subtle);
+  line-height: 1.6;
+  max-width: 34rem;
+}
+
+.radial-viz {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* keep controls & legend from stretching too wide */
+.radial-viz > .radial-controls,
+.radial-viz > .radial-legend {
+  max-width: 480px;
+  margin-inline: auto;
+}
+
+.radial-svg-wrap {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.radial-svg-wrap #ism-radial-svg {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1 / 1;
+}
+
+/* responsive: stack text over viz on smaller screens */
+@media (max-width: 900px) {
+  .radial-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .radial-viz {
+    margin-top: 2rem;
+  }
+}
+
+
 /* 3-column decadal slideshow */
 .monsoon-slides-grid {
   display: grid;

@@ -74,37 +74,60 @@
     </section>
 
     <!-- CLEAN RADIAL PLOT SECTION – NO CONTAINERS -->
-    <section id="climate-impact">
-    
-      <h3 style="text-align:center; margin-top:40px;">
-        Historic Monsoon Rainfall Cycle (Monsoon Regions)
-      </h3>
-    
-      <p style="text-align:center; margin-bottom:20px;">
-        West African Monsoon (WAM) clearly stands out as the wettest of the three regions, with substantially higher average rainfall across its season. In all three systems, the peak rainfall is concentrated in a relatively fixed window of the year, showing that while climate change affects intensity and totals, the seasonal timing of these monsoons remains fairly consistent. The graph shows the average percipitation in millimeters (mm) of days with rainfall.  You can also click any colored dot in the legend to isolate that monsoon on the radial plot and see its pattern without the others.
-      </p>
-    
-      <!-- Controls -->
-      <div style="text-align:center; margin-bottom:10px;">
-        Year: <span id="ism-year-label"></span>
-        <br/>
-        <input type="range" id="ism-year-slider" />
-        <button id="ism-play" type="button" style="margin-left:10px;">Play</button>
+        <!-- RADIAL PLOT SECTION – TEXT LEFT, PLOT RIGHT -->
+    <section id="climate-impact" class="section section-radial">
+      <div class="radial-grid">
+        
+        <!-- LEFT: text -->
+        <div class="radial-text">
+          <h3>Historic Monsoon Rainfall Cycle (Monsoon Regions)</h3>
+          <p>
+            West African Monsoon (WAM) clearly stands out as the wettest of the three regions,
+            with substantially higher average rainfall across its season. In all three systems,
+            the peak rainfall is concentrated in a relatively fixed window of the year, showing
+            that while climate change affects intensity and totals, the seasonal timing of these
+            monsoons remains fairly consistent. The graph shows the average precipitation in
+            millimeters (mm) of days with rainfall. You can also click any colored dot in the
+            legend to isolate that monsoon on the radial plot and see its pattern without the others.
+          </p>
+        </div>
+
+        <!-- RIGHT: controls + legend + radial SVG -->
+        <div class="radial-viz">
+          <!-- Controls -->
+          <div class="radial-controls">
+            <span class="radial-year-label">
+              Year: <span id="ism-year-label"></span>
+            </span>
+            <input type="range" id="ism-year-slider" />
+            <button id="ism-play" type="button">Play</button>
+          </div>
+
+          <!-- Legend (clickable swatches) -->
+          <div class="radial-legend">
+            <div class="radial-legend-item">
+              <span class="radial-legend-swatch legend-ism"></span>
+              <span>ISM</span>
+            </div>
+            <div class="radial-legend-item">
+              <span class="radial-legend-swatch legend-sam"></span>
+              <span>SAM</span>
+            </div>
+            <div class="radial-legend-item">
+              <span class="radial-legend-swatch legend-wam"></span>
+              <span>WAM</span>
+            </div>
+          </div>
+
+          <!-- SVG -->
+          <div class="radial-svg-wrap">
+            <svg id="ism-radial-svg"></svg>
+          </div>
+        </div>
+
       </div>
-    
-      <!-- Legend (kept clean + inline) -->
-      <div style="text-align:center; margin-bottom:20px;">
-        <span class="radial-legend-swatch legend-ism"></span> ISM &nbsp;&nbsp;
-        <span class="radial-legend-swatch legend-wam"></span> SAM &nbsp;&nbsp;
-        <span class="radial-legend-swatch legend-sam"></span> WAM
-      </div>
-    
-      <!-- SVG itself - now free floating -->
-      <div style="display:flex; justify-content:center; margin-bottom:40px;">
-        <svg id="ism-radial-svg" style="width:420px; height:420px;"></svg>
-      </div>
-    
     </section>
+
 
     <!-- ===== REGIONAL DEEP DIVES TITLE ===== -->
     <section class="section section-title">
