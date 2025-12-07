@@ -1290,3 +1290,26 @@ else {
   transition: max-height 0.35s ease;  /* smooth expand/collapse */
 }
 
+.collapsible {
+  display: inline-block;        /* makes padding apply nicely */
+  font-size: 1.2rem;            /* larger text */
+  font-weight: 600;             /* bolder text */
+  padding: 0.8rem 1.6rem;       /* bigger clickable area */
+  border-radius: 8px;           /* rounded corners */
+  border: 2px solid var(--accent); /* visible border */
+  background: rgba(2, 8, 36, 0.9); /* dark semi-transparent bg */
+  color: var(--accent);         /* text color */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.collapsible:hover {
+  background: var(--accent);
+  color: var(--navy);
+  border-color: var(--accent-strong);
+}
+
+.collapsible.active {
+  background: var(--accent-strong);
+  color: var(--navy);
+}
