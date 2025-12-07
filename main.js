@@ -801,7 +801,7 @@ window.addEventListener("load", () => {
       focusable="false"
       style="width:100%;height:100%">
       <circle cx="12" cy="5" r="3"/>
-      <path d="M12 10c-3 0-5 2-5 5v4h2v-4c0-1.7 1.3-3 3-3s3 1.3 3 3v4h2v-4c0-3-2-5-5-5z"/>
+      <path d="M12 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 10c4.4 0 8 3.6 8 8v2H4v-2c0-4.4 3.6-8 8-8z"/>
     </svg>`;
 }
 
