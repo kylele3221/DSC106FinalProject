@@ -280,11 +280,14 @@ function createRadialChartMulti(config) {
     });
   }
 
+  // ===== CHANGED: createAxes with mm/day numeric labels =====
   function createAxes() {
     const g = document.createElementNS(NS, "g");
     g.setAttribute("class", "radial-axes");
 
     const rings = 4;
+
+    // rings
     for (let r = 1; r <= rings; r++) {
       const circle = document.createElementNS(NS, "circle");
       circle.setAttribute("cx", cx);
@@ -293,21 +296,36 @@ function createRadialChartMulti(config) {
       circle.setAttribute("class", "radial-ring");
       g.appendChild(circle);
     }
-    // Numeric labels for each ring
-    for (let r = 1; r <= rings; r++) {
-      const value = (maxPr * r / rings).toFixed(2); // scaled value
-    
-      const label = document.createElementNS(NS, "text");
-      label.setAttribute("x", cx);
-      label.setAttribute("y", cy - (maxR * r / rings) + 4);
-      label.setAttribute("text-anchor", "middle");
-      label.setAttribute("fill", "rgba(255,255,255,0.65)");
-      label.setAttribute("font-size", "0.55rem");
-    
-      label.textContent = value;
-      g.appendChild(label);
-    }
 
+    // numeric labels in mm/day derived from maxPr (which is in m/day)
+    if (maxPr > 0) {
+      const maxMm = maxPr * 1000; // convert m/day → mm/day once
+
+      for (let r = 1; r <= rings; r++) {
+        const valueMm = (maxMm * r) / rings; // linear from inner → outer
+
+        const labelText = Math.round(valueMm); // e.g., 5, 10, 15
+
+        const label = document.createElementNS(NS, "text");
+        label.setAttribute("x", cx);
+        label.setAttribute("y", cy - (maxR * r) / rings + 4);
+        label.setAttribute("text-anchor", "middle");
+        label.setAttribute("fill", "rgba(255,255,255,0.7)");
+        label.setAttribute("font-size", "0.6rem");
+        label.textContent = labelText;
+        g.appendChild(label);
+      }
+
+      // unit label at the very top
+      const unit = document.createElementNS(NS, "text");
+      unit.setAttribute("x", cx);
+      unit.setAttribute("y", cy - maxR - 12);
+      unit.setAttribute("text-anchor", "middle");
+      unit.setAttribute("fill", "rgba(255,255,255,0.7)");
+      unit.setAttribute("font-size", "0.55rem");
+      unit.textContent = "mm / day";
+      g.appendChild(unit);
+    }
 
     const labels = ["J","F","M","A","M","J","J","A","S","O","N","D"];
     for (let i = 0; i < 12; i++) {
@@ -335,6 +353,7 @@ function createRadialChartMulti(config) {
 
     svg.appendChild(g);
   }
+  // ===== END CHANGED BLOCK =====
 
   const dataGroup = document.createElementNS(NS, "g");
   dataGroup.setAttribute("class", "radial-data");
@@ -958,7 +977,7 @@ window.addEventListener("load", () => {
     btnProp.classList.add("active");
     btnRaw.classList.remove("active");
   
-    grid.classList.remove("raw");   // <-- add this
+    grid.classList.remove("raw");
     renderCountry(selected);
   });
   
@@ -967,7 +986,7 @@ window.addEventListener("load", () => {
     btnRaw.classList.add("active");
     btnProp.classList.remove("active");
   
-    grid.classList.add("raw");      // <-- add this
+    grid.classList.add("raw");
     renderCountry(selected);
   });
 
