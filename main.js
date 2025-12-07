@@ -293,6 +293,21 @@ function createRadialChartMulti(config) {
       circle.setAttribute("class", "radial-ring");
       g.appendChild(circle);
     }
+    // Numeric labels for each ring
+    for (let r = 1; r <= rings; r++) {
+      const value = (maxPr * r / rings).toFixed(2); // scaled value
+    
+      const label = document.createElementNS(NS, "text");
+      label.setAttribute("x", cx);
+      label.setAttribute("y", cy - (maxR * r / rings) + 4);
+      label.setAttribute("text-anchor", "middle");
+      label.setAttribute("fill", "rgba(255,255,255,0.65)");
+      label.setAttribute("font-size", "0.55rem");
+    
+      label.textContent = value;
+      g.appendChild(label);
+    }
+
 
     const labels = ["J","F","M","A","M","J","J","A","S","O","N","D"];
     for (let i = 0; i < 12; i++) {
