@@ -758,6 +758,27 @@ window.addEventListener("load", () => {
 });
 
 /* =========================================
+ * REFERENCES SECTION
+ * =======================================*/
+
+document.querySelectorAll(".collapsible").forEach(btn => {
+  btn.addEventListener("click", () => {
+    btn.classList.toggle("active");
+
+    const content = btn.nextElementSibling;
+    if (!content) return;
+
+    if (content.style.maxHeight) {
+      // collapse
+      content.style.maxHeight = null;
+    } else {
+      // expand
+      content.style.maxHeight = content.scrollHeight + "px";
+    }
+  });
+});
+
+/* =========================================
  * 7. FATALITY PEOPLE-GRID (WORKING)
  * =======================================*/
 (function () {
