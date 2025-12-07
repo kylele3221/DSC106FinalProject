@@ -107,13 +107,12 @@ window.addEventListener("load", () => {
   mat.specular = new THREE.Color("#000000");
 
   // === MONSOON KNOBS ===
-  // all three knobs share the SAME radius + altitude
   worldGlobe
     .pointsData(monsoonPoints)
     .pointLat("lat")
     .pointLng("lng")
-    .pointAltitude(0.04) // short knob (no tall stick)
-    .pointRadius(1.0) // BIG knob
+    .pointAltitude(0.04)
+    .pointRadius(1.0)
     .pointColor((d) => d.color)
     .pointResolution(32)
     .pointLabel((d) => d.name);
@@ -124,7 +123,7 @@ window.addEventListener("load", () => {
     .ringLat("lat")
     .ringLng("lng")
     .ringAltitude(0.01)
-    .ringMaxRadius(3.0) // pulse travels farther
+    .ringMaxRadius(3.0)
     .ringPropagationSpeed(1.8)
     .ringRepeatPeriod(1800)
     .ringColor((d) => (t) => {
@@ -134,7 +133,7 @@ window.addEventListener("load", () => {
         SAMS: "158, 231, 255",
       };
       const rgb = colors[d.id] || "255,255,255";
-      const alpha = 0.95 * (1 - t); // stronger pulse
+      const alpha = 0.95 * (1 - t);
       return `rgba(${rgb}, ${alpha})`;
     });
 
@@ -253,12 +252,12 @@ function createRadialChartMulti(config) {
 
   const seriesList = config.series;
   const seriesData = seriesList.map(() => ({ dataByYear: {} }));
-  let maxPr = 0;
+  let maxPr = 0; // now interpreted as max mm/day
   let isAnimating = false;
   let years = [];
   let playTimer = null;
 
-  // CSV: year,month,pr
+  // CSV: year,month,pr_mm_per_day_wet (mm/day)
   function parseCsv(text, idx) {
     const lines = text.trim().split(/\r?\n/);
     lines.shift(); // header
@@ -270,11 +269,11 @@ function createRadialChartMulti(config) {
       if (cols.length < 3) return;
       const y = parseInt(cols[0], 10);
       const m = parseInt(cols[1], 10);
-      const pr = parseFloat(cols[2]);
+      const pr = parseFloat(cols[2]); // already in mm/day
       if (isNaN(y) || isNaN(m) || isNaN(pr)) return;
       if (!store[y]) store[y] = {};
       store[y][m] = pr;
-      if (pr > maxPr) maxPr = pr;
+      if (pr > maxPr) maxPr = pr; // max mm/day
     });
   }
 
@@ -295,9 +294,9 @@ function createRadialChartMulti(config) {
       g.appendChild(circle);
     }
 
-    // numeric labels in mm/day (convert from m/day), 2 decimals
+    // numeric labels in mm/day (values already in mm/day)
     if (maxPr > 0) {
-      const maxMm = maxPr * 1000; // m/day -> mm/day
+      const maxMm = maxPr; // already mm/day
 
       for (let r = 1; r <= rings; r++) {
         const valueMm = (maxMm * r) / rings;
@@ -308,14 +307,14 @@ function createRadialChartMulti(config) {
         labelText.setAttribute("text-anchor", "middle");
         labelText.setAttribute("fill", "rgba(255,255,255,0.75)");
         labelText.setAttribute("font-size", "0.6rem");
-        labelText.textContent = valueMm.toFixed(2); // more precise
+        labelText.textContent = valueMm.toFixed(2);
         g.appendChild(labelText);
       }
 
-      // axis unit label removed on purpose to avoid overlapping January
+      // no separate unit label to avoid overlap near January
     }
 
-    // month spokes + 3-letter labels from monthNames[]
+    // month spokes + labels
     for (let i = 0; i < 12; i++) {
       const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
       const x2 = cx + maxR * Math.cos(angle);
@@ -335,7 +334,7 @@ function createRadialChartMulti(config) {
       text.setAttribute("x", lx);
       text.setAttribute("y", ly);
       text.setAttribute("class", "radial-month-label");
-      text.textContent = monthNames[i]; // "Jan", "Feb", ...
+      text.textContent = monthNames[i];
       g.appendChild(text);
     }
 
@@ -349,7 +348,7 @@ function createRadialChartMulti(config) {
   const seriesGraphics = seriesList.map((s) => {
     const path = document.createElementNS(NS, "path");
     path.setAttribute("class", "radial-path " + s.pathClass);
-    path.style.fillOpacity = 0; // start transparent
+    path.style.fillOpacity = 0;
     const dots = document.createElementNS(NS, "g");
     dots.setAttribute("class", "radial-dots");
     dataGroup.appendChild(path);
@@ -412,7 +411,7 @@ function createRadialChartMulti(config) {
 
   function showTooltip(evt, year, monthIndex, prVal) {
     if (isNaN(prVal)) return;
-    const mmPerDay = prVal * 1000; // m/day → mm/day
+    const mmPerDay = prVal; // already mm/day
 
     tooltip.style.visibility = "visible";
     tooltip.textContent =
@@ -430,8 +429,7 @@ function createRadialChartMulti(config) {
     tooltip.style.visibility = "hidden";
   }
 
-  // options:
-  //  { animate?: true, noFill?: true, hideStroke?: true }
+  // options: { animate?, noFill?, hideStroke? }
   function drawYear(year, options) {
     const animate = options && options.animate;
     const noFill = options && options.noFill;
@@ -439,8 +437,8 @@ function createRadialChartMulti(config) {
 
     label.textContent = year;
 
-    const dotBaseDelay = 150;   // ms before first dot appears
-    const dotStepDelay = 70;    // ms between dots
+    const dotBaseDelay = 150;
+    const dotStepDelay = 70;
 
     seriesList.forEach((s, idx) => {
       const store = seriesData[idx].dataByYear;
@@ -452,8 +450,8 @@ function createRadialChartMulti(config) {
       for (let i = 0; i < 12; i++) {
         const m = i + 1;
         const raw = months[m];
-        const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0;
-        const r = maxPr ? (pr / maxPr) * maxR : 0;  // correct scaling
+        const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0; // mm/day
+        const r = maxPr ? (pr / maxPr) * maxR : 0;
         const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
         const x = cx + r * Math.cos(angle);
         const y = cy + r * Math.sin(angle);
@@ -507,9 +505,9 @@ function createRadialChartMulti(config) {
           g.path.style.transition = "none";
           g.path.style.strokeDasharray = `${len} ${len}`;
           g.path.style.strokeDashoffset = `${len}`;
-          g.path.style.fillOpacity = 0; // no fill yet
+          g.path.style.fillOpacity = 0;
 
-          const lineDuration = 1400; // ms
+          const lineDuration = 1400;
           const totalAnim = lineDuration + dotBaseDelay + 11 * dotStepDelay;
 
           requestAnimationFrame(() => {
@@ -518,7 +516,6 @@ function createRadialChartMulti(config) {
                 "stroke-dashoffset 1.4s ease-out, fill-opacity 0.8s ease-in";
               g.path.style.strokeDashoffset = "0";
 
-              // fade in fill after the line draws
               setTimeout(() => {
                 g.path.style.fillOpacity = 0.45;
               }, lineDuration);
@@ -581,7 +578,7 @@ function createRadialChartMulti(config) {
       const idx = years.indexOf(cur);
       const next = years[(idx + 1) % years.length];
       slider.value = next;
-      drawYear(next); // normal, no animation
+      drawYear(next);
     }, 900);
   }
 
@@ -594,7 +591,7 @@ function createRadialChartMulti(config) {
 
   slider.addEventListener("input", () => {
     stopPlay();
-    drawYear(parseInt(slider.value, 10)); // normal, no animation
+    drawYear(parseInt(slider.value, 10));
   });
 
   playBtn.addEventListener("click", () => {
@@ -738,19 +735,19 @@ window.addEventListener("load", () => {
     series: [
       {
         id: "ISM",
-        csvFile: "ISM_historic.csv",
+        csvFile: "ISM_CESM2_historical_1995_2014_wetday_monthly.csv",
         pathClass: "radial-path-ism",
         dotClass: "radial-dot-ism",
       },
       {
         id: "WAM",
-        csvFile: "WAM_historic.csv",
+        csvFile: "WAM_CESM2_historical_1995_2014_wetday_monthly.csv",
         pathClass: "radial-path-wam",
         dotClass: "radial-dot-wam",
       },
       {
         id: "SAM",
-        csvFile: "SAM_historic.csv",
+        csvFile: "SAM_CESM2_historical_1995_2014_wetday_monthly.csv",
         pathClass: "radial-path-sam",
         dotClass: "radial-dot-sam",
       },
