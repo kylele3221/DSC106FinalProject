@@ -1265,7 +1265,12 @@ else {
   font-size: 1.4rem;
   padding: 1rem 2rem;
   border-radius: 10px;
+  border-block-color: var(--accent);
+  background: var(--accent);
+  color: var(--navy);
   cursor: pointer;
+  color: #071235;
+  margin-top: 2rem; /* adds space */
 }
 
 .impact-card[data-slide="4"] .final-check {
