@@ -278,7 +278,7 @@ function createRadialChartMulti(config) {
     });
   }
 
-  // >>> UPDATED AXES (mm/day + 3-letter months) <<<
+  // === AXES: rings + numeric labels + month labels ===
   function createAxes() {
     const g = document.createElementNS(NS, "g");
     g.setAttribute("class", "radial-axes");
@@ -295,7 +295,7 @@ function createRadialChartMulti(config) {
       g.appendChild(circle);
     }
 
-    // numeric labels in mm/day (convert from m/day)
+    // numeric labels in mm/day (convert from m/day), 2 decimals
     if (maxPr > 0) {
       const maxMm = maxPr * 1000; // m/day -> mm/day
 
@@ -308,18 +308,11 @@ function createRadialChartMulti(config) {
         labelText.setAttribute("text-anchor", "middle");
         labelText.setAttribute("fill", "rgba(255,255,255,0.75)");
         labelText.setAttribute("font-size", "0.6rem");
-        labelText.textContent = valueMm.toFixed(1); // keep one decimal
+        labelText.textContent = valueMm.toFixed(2); // more precise
         g.appendChild(labelText);
       }
 
-      const unitText = document.createElementNS(NS, "text");
-      unitText.setAttribute("x", cx);
-      unitText.setAttribute("y", cy - maxR - 12);
-      unitText.setAttribute("text-anchor", "middle");
-      unitText.setAttribute("fill", "rgba(255,255,255,0.75)");
-      unitText.setAttribute("font-size", "0.55rem");
-      unitText.textContent = "mm / day";
-      g.appendChild(unitText);
+      // axis unit label removed on purpose to avoid overlapping January
     }
 
     // month spokes + 3-letter labels from monthNames[]
@@ -446,8 +439,8 @@ function createRadialChartMulti(config) {
 
     label.textContent = year;
 
-    const dotBaseDelay = 150; // ms before first dot appears
-    const dotStepDelay = 70; // ms between dots
+    const dotBaseDelay = 150;   // ms before first dot appears
+    const dotStepDelay = 70;    // ms between dots
 
     seriesList.forEach((s, idx) => {
       const store = seriesData[idx].dataByYear;
@@ -460,7 +453,7 @@ function createRadialChartMulti(config) {
         const m = i + 1;
         const raw = months[m];
         const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0;
-        const r = maxPr ? (pr / maxPr) * maxR : 0;
+        const r = maxPr ? (pr / maxPr) * maxR : 0;  // correct scaling
         const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
         const x = cx + r * Math.cos(angle);
         const y = cy + r * Math.sin(angle);
@@ -514,9 +507,9 @@ function createRadialChartMulti(config) {
           g.path.style.transition = "none";
           g.path.style.strokeDasharray = `${len} ${len}`;
           g.path.style.strokeDashoffset = `${len}`;
-          g.path.style.fillOpacity = 0;
+          g.path.style.fillOpacity = 0; // no fill yet
 
-          const lineDuration = 1400;
+          const lineDuration = 1400; // ms
           const totalAnim = lineDuration + dotBaseDelay + 11 * dotStepDelay;
 
           requestAnimationFrame(() => {
@@ -525,6 +518,7 @@ function createRadialChartMulti(config) {
                 "stroke-dashoffset 1.4s ease-out, fill-opacity 0.8s ease-in";
               g.path.style.strokeDashoffset = "0";
 
+              // fade in fill after the line draws
               setTimeout(() => {
                 g.path.style.fillOpacity = 0.45;
               }, lineDuration);
@@ -587,7 +581,7 @@ function createRadialChartMulti(config) {
       const idx = years.indexOf(cur);
       const next = years[(idx + 1) % years.length];
       slider.value = next;
-      drawYear(next);
+      drawYear(next); // normal, no animation
     }, 900);
   }
 
@@ -600,7 +594,7 @@ function createRadialChartMulti(config) {
 
   slider.addEventListener("input", () => {
     stopPlay();
-    drawYear(parseInt(slider.value, 10));
+    drawYear(parseInt(slider.value, 10)); // normal, no animation
   });
 
   playBtn.addEventListener("click", () => {
@@ -630,8 +624,10 @@ function createRadialChartMulti(config) {
       slider.value = years[0];
 
       createAxes();
+      // initial: draw dots & geometry, but hide stroke & fill
       drawYear(years[0], { noFill: true, hideStroke: true });
 
+      // Replay animation every time section re-enters view
       if ("IntersectionObserver" in window) {
         const target = document.getElementById(config.svgId);
         if (target) {
@@ -659,6 +655,7 @@ function createRadialChartMulti(config) {
     })
     .catch((e) => console.error("Error loading radial CSVs:", e));
 }
+
 
 /* =========================================
  * 5. IMPACT SLIDE NAVIGATION (REPLACES SCROLLY)
