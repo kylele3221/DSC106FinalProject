@@ -1269,24 +1269,20 @@ else {
 }
 
 @keyframes subtleBounce {
-  0%, 100% {
-    transform: translateY(-50%);
-  }
-  50% {
-    transform: translateY(calc(-50% - 4px));
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 /* Arrow Buttons */
 .impact-nav {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(12%);
   z-index: 20;
 
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  width: 96px;
+  height: 85px;
+  border-radius: 10%;
   border: none;
 
 
@@ -1297,9 +1293,9 @@ else {
 
   cursor: pointer;
 
-  font-size: 3rem;               /* bigger arrow */
+  font-size: 4rem;               /* bigger arrow */
   font-weight: 700;
-  background: white;
+  background: #d6ebff;
   color: var(--navy);
   padding: 0.2em 0.4em;
   
@@ -1321,11 +1317,11 @@ else {
   top: 50%;
   right: 20px;
   transform: translateY(-50%);
-  width: 50px;               /* match arrow size */
-  height: 50px;              /* match arrow size */
-  border-radius: 50%;        /* match arrows */
-  background: rgba(0,0,0,0.4); /* same color as arrows */
-  color: white;              /* same text color */
+  width: 96px;               /* match arrow size */
+  height: 85px;              /* match arrow size */
+  border-radius: 10%;        /* match arrows */
+  background: #d6ebff; /* same color as arrows */
+  color: #010413;              /* same text color */
   font-size: 32px;           /* same icon size */
   display: none;             /* stays hidden until slide 3 */
   align-items: center;
@@ -1335,7 +1331,14 @@ else {
 }
 
 .impact-nav-tick:hover {
-  background: rgba(0,0,0,0.55);
+  background: rgb(165 250 189 / 82%);
+}
+button.impact-nav-left:hover {
+  background: #75ddff;
+}
+
+button.impact-nav-right:hover {
+  background: #75ddff;
 }
 
 /* FINAL SLIDE — bigger text and button */
