@@ -1283,3 +1283,10 @@ else {
 .impact-viewport {
   position: relative;
 }
+
+.content-collapsible {
+  max-height: 0;         /* hidden by default */
+  overflow: hidden;      /* prevent content from spilling out */
+  transition: max-height 0.35s ease;  /* smooth expand/collapse */
+}
+
