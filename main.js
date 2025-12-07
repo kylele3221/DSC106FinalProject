@@ -112,12 +112,11 @@ window.addEventListener("load", () => {
     .pointsData(monsoonPoints)
     .pointLat("lat")
     .pointLng("lng")
-    .pointAltitude(0.04)          // short knob (no tall stick)
-    .pointRadius(1.0)             // BIG knob
+    .pointAltitude(0.04) // short knob (no tall stick)
+    .pointRadius(1.0) // BIG knob
     .pointColor((d) => d.color)
     .pointResolution(32)
     .pointLabel((d) => d.name);
-
 
   // === PULSING RINGS ===
   worldGlobe
@@ -125,7 +124,7 @@ window.addEventListener("load", () => {
     .ringLat("lat")
     .ringLng("lng")
     .ringAltitude(0.01)
-    .ringMaxRadius(3.0)               // pulse travels farther
+    .ringMaxRadius(3.0) // pulse travels farther
     .ringPropagationSpeed(1.8)
     .ringRepeatPeriod(1800)
     .ringColor((d) => (t) => {
@@ -135,7 +134,7 @@ window.addEventListener("load", () => {
         SAMS: "158, 231, 255",
       };
       const rgb = colors[d.id] || "255,255,255";
-      const alpha = 0.95 * (1 - t);    // stronger pulse
+      const alpha = 0.95 * (1 - t); // stronger pulse
       return `rgba(${rgb}, ${alpha})`;
     });
 
@@ -209,7 +208,6 @@ window.addEventListener("load", () => {
   focusMonsoon("ISM", false);
 });
 
-
 /* =========================================
  * 4. RADIAL CHART – HISTORIC ONLY
  * =======================================*/
@@ -280,11 +278,14 @@ function createRadialChartMulti(config) {
     });
   }
 
+  // >>> UPDATED AXES (mm/day + 3-letter months) <<<
   function createAxes() {
     const g = document.createElementNS(NS, "g");
     g.setAttribute("class", "radial-axes");
 
     const rings = 4;
+
+    // rings
     for (let r = 1; r <= rings; r++) {
       const circle = document.createElementNS(NS, "circle");
       circle.setAttribute("cx", cx);
@@ -293,23 +294,35 @@ function createRadialChartMulti(config) {
       circle.setAttribute("class", "radial-ring");
       g.appendChild(circle);
     }
-    // Numeric labels for each ring
-    for (let r = 1; r <= rings; r++) {
-      const value = (maxPr * r / rings).toFixed(2); // scaled value
-    
-      const label = document.createElementNS(NS, "text");
-      label.setAttribute("x", cx);
-      label.setAttribute("y", cy - (maxR * r / rings) + 4);
-      label.setAttribute("text-anchor", "middle");
-      label.setAttribute("fill", "rgba(255,255,255,0.65)");
-      label.setAttribute("font-size", "0.55rem");
-    
-      label.textContent = value;
-      g.appendChild(label);
+
+    // numeric labels in mm/day (convert from m/day)
+    if (maxPr > 0) {
+      const maxMm = maxPr * 1000; // m/day -> mm/day
+
+      for (let r = 1; r <= rings; r++) {
+        const valueMm = (maxMm * r) / rings;
+
+        const labelText = document.createElementNS(NS, "text");
+        labelText.setAttribute("x", cx);
+        labelText.setAttribute("y", cy - (maxR * r) / rings + 4);
+        labelText.setAttribute("text-anchor", "middle");
+        labelText.setAttribute("fill", "rgba(255,255,255,0.75)");
+        labelText.setAttribute("font-size", "0.6rem");
+        labelText.textContent = valueMm.toFixed(1); // keep one decimal
+        g.appendChild(labelText);
+      }
+
+      const unitText = document.createElementNS(NS, "text");
+      unitText.setAttribute("x", cx);
+      unitText.setAttribute("y", cy - maxR - 12);
+      unitText.setAttribute("text-anchor", "middle");
+      unitText.setAttribute("fill", "rgba(255,255,255,0.75)");
+      unitText.setAttribute("font-size", "0.55rem");
+      unitText.textContent = "mm / day";
+      g.appendChild(unitText);
     }
 
-
-    const labels = ["J","F","M","A","M","J","J","A","S","O","N","D"];
+    // month spokes + 3-letter labels from monthNames[]
     for (let i = 0; i < 12; i++) {
       const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
       const x2 = cx + maxR * Math.cos(angle);
@@ -329,7 +342,7 @@ function createRadialChartMulti(config) {
       text.setAttribute("x", lx);
       text.setAttribute("y", ly);
       text.setAttribute("class", "radial-month-label");
-      text.textContent = labels[i];
+      text.textContent = monthNames[i]; // "Jan", "Feb", ...
       g.appendChild(text);
     }
 
@@ -381,7 +394,6 @@ function createRadialChartMulti(config) {
 
   function handleLegendClick(id) {
     if (activeLegendId === id) {
-      // clicked again -> reset to "show all"
       activeLegendId = null;
       setLegendActive(null);
       updateSeriesVisibility(null);
@@ -434,8 +446,8 @@ function createRadialChartMulti(config) {
 
     label.textContent = year;
 
-    const dotBaseDelay = 150;   // ms before first dot appears
-    const dotStepDelay = 70;    // ms between dots
+    const dotBaseDelay = 150; // ms before first dot appears
+    const dotStepDelay = 70; // ms between dots
 
     seriesList.forEach((s, idx) => {
       const store = seriesData[idx].dataByYear;
@@ -448,7 +460,7 @@ function createRadialChartMulti(config) {
         const m = i + 1;
         const raw = months[m];
         const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0;
-        const r = maxPr ? (pr / maxPr) * maxR : 0;  // correct scaling
+        const r = maxPr ? (pr / maxPr) * maxR : 0;
         const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
         const x = cx + r * Math.cos(angle);
         const y = cy + r * Math.sin(angle);
@@ -502,9 +514,9 @@ function createRadialChartMulti(config) {
           g.path.style.transition = "none";
           g.path.style.strokeDasharray = `${len} ${len}`;
           g.path.style.strokeDashoffset = `${len}`;
-          g.path.style.fillOpacity = 0; // no fill yet
+          g.path.style.fillOpacity = 0;
 
-          const lineDuration = 1400; // ms
+          const lineDuration = 1400;
           const totalAnim = lineDuration + dotBaseDelay + 11 * dotStepDelay;
 
           requestAnimationFrame(() => {
@@ -513,7 +525,6 @@ function createRadialChartMulti(config) {
                 "stroke-dashoffset 1.4s ease-out, fill-opacity 0.8s ease-in";
               g.path.style.strokeDashoffset = "0";
 
-              // fade in fill after the line draws
               setTimeout(() => {
                 g.path.style.fillOpacity = 0.45;
               }, lineDuration);
@@ -576,7 +587,7 @@ function createRadialChartMulti(config) {
       const idx = years.indexOf(cur);
       const next = years[(idx + 1) % years.length];
       slider.value = next;
-      drawYear(next); // normal, no animation
+      drawYear(next);
     }, 900);
   }
 
@@ -589,7 +600,7 @@ function createRadialChartMulti(config) {
 
   slider.addEventListener("input", () => {
     stopPlay();
-    drawYear(parseInt(slider.value, 10)); // normal, no animation
+    drawYear(parseInt(slider.value, 10));
   });
 
   playBtn.addEventListener("click", () => {
@@ -619,10 +630,8 @@ function createRadialChartMulti(config) {
       slider.value = years[0];
 
       createAxes();
-      // initial: draw dots & geometry, but hide stroke & fill
       drawYear(years[0], { noFill: true, hideStroke: true });
 
-      // Replay animation every time section re-enters view
       if ("IntersectionObserver" in window) {
         const target = document.getElementById(config.svgId);
         if (target) {
@@ -661,7 +670,7 @@ function initImpactScrolly() {
 
   const leftBtn    = document.querySelector(".impact-nav-left");
   const rightBtn   = document.querySelector(".impact-nav-right");
-  const tickBtn    = document.querySelector(".impact-nav-tick"); // NEW separate tick button
+  const tickBtn    = document.querySelector(".impact-nav-tick");
   const restartBtn = document.querySelector(".restart-btn");
 
   if (!cards.length) return;
@@ -669,26 +678,21 @@ function initImpactScrolly() {
   let index = 0;
 
   function updateUI() {
-    // set active slide
     cards.forEach((c, i) => c.classList.toggle("is-active", i === index));
     dots.forEach((d, i) => d.classList.toggle("is-active", i === index));
 
-    // left arrow visible except on slide 0
     leftBtn.style.visibility = index === 0 ? "hidden" : "visible";
 
-    // right arrow only on slides 0–2
     if (index <= 2) {
       rightBtn.style.display = "flex";
       tickBtn.style.display  = "none";
     }
 
-    // slide 3 → hide arrow, show tick button
     if (index === 3) {
       rightBtn.style.display = "none";
       tickBtn.style.display  = "flex";
     }
 
-    // slide 4 (final screen) → hide all arrows/ticks
     if (index === 4) {
       rightBtn.style.display = "none";
       tickBtn.style.display  = "none";
@@ -703,14 +707,14 @@ function initImpactScrolly() {
   });
 
   rightBtn.addEventListener("click", () => {
-    if (index < 3) {          // normal slides
+    if (index < 3) {
       index++;
       updateUI();
     }
   });
 
   tickBtn.addEventListener("click", () => {
-    index = 4;                // flip to final slide
+    index = 4;
     updateUI();
   });
 
@@ -724,13 +728,11 @@ function initImpactScrolly() {
   updateUI();
 }
 
-
 /* =========================================
  * 6. INIT – RADIAL + SCROLLY
  * =======================================*/
 
 window.addEventListener("load", () => {
-  // Historic monsoon radial only
   createRadialChartMulti({
     svgId: "ism-radial-svg",
     sliderId: "ism-year-slider",
@@ -765,14 +767,13 @@ window.addEventListener("load", () => {
  * 7. FATALITY PEOPLE-GRID (WORKING)
  * =======================================*/
 (function () {
-  // ---- DATA: proportions (percent) and raw death counts ----
   const proportions = {
-    india:      { flood: 35.1, storm: 15.2, drought: 0.2 },     // other = 100 - sum
+    india:      { flood: 35.1, storm: 15.2, drought: 0.2 },
     pakistan:   { flood: 15.5, storm: 1.9, drought: 0.2 },
     bangladesh: { flood: 7.0,  storm: 86.4, drought: 0.0 },
 
     brazil:     { flood: 71.3, storm: 9.9, drought: 0.3 },
-    colombia:   { flood:  9.6 , storm:  0.2 , drought:  0.0 }, // we'll fill from numbers below
+    colombia:   { flood:  9.6 , storm:  0.2 , drought:  0.0 },
     argentina:  { flood: 45.7, storm: 17.2, drought: 1.1 },
 
     nigeria:    { flood: 11.9, storm: 0.0, drought: 0.0 },
@@ -794,7 +795,6 @@ window.addEventListener("load", () => {
     cotedivoire:{ flood: 244, storm: 0, drought: 0 }
   };
 
-  // ---- UI refs ----
   const selects = Array.from(document.querySelectorAll(".country-select"));
   const grid = document.getElementById("people-grid");
   const rawNumbers = document.getElementById("raw-numbers");
@@ -802,13 +802,11 @@ window.addEventListener("load", () => {
   const btnProp = document.getElementById("mode-proportion");
   const btnRaw = document.getElementById("mode-raw");
 
-  // initial mode and selected
-  let mode = "proportion"; // 'proportion' or 'raw'
+  let mode = "proportion";
   let selected = null;
 
-  // -- helper to build SVG person (simple human icon) --
   function personSVG() {
-  return `<svg 
+    return `<svg 
       viewBox="0 0 24 24"
       fill="currentColor" 
       xmlns="http://www.w3.org/2000/svg" 
@@ -818,10 +816,8 @@ window.addEventListener("load", () => {
       <circle cx="12" cy="5" r="3"/>
       <path d="M12 10c-3 0-5 2-5 5v4h2v-4c0-1.7 1.3-3 3-3s3 1.3 3 3v4h2v-4c0-3-2-5-5-5z"/>
     </svg>`;
-}
+  }
 
-
-  // fill grid with 100 gray people by default
   function loadEmptyGrid() {
     const items = Array(100).fill('<div class="person other">' + personSVG() + '</div>');
     grid.innerHTML = items.join("");
@@ -831,7 +827,6 @@ window.addEventListener("load", () => {
 
   loadEmptyGrid();
 
-  // safe function to compute other percent if missing
   function computeOtherFromProps(p) {
     const f = Number(p.flood || 0);
     const s = Number(p.storm || 0);
@@ -840,14 +835,12 @@ window.addEventListener("load", () => {
     return other;
   }
 
-  // render function (proportion or raw)
   function renderCountry(key) {
     if (!key) {
       loadEmptyGrid();
       return;
     }
 
-    // prefer the 'proportions' object for percent mode, and 'raws' for raw mode
     if (mode === "proportion") {
       const p = proportions[key] || { flood:0, storm:0, drought:0 };
       const other = computeOtherFromProps(p);
@@ -857,7 +850,6 @@ window.addEventListener("load", () => {
       const drought = Math.round(Number(p.drought) || 0);
       const otherCount = Math.max(0, 100 - (flood + storm + drought));
 
-      // build order: flood, storm, drought, other
       const types = [
         ...Array(flood).fill("flood"),
         ...Array(storm).fill("storm"),
@@ -865,10 +857,8 @@ window.addEventListener("load", () => {
         ...Array(otherCount).fill("other")
       ];
 
-      // render
       grid.innerHTML = types.map(t => `<div class="person ${t}">${personSVG()}</div>`).join("");
 
-      // show raw counts if available (raws)
       const r = raws[key] || { flood: "-", storm: "-", drought: "-", other: "-" };
       const pr = proportions[key] || { flood: "-", storm: "-", drought: "-", other: "-" };
       rawNumbers.innerHTML = `
@@ -878,20 +868,16 @@ window.addEventListener("load", () => {
       `;
       rawNote.classList.add("hidden");
     } else {
-      // RAW mode: 1 figurine = 100 people
       const r = raws[key] || { flood:0, storm:0, drought:0, other:0 };
 
-      // compute counts (rounded)
       const flood = Math.round((r.flood || 0) / 100);
       const storm = Math.round((r.storm || 0) / 100);
       const drought = Math.round((r.drought || 0) / 100);
 
-      // compute other as either given raw.other or from proportions leftover converted to raw if raw.other missing
       let other;
       if (r.other !== undefined && r.other !== null) {
         other = Math.round((r.other || 0) / 100);
       } else {
-        // fallback: compute from percent other * estimated total deaths (sum raw)
         const totalRaw = (r.flood||0) + (r.storm||0) + (r.drought||0);
         const p = proportions[key] || { flood:0, storm:0, drought:0 };
         const otherPercent = computeOtherFromProps(p);
@@ -905,7 +891,6 @@ window.addEventListener("load", () => {
         ...Array(other).fill("other")
       ];
 
-      // safety cap to avoid insane DOM: allow up to 2000 icons; if more, show first 2000 and append a note
       const cap = 2000;
       let outputHTML = "";
       if (types.length > cap) {
@@ -927,38 +912,33 @@ window.addEventListener("load", () => {
     }
   }
 
-  // utility: clear other selects when one chosen, so only one active at a time
   function clearOtherSelects(changedSelect) {
     selects.forEach(s => {
       if (s !== changedSelect) s.value = "";
     });
   }
 
-  // wire selects
   selects.forEach(s => {
     s.addEventListener("change", (e) => {
       const val = e.target.value;
       if (!val) {
-        // cleared selection
         selected = null;
         loadEmptyGrid();
         clearOtherSelects(e.target);
         return;
       }
-      // set selected and clear other region selects
       selected = val;
       clearOtherSelects(e.target);
       renderCountry(selected);
     });
   });
 
-  // wire mode buttons
   btnProp.addEventListener("click", () => {
     mode = "proportion";
     btnProp.classList.add("active");
     btnRaw.classList.remove("active");
-  
-    grid.classList.remove("raw");   // <-- add this
+
+    grid.classList.remove("raw");
     renderCountry(selected);
   });
   
@@ -967,33 +947,7 @@ window.addEventListener("load", () => {
     btnRaw.classList.add("active");
     btnProp.classList.remove("active");
   
-    grid.classList.add("raw");      // <-- add this
+    grid.classList.add("raw");
     renderCountry(selected);
   });
-
-
 })();
-
-
-/* =========================================
- * 8. REFERENCES COLLAPSIBLE
- * =======================================*/
-
-document.addEventListener("DOMContentLoaded", function () {
-  const coll = document.querySelector(".collapsible");
-  const content = document.querySelector(".content-collapsible");
-
-  if (!coll || !content) return;
-
-  coll.addEventListener("click", function () {
-    this.classList.toggle("active");
-
-    if (content.style.maxHeight) {
-      content.style.maxHeight = null;
-      coll.innerHTML = "References ▼";
-    } else {
-      content.style.maxHeight = content.scrollHeight + "px";
-      coll.innerHTML = "References ▲";
-    }
-  });
-});
