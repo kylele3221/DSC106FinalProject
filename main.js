@@ -644,33 +644,39 @@ function initImpactScrolly() {
   const cards = Array.from(document.querySelectorAll(".impact-viewport .impact-card"));
   const dots = Array.from(document.querySelectorAll(".impact-dot"));
 
-  const leftBtn  = document.querySelector(".impact-nav-left");
-  const rightBtn = document.querySelector(".impact-nav-right");
+  const leftBtn    = document.querySelector(".impact-nav-left");
+  const rightBtn   = document.querySelector(".impact-nav-right");
+  const tickBtn    = document.querySelector(".impact-nav-tick"); // NEW separate tick button
   const restartBtn = document.querySelector(".restart-btn");
 
   if (!cards.length) return;
 
-  let index = 0; // current slide
+  let index = 0;
 
   function updateUI() {
-    // activate slide
-    cards.forEach((c, i) => {
-      c.classList.toggle("is-active", i === index);
-    });
+    // set active slide
+    cards.forEach((c, i) => c.classList.toggle("is-active", i === index));
+    dots.forEach((d, i) => d.classList.toggle("is-active", i === index));
 
-    // update dots
-    dots.forEach((d, i) => {
-      d.classList.toggle("is-active", i === index);
-    });
-
-    // hide left arrow on first slide
+    // left arrow visible except on slide 0
     leftBtn.style.visibility = index === 0 ? "hidden" : "visible";
 
-    // right arrow becomes ✔ on last slide
-    if (index === cards.length - 1) {
-      rightBtn.textContent = "✔";
-    } else {
-      rightBtn.textContent = "›";
+    // right arrow only on slides 0–2
+    if (index <= 2) {
+      rightBtn.style.display = "flex";
+      tickBtn.style.display  = "none";
+    }
+
+    // slide 3 → hide arrow, show tick button
+    if (index === 3) {
+      rightBtn.style.display = "none";
+      tickBtn.style.display  = "flex";
+    }
+
+    // slide 4 (final screen) → hide all arrows/ticks
+    if (index === 4) {
+      rightBtn.style.display = "none";
+      tickBtn.style.display  = "none";
     }
   }
 
@@ -682,19 +688,15 @@ function initImpactScrolly() {
   });
 
   rightBtn.addEventListener("click", () => {
-    if (index < cards.length - 1) {
+    if (index < 3) {          // normal slides
       index++;
       updateUI();
-    } else {
-      // already on last slide; do nothing or trigger flip if desired
     }
   });
 
-  dots.forEach((dot, i) => {
-    dot.addEventListener("click", () => {
-      index = i;
-      updateUI();
-    });
+  tickBtn.addEventListener("click", () => {
+    index = 4;                // flip to final slide
+    updateUI();
   });
 
   if (restartBtn) {
