@@ -232,7 +232,7 @@ function createRadialChartMulti(config) {
   const maxR = 140;
   svg.setAttribute("viewBox", "0 0 " + width + " " + height);
 
-  // Tooltip (one per page)
+  // Tooltip
   let tooltip = document.querySelector(".radial-tooltip");
   if (!tooltip) {
     tooltip = document.createElement("div");
@@ -258,14 +258,14 @@ function createRadialChartMulti(config) {
 
   const seriesList = config.series;
   const seriesData = seriesList.map(() => ({ dataByYear: {} }));
-  let maxPr = 0; // max wet-day mean (mm/day)
-  let isAnimating = false;
+  let maxPr = 0;
   let years = [];
   let playTimer = null;
 
-  // CSV: year,month,pr_mm_per_day_wet (mm/day on rainy days)
+  // Parse CSV: year,month,pr_mm_per_day_wet
   function parseCsv(text, idx) {
     const lines = text.trim().split(/\r?\n/);
+    if (!lines.length) return;
     lines.shift(); // header
     const store = seriesData[idx].dataByYear;
 
@@ -275,15 +275,15 @@ function createRadialChartMulti(config) {
       if (cols.length < 3) return;
       const y = parseInt(cols[0], 10);
       const m = parseInt(cols[1], 10);
-      const wetMean = parseFloat(cols[2]); // mm/day, rainy days only
-      if (isNaN(y) || isNaN(m) || isNaN(wetMean)) return;
+      const val = parseFloat(cols[2]); // mm/day, wet days
+      if (isNaN(y) || isNaN(m) || isNaN(val)) return;
       if (!store[y]) store[y] = {};
-      store[y][m] = wetMean;
-      if (wetMean > maxPr) maxPr = wetMean;
+      store[y][m] = val;
+      if (val > maxPr) maxPr = val;
     });
   }
 
-  // === AXES: rings + numeric labels + month labels ===
+  // Axes (rings + labels + month spokes)
   function createAxes() {
     const g = document.createElementNS(NS, "g");
     g.setAttribute("class", "radial-axes");
@@ -300,23 +300,19 @@ function createRadialChartMulti(config) {
       g.appendChild(circle);
     }
 
-    // numeric labels in mm/day (wet days)
+    // numeric labels (mm/day)
     if (maxPr > 0) {
-      const maxMm = maxPr;
-
       for (let r = 1; r <= rings; r++) {
-        const valueMm = (maxMm * r) / rings;
-
-        const labelText = document.createElementNS(NS, "text");
-        labelText.setAttribute("x", cx);
-        labelText.setAttribute("y", cy - (maxR * r) / rings + 4);
-        labelText.setAttribute("text-anchor", "middle");
-        labelText.setAttribute("fill", "rgba(255,255,255,0.75)");
-        labelText.setAttribute("font-size", "0.6rem");
-        labelText.textContent = valueMm.toFixed(1); // mm/day
-        g.appendChild(labelText);
+        const v = (maxPr * r) / rings;
+        const t = document.createElementNS(NS, "text");
+        t.setAttribute("x", cx);
+        t.setAttribute("y", cy - (maxR * r) / rings + 4);
+        t.setAttribute("text-anchor", "middle");
+        t.setAttribute("fill", "rgba(255,255,255,0.75)");
+        t.setAttribute("font-size", "0.6rem");
+        t.textContent = v.toFixed(1);
+        g.appendChild(t);
       }
-      // no separate unit label to avoid overlapping January
     }
 
     // month spokes + labels
@@ -346,6 +342,7 @@ function createRadialChartMulti(config) {
     svg.appendChild(g);
   }
 
+  // Group for data
   const dataGroup = document.createElementNS(NS, "g");
   dataGroup.setAttribute("class", "radial-data");
   svg.appendChild(dataGroup);
@@ -353,7 +350,6 @@ function createRadialChartMulti(config) {
   const seriesGraphics = seriesList.map((s) => {
     const path = document.createElementNS(NS, "path");
     path.setAttribute("class", "radial-path " + s.pathClass);
-    path.style.fillOpacity = 0;
     const dots = document.createElementNS(NS, "g");
     dots.setAttribute("class", "radial-dots");
     dataGroup.appendChild(path);
@@ -361,11 +357,10 @@ function createRadialChartMulti(config) {
     return { path, dots };
   });
 
-  // === Legend click: show only one monsoon at a time ===
+  // Legend behaviour
   const legendISM = document.querySelector(".legend-ism");
   const legendWAM = document.querySelector(".legend-wam");
   const legendSAM = document.querySelector(".legend-sam");
-
   let activeLegendId = null;
 
   function updateSeriesVisibility(activeId) {
@@ -383,7 +378,6 @@ function createRadialChartMulti(config) {
       if (!el) return;
       el.classList.remove("legend-active");
     });
-
     if (id === "ISM" && legendISM) legendISM.classList.add("legend-active");
     if (id === "WAM" && legendWAM) legendWAM.classList.add("legend-active");
     if (id === "SAM" && legendSAM) legendSAM.classList.add("legend-active");
@@ -414,17 +408,14 @@ function createRadialChartMulti(config) {
     legendSAM.addEventListener("click", () => handleLegendClick("SAM"));
   }
 
-  function showTooltip(evt, year, monthIndex, prVal) {
-    if (isNaN(prVal)) return;
-    const mmWet = prVal; // mm/day on rainy days
-
+  // Tooltip helpers
+  function showTooltip(evt, year, monthIndex, val) {
+    if (isNaN(val)) return;
     tooltip.style.visibility = "visible";
     tooltip.textContent =
       monthNames[monthIndex - 1] +
-      " " +
-      year +
-      ": " +
-      mmWet.toFixed(2) +
+      " " + year +
+      ": " + val.toFixed(2) +
       " mm/day (wet days)";
     tooltip.style.left = evt.clientX + 14 + "px";
     tooltip.style.top = evt.clientY + 14 + "px";
@@ -434,16 +425,9 @@ function createRadialChartMulti(config) {
     tooltip.style.visibility = "hidden";
   }
 
-  // options: { animate?, noFill?, hideStroke? }
-  function drawYear(year, options) {
-    const animate = options && options.animate;
-    const noFill = options && options.noFill;
-    const hideStroke = options && options.hideStroke;
-
+  // Draw a given year
+  function drawYear(year) {
     label.textContent = year;
-
-    const dotBaseDelay = 150;
-    const dotStepDelay = 70;
 
     seriesList.forEach((s, idx) => {
       const store = seriesData[idx].dataByYear;
@@ -455,8 +439,8 @@ function createRadialChartMulti(config) {
       for (let i = 0; i < 12; i++) {
         const m = i + 1;
         const raw = months[m];
-        const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0; // mm/day
-        const r = maxPr ? (pr / maxPr) * maxR : 0;
+        const val = typeof raw === "number" && !isNaN(raw) ? raw : 0;
+        const r = maxPr ? (val / maxPr) * maxR : 0;
         const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
         const x = cx + r * Math.cos(angle);
         const y = cy + r * Math.sin(angle);
@@ -469,29 +453,12 @@ function createRadialChartMulti(config) {
         dot.setAttribute("class", "radial-dot " + s.dotClass);
 
         dot.addEventListener("mouseenter", (evt) =>
-          showTooltip(evt, year, m, pr)
+          showTooltip(evt, year, m, val)
         );
         dot.addEventListener("mousemove", (evt) =>
-          showTooltip(evt, year, m, pr)
+          showTooltip(evt, year, m, val)
         );
         dot.addEventListener("mouseleave", hideTooltip);
-
-        if (animate) {
-          dot.style.opacity = 0;
-          dot.style.transformOrigin = "center";
-          dot.style.transform = "scale(0.2)";
-          dot.style.transition =
-            "opacity 0.3s ease-out, transform 0.3s ease-out";
-          const delay = dotBaseDelay + i * dotStepDelay;
-          setTimeout(() => {
-            dot.style.opacity = 1;
-            dot.style.transform = "scale(1)";
-          }, delay);
-        } else {
-          dot.style.opacity = 1;
-          dot.style.transform = "scale(1)";
-          dot.style.transition = "none";
-        }
 
         g.dots.appendChild(dot);
       }
@@ -503,78 +470,10 @@ function createRadialChartMulti(config) {
       });
       d += "Z";
       g.path.setAttribute("d", d.trim());
-
-      if (animate) {
-        try {
-          const len = g.path.getTotalLength();
-          g.path.style.transition = "none";
-          g.path.style.strokeDasharray = `${len} ${len}`;
-          g.path.style.strokeDashoffset = `${len}`;
-          g.path.style.fillOpacity = 0;
-
-          const lineDuration = 1400;
-          const totalAnim = lineDuration + dotBaseDelay + 11 * dotStepDelay;
-
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              g.path.style.transition =
-                "stroke-dashoffset 1.4s ease-out, fill-opacity 0.8s ease-in";
-              g.path.style.strokeDashoffset = "0";
-
-              setTimeout(() => {
-                g.path.style.fillOpacity = 0.45;
-              }, lineDuration);
-            });
-          });
-
-          setTimeout(() => {
-            isAnimating = false;
-          }, totalAnim + 200);
-        } catch (e) {
-          g.path.style.transition = "none";
-          g.path.style.strokeDasharray = "";
-          g.path.style.strokeDashoffset = "";
-          g.path.style.fillOpacity = 0.25;
-          isAnimating = false;
-        }
-      } else {
-        g.path.style.transition = "none";
-
-        if (hideStroke) {
-          try {
-            const len = g.path.getTotalLength();
-            g.path.style.strokeDasharray = `${len} ${len}`;
-            g.path.style.strokeDashoffset = `${len}`;
-          } catch {
-            g.path.style.strokeDasharray = "";
-            g.path.style.strokeDashoffset = "";
-          }
-        } else {
-          g.path.style.strokeDasharray = "";
-          g.path.style.strokeDashoffset = "";
-        }
-
-        g.path.style.fillOpacity = noFill ? 0 : 0.25;
-      }
     });
   }
 
-  function resetLineAndFill() {
-    seriesGraphics.forEach((g) => {
-      try {
-        const len = g.path.getTotalLength();
-        g.path.style.transition = "none";
-        g.path.style.strokeDasharray = `${len} ${len}`;
-        g.path.style.strokeDashoffset = `${len}`;
-        g.path.style.fillOpacity = 0;
-      } catch {
-        g.path.style.strokeDasharray = "";
-        g.path.style.strokeDashoffset = "";
-        g.path.style.fillOpacity = 0;
-      }
-    });
-  }
-
+  // Play / pause
   function startPlay() {
     if (playTimer || !years.length) return;
     playBtn.textContent = "Pause";
@@ -604,6 +503,7 @@ function createRadialChartMulti(config) {
     else startPlay();
   });
 
+  // Load all CSVs then init
   Promise.all(
     seriesList.map((s, idx) =>
       fetch(s.csvFile)
@@ -626,37 +526,11 @@ function createRadialChartMulti(config) {
       slider.value = years[0];
 
       createAxes();
-      // initial: draw dots & geometry, but hide stroke & fill
-      drawYear(years[0], { noFill: true, hideStroke: true });
-
-      // Replay animation every time section re-enters view
-      if ("IntersectionObserver" in window) {
-        const target = document.getElementById(config.svgId);
-        if (target) {
-          const obs = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => {
-                const currentYear =
-                  parseInt(slider.value, 10) || years[0];
-
-                if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
-                  if (isAnimating) return;
-                  isAnimating = true;
-                  drawYear(currentYear, { animate: true });
-                } else if (!entry.isIntersecting) {
-                  resetLineAndFill();
-                  isAnimating = false;
-                }
-              });
-            },
-            { threshold: [0, 0.4, 0.6] }
-          );
-          obs.observe(target);
-        }
-      }
+      drawYear(years[0]);
     })
     .catch((e) => console.error("Error loading radial CSVs:", e));
 }
+
 
 
 
