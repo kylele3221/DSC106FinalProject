@@ -903,19 +903,19 @@ window.addEventListener("load", () => {
     series: [
       {
         id: "ISM",
-        csvFile: "ISM_CESM2_historical_1995_2014_monthly_total_precip.csv",
+        csvFile: "ISM_CESM2_historical_1995_2014_wetday_monthly.csv",
         pathClass: "radial-path-ism",
         dotClass: "radial-dot-ism",
       },
       {
         id: "WAM",
-        csvFile: "WAM_CESM2_historical_1995_2014_monthly_total_precip.csv",
+        csvFile: "WAM_CESM2_historical_1995_2014_wetday_monthly.csv",
         pathClass: "radial-path-wam",
         dotClass: "radial-dot-wam",
       },
       {
         id: "SAM",
-        csvFile: "SAM_CESM2_historical_1995_2014_monthly_total_precip.csv",
+        csvFile: "SAM_CESM2_historical_1995_2014_wetday_monthly.csv",
         pathClass: "radial-path-sam",
         dotClass: "radial-dot-sam",
       },
