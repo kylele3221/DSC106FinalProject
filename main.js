@@ -52,6 +52,7 @@ window.addEventListener("load", () => {
     {
       id: "ISM",
       name: "Indian Summer Monsoon",
+      // updated bounds
       latMin: 5,
       latMax: 28,
       lonMin: 68,
@@ -61,6 +62,7 @@ window.addEventListener("load", () => {
     {
       id: "WAM",
       name: "West African Monsoon",
+      // updated bounds
       latMin: -40,
       latMax: 15,
       lonMin: -25,
@@ -70,6 +72,7 @@ window.addEventListener("load", () => {
     {
       id: "SAMS",
       name: "South American Monsoon",
+      // updated bounds
       latMin: -15,
       latMax: 15,
       lonMin: -90,
@@ -86,49 +89,9 @@ window.addEventListener("load", () => {
     color: r.color,
   }));
 
-  // Rectangular boxes for each region (lat, lon) closed loops
-  const monsoonBoxes = [
-    {
-      id: "ISM",
-      name: "ISM region",
-      color: monsoonRegions[0].color,
-      path: [
-        [5, 68],
-        [28, 68],
-        [28, 95],
-        [5, 95],
-        [5, 68],
-      ],
-    },
-    {
-      id: "WAM",
-      name: "WAM region",
-      color: monsoonRegions[1].color,
-      path: [
-        [-40, -25],
-        [15, -25],
-        [15, 50],
-        [-40, 50],
-        [-40, -25],
-      ],
-    },
-    {
-      id: "SAMS",
-      name: "SAM region",
-      color: monsoonRegions[2].color,
-      path: [
-        [-15, -90],
-        [15, -90],
-        [15, -35],
-        [-15, -35],
-        [-15, -90],
-      ],
-    },
-  ];
-
   const worldGlobe = Globe()(globeEl);
 
-  // Base globe style
+  // Base globe style (original)
   worldGlobe
     .globeImageUrl(
       "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
@@ -144,7 +107,7 @@ window.addEventListener("load", () => {
   mat.emissiveIntensity = 0.55;
   mat.specular = new THREE.Color("#000000");
 
-  // Points for region centers
+  // === MONSOON POINTS ===
   worldGlobe
     .pointsData(monsoonPoints)
     .pointLat("lat")
@@ -155,13 +118,13 @@ window.addEventListener("load", () => {
     .pointResolution(32)
     .pointLabel((d) => d.name);
 
-  // Pulsing rings
+  // === PULSING RINGS (made a bit bigger) ===
   worldGlobe
     .ringsData(monsoonPoints)
     .ringLat("lat")
     .ringLng("lng")
     .ringAltitude(0.01)
-    .ringMaxRadius(3.0)
+    .ringMaxRadius(5.0) // was ~3.0 before – now a larger circle around each beacon
     .ringPropagationSpeed(1.8)
     .ringRepeatPeriod(1800)
     .ringColor((d) => (t) => {
@@ -174,19 +137,6 @@ window.addEventListener("load", () => {
       const alpha = 0.95 * (1 - t);
       return `rgba(${rgb}, ${alpha})`;
     });
-
-  // Rectangular region outlines
-  worldGlobe
-    .pathsData(monsoonBoxes)
-    .pathPoints("path")           // use 'path' array on each box
-    .pathPointLat((p) => p[0])   // p = [lat, lon]
-    .pathPointLng((p) => p[1])
-    .pathPointAlt(0.01)          // slightly above surface
-    .pathColor((d) => d.color)
-    .pathStroke(0.6)
-    .pathDashLength(0.25)
-    .pathDashGap(0.5)
-    .pathDashAnimateTime(7000);
 
   const INITIAL_ALT = 1.35;
   worldGlobe.pointOfView({ lat: 5, lng: 0, altitude: INITIAL_ALT }, 0);
@@ -207,7 +157,7 @@ window.addEventListener("load", () => {
   window.addEventListener("resize", resizeGlobe);
   resizeGlobe();
 
-  // Text cards + click handlers
+  // === TEXT CARDS + CLICK HANDLERS ===
   const stepEls = document.querySelectorAll(".monsoon-step");
   let autoRotateStopped = false;
 
@@ -254,9 +204,10 @@ window.addEventListener("load", () => {
     focusMonsoon(d.id, true);
   });
 
-  // initial view
+  // initial state
   focusMonsoon("ISM", false);
 });
+
 
 
 
