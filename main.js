@@ -48,43 +48,86 @@ window.addEventListener("load", () => {
   const globeEl = document.getElementById("monsoon-globe");
   if (!globeEl || typeof Globe === "undefined") return;
 
+  // Monsoon regions for center points + colors
   const monsoonRegions = [
     {
       id: "ISM",
       name: "Indian Summer Monsoon",
       latMin: 5,
-      latMax: 35,
-      lonMin: 60,
-      lonMax: 100,
-      color: "#ffb347",
+      latMax: 28,
+      lonMin: 68,
+      lonMax: 95,
+      color: "#ffb347"
     },
     {
       id: "WAM",
       name: "West African Monsoon",
-      latMin: 5,
-      latMax: 20,
-      lonMin: -20,
-      lonMax: 20,
-      color: "#ff6b6b",
+      latMin: -40,
+      latMax: 15,
+      lonMin: -25,
+      lonMax: 50,
+      color: "#ff6b6b"
     },
     {
-      id: "SAMS",
+      id: "SAMS", // South American Monsoon
       name: "South American Monsoon",
-      latMin: -25,
-      latMax: 5,
-      lonMin: -70,
+      latMin: -15,
+      latMax: 15,
+      lonMin: -90,
       lonMax: -35,
-      color: "#9ee7ff",
-    },
+      color: "#9ee7ff"
+    }
   ];
 
+  // Center points for pins + rings
   const monsoonPoints = monsoonRegions.map((r) => ({
     id: r.id,
     name: r.name,
     lat: (r.latMin + r.latMax) / 2,
     lng: (r.lonMin + r.lonMax) / 2,
-    color: r.color,
+    color: r.color
   }));
+
+  // Rectangular boxes for each region (lat/lon bounds)
+  const monsoonBoxes = [
+    {
+      id: "ISM",
+      name: "ISM region",
+      color: monsoonRegions[0].color,
+      // [lat, lon] points, closed loop
+      path: [
+        [5, 68],
+        [28, 68],
+        [28, 95],
+        [5, 95],
+        [5, 68]
+      ]
+    },
+    {
+      id: "WAM",
+      name: "WAM region",
+      color: monsoonRegions[1].color,
+      path: [
+        [-40, -25],
+        [15, -25],
+        [15, 50],
+        [-40, 50],
+        [-40, -25]
+      ]
+    },
+    {
+      id: "SAMS",
+      name: "SAM region",
+      color: monsoonRegions[2].color,
+      path: [
+        [-15, -90],
+        [15, -90],
+        [15, -35],
+        [-15, -35],
+        [-15, -90]
+      ]
+    }
+  ];
 
   const worldGlobe = Globe()(globeEl);
 
@@ -104,7 +147,7 @@ window.addEventListener("load", () => {
   mat.emissiveIntensity = 0.55;
   mat.specular = new THREE.Color("#000000");
 
-  // === MONSOON KNOBS ===
+  // Pins for region centers
   worldGlobe
     .pointsData(monsoonPoints)
     .pointLat("lat")
@@ -115,7 +158,7 @@ window.addEventListener("load", () => {
     .pointResolution(32)
     .pointLabel((d) => d.name);
 
-  // === PULSING RINGS ===
+  // Pulsing rings
   worldGlobe
     .ringsData(monsoonPoints)
     .ringLat("lat")
@@ -128,12 +171,25 @@ window.addEventListener("load", () => {
       const colors = {
         ISM: "255, 179, 71",
         WAM: "255, 107, 107",
-        SAMS: "158, 231, 255",
+        SAMS: "158, 231, 255"
       };
       const rgb = colors[d.id] || "255,255,255";
       const alpha = 0.95 * (1 - t);
       return `rgba(${rgb}, ${alpha})`;
     });
+
+  // Bounding boxes as path outlines
+  worldGlobe
+    .pathsData(monsoonBoxes)
+    .pathPoints("path")              // use the 'path' array on each object
+    .pathPointLat((p) => p[0])      // [lat, lon]
+    .pathPointLng((p) => p[1])
+    .pathPointAlt(0.01)             // slight lift off surface
+    .pathColor((d) => d.color)
+    .pathStroke(0.5)                // line thickness
+    .pathDashLength(0.2)            // dashed line
+    .pathDashGap(0.5)
+    .pathDashAnimateTime(6000);     // gentle dash motion
 
   const INITIAL_ALT = 1.35;
   worldGlobe.pointOfView({ lat: 5, lng: 0, altitude: INITIAL_ALT }, 0);
@@ -154,7 +210,7 @@ window.addEventListener("load", () => {
   window.addEventListener("resize", resizeGlobe);
   resizeGlobe();
 
-  // === TEXT CARDS + CLICK HANDLERS ===
+  // Text cards + click handlers
   const stepEls = document.querySelectorAll(".monsoon-step");
   let autoRotateStopped = false;
 
@@ -179,7 +235,7 @@ window.addEventListener("load", () => {
       {
         lat: region.lat,
         lng: region.lng,
-        altitude: INITIAL_ALT,
+        altitude: INITIAL_ALT
       },
       animate ? 1000 : 0
     );
@@ -189,7 +245,7 @@ window.addEventListener("load", () => {
 
   stepEls.forEach((step) => {
     step.addEventListener("click", () => {
-      const id = step.getAttribute("data-monsoon");
+      const id = step.getAttribute("data-monsoon"); // "ISM", "WAM", "SAMS"
       stopAutoRotateOnce();
       focusMonsoon(id, true);
     });
@@ -201,9 +257,10 @@ window.addEventListener("load", () => {
     focusMonsoon(d.id, true);
   });
 
-  // initial state
+  // initial view
   focusMonsoon("ISM", false);
 });
+
 
 /* =========================================
  * 4. RADIAL CHART – HISTORIC ONLY
