@@ -281,6 +281,46 @@ html {
 }
 
 /* ===========================
+   MONSOON GLOBE HOVER IMAGE
+   =========================== */
+.monsoon-tooltip {
+  position: fixed;
+  z-index: 20;
+
+  /* start in a neutral place; JS will override left/top */
+  left: 0;
+  top: 0;
+
+  width: 260px;
+  max-width: 40vw;
+
+  background: rgba(2, 8, 36, 0.96);
+  border-radius: 16px;
+  border: 1px solid rgba(158, 231, 255, 0.4);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+
+  padding: 0.35rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.monsoon-tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.monsoon-tooltip img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+
+
+/* ===========================
    CLIMATE IMPACT + WRITEUP
    =========================== */
 
