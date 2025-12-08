@@ -1453,7 +1453,7 @@ button.impact-nav-right:hover {
 
 .landcover-intro {
   max-width: 820px;
-  margin: 0 auto 4rem auto;
+  margin: 0 auto 3rem auto;   /* more space under the text */
   font-size: 0.98rem;
   color: var(--text-subtle);
   line-height: 1.6;
@@ -1464,7 +1464,7 @@ button.impact-nav-right:hover {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.8rem;
   max-width: 1100px;
-  margin: 1.5rem auto 0 auto;
+  margin: 2.5rem auto 0 auto !important;  /* force buttons lower */
 }
 
 .monsoon-choice-card {
