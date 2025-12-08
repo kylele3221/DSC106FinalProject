@@ -214,7 +214,7 @@ window.addEventListener("load", () => {
 
 /* =========================================
  * 4. RADIAL CHART – HISTORIC ONLY
- *    (NOW USING total_mm = mm/month)
+ *    (USING pr_mm_per_day_wet = mm/day on rainy days)
  * =======================================*/
 
 function createRadialChartMulti(config) {
@@ -258,12 +258,12 @@ function createRadialChartMulti(config) {
 
   const seriesList = config.series;
   const seriesData = seriesList.map(() => ({ dataByYear: {} }));
-  let maxPr = 0; // now interpreted as max monthly total (mm/month)
+  let maxPr = 0; // max wet-day mean (mm/day)
   let isAnimating = false;
   let years = [];
   let playTimer = null;
 
-  // CSV: year,month,total_mm (mm/month)
+  // CSV: year,month,pr_mm_per_day_wet (mm/day on rainy days)
   function parseCsv(text, idx) {
     const lines = text.trim().split(/\r?\n/);
     lines.shift(); // header
@@ -275,11 +275,11 @@ function createRadialChartMulti(config) {
       if (cols.length < 3) return;
       const y = parseInt(cols[0], 10);
       const m = parseInt(cols[1], 10);
-      const total = parseFloat(cols[2]); // mm/month
-      if (isNaN(y) || isNaN(m) || isNaN(total)) return;
+      const wetMean = parseFloat(cols[2]); // mm/day, rainy days only
+      if (isNaN(y) || isNaN(m) || isNaN(wetMean)) return;
       if (!store[y]) store[y] = {};
-      store[y][m] = total;
-      if (total > maxPr) maxPr = total; // track max mm/month
+      store[y][m] = wetMean;
+      if (wetMean > maxPr) maxPr = wetMean;
     });
   }
 
@@ -300,9 +300,9 @@ function createRadialChartMulti(config) {
       g.appendChild(circle);
     }
 
-    // numeric labels in mm/month
+    // numeric labels in mm/day (wet days)
     if (maxPr > 0) {
-      const maxMm = maxPr; // mm/month
+      const maxMm = maxPr;
 
       for (let r = 1; r <= rings; r++) {
         const valueMm = (maxMm * r) / rings;
@@ -313,10 +313,10 @@ function createRadialChartMulti(config) {
         labelText.setAttribute("text-anchor", "middle");
         labelText.setAttribute("fill", "rgba(255,255,255,0.75)");
         labelText.setAttribute("font-size", "0.6rem");
-        labelText.textContent = valueMm.toFixed(0); // round to whole mm/month
+        labelText.textContent = valueMm.toFixed(1); // mm/day
         g.appendChild(labelText);
       }
-      // no separate unit label to avoid overlap near January
+      // no separate unit label to avoid overlapping January
     }
 
     // month spokes + labels
@@ -416,7 +416,7 @@ function createRadialChartMulti(config) {
 
   function showTooltip(evt, year, monthIndex, prVal) {
     if (isNaN(prVal)) return;
-    const mmTotal = prVal; // mm/month
+    const mmWet = prVal; // mm/day on rainy days
 
     tooltip.style.visibility = "visible";
     tooltip.textContent =
@@ -424,8 +424,8 @@ function createRadialChartMulti(config) {
       " " +
       year +
       ": " +
-      mmTotal.toFixed(1) +
-      " mm/month";
+      mmWet.toFixed(2) +
+      " mm/day (wet days)";
     tooltip.style.left = evt.clientX + 14 + "px";
     tooltip.style.top = evt.clientY + 14 + "px";
   }
@@ -455,7 +455,7 @@ function createRadialChartMulti(config) {
       for (let i = 0; i < 12; i++) {
         const m = i + 1;
         const raw = months[m];
-        const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0; // mm/month
+        const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0; // mm/day
         const r = maxPr ? (pr / maxPr) * maxR : 0;
         const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
         const x = cx + r * Math.cos(angle);
@@ -657,6 +657,7 @@ function createRadialChartMulti(config) {
     })
     .catch((e) => console.error("Error loading radial CSVs:", e));
 }
+
 
 
 /* =========================================
@@ -1048,8 +1049,9 @@ window.addEventListener("load", () => {
   });
 
   initImpactScrolly();
-  initLandcoverJourney();   // <- THIS is the key line you were missing
+  initLandcoverJourney();
 });
+
 
 /* =========================================
  * REFERENCES SECTION
