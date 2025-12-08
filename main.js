@@ -337,12 +337,24 @@ function createRadialChartMulti(config) {
 
   const seriesList = config.series;
   const seriesData = seriesList.map(() => ({ dataByYear: {} }));
-  let maxPr = 0; // now interpreted as max mm/day
+  let maxPr = 0; // will hold max in mm
   let isAnimating = false;
   let years = [];
   let playTimer = null;
 
-  // CSV: year,month,pr_mm_per_day_wet (mm/day)
+  // Helper for formatting mm values without everything becoming 0.00
+  function formatMm(val, maxMm) {
+    const abs = Math.abs(maxMm || val || 0);
+    let decimals;
+    if (abs >= 100) decimals = 0;
+    else if (abs >= 10) decimals = 1;
+    else if (abs >= 1) decimals = 2;
+    else if (abs >= 0.1) decimals = 3;
+    else decimals = 4;
+    return val.toFixed(decimals);
+  }
+
+  // CSV: year,month,pr (tiny units) -> convert to mm
   function parseCsv(text, idx) {
     const lines = text.trim().split(/\r?\n/);
     lines.shift(); // header
@@ -354,11 +366,15 @@ function createRadialChartMulti(config) {
       if (cols.length < 3) return;
       const y = parseInt(cols[0], 10);
       const m = parseInt(cols[1], 10);
-      const pr = parseFloat(cols[2]); // already in mm/day
-      if (isNaN(y) || isNaN(m) || isNaN(pr)) return;
+      const raw = parseFloat(cols[2]);
+      if (isNaN(y) || isNaN(m) || isNaN(raw)) return;
+
+      // >>> KEY CHANGE: convert to mm (e.g. from meters or similarly small units)
+      const pr_mm = raw * 1000; // now in mm (or mm/day if your raw is m/day)
+
       if (!store[y]) store[y] = {};
-      store[y][m] = pr;
-      if (pr > maxPr) maxPr = pr; // max mm/day
+      store[y][m] = pr_mm;
+      if (pr_mm > maxPr) maxPr = pr_mm;
     });
   }
 
@@ -379,9 +395,9 @@ function createRadialChartMulti(config) {
       g.appendChild(circle);
     }
 
-    // numeric labels in mm/day (values already in mm/day)
+    // numeric labels in mm
     if (maxPr > 0) {
-      const maxMm = maxPr; // already mm/day
+      const maxMm = maxPr;
 
       for (let r = 1; r <= rings; r++) {
         const valueMm = (maxMm * r) / rings;
@@ -392,11 +408,10 @@ function createRadialChartMulti(config) {
         labelText.setAttribute("text-anchor", "middle");
         labelText.setAttribute("fill", "rgba(255,255,255,0.75)");
         labelText.setAttribute("font-size", "0.6rem");
-        labelText.textContent = valueMm.toFixed(2);
+        labelText.textContent = formatMm(valueMm, maxMm);
         g.appendChild(labelText);
       }
-
-      // no separate unit label to avoid overlap near January
+      // no separate unit label (avoids overlap with January)
     }
 
     // month spokes + labels
@@ -496,7 +511,7 @@ function createRadialChartMulti(config) {
 
   function showTooltip(evt, year, monthIndex, prVal) {
     if (isNaN(prVal)) return;
-    const mmPerDay = prVal; // already mm/day
+    const mmVal = prVal; // already converted to mm above
 
     tooltip.style.visibility = "visible";
     tooltip.textContent =
@@ -504,8 +519,8 @@ function createRadialChartMulti(config) {
       " " +
       year +
       ": " +
-      mmPerDay.toFixed(3) +
-      " mm/day";
+      formatMm(mmVal, maxPr) +
+      " mm";
     tooltip.style.left = evt.clientX + 14 + "px";
     tooltip.style.top = evt.clientY + 14 + "px";
   }
@@ -535,7 +550,7 @@ function createRadialChartMulti(config) {
       for (let i = 0; i < 12; i++) {
         const m = i + 1;
         const raw = months[m];
-        const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0; // mm/day
+        const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0; // mm
         const r = maxPr ? (pr / maxPr) * maxR : 0;
         const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
         const x = cx + r * Math.cos(angle);
