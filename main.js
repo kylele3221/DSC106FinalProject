@@ -722,387 +722,30 @@ function initImpactScrolly() {
   updateUI();
 }
 
-/* =========================================
- * 8. LAND COVER SCROLLY JOURNEY
- * =======================================*/
-
-const monsoonJourneys = {
-  ISM: {
-    name: "Indian Summer Monsoon",
-    steps: [
-      {
-        id: "base",
-        label: "Step 0 · Overview",
-        title: "Where rainfall is redistributing overall",
-        img: "landcover/diff_seasonal_ISM_base.png",
-        caption:
-          "Change in seasonal rainfall between the 1990s and 2100s across the Indian Summer Monsoon region.",
-        body: `
-          First, we look at the ISM without any land cover symbols. Blues show
-          areas that become wetter, especially toward the Himalayan foothills
-          and northeastern India. Reds highlight drying zones across parts of
-          central and southern India. Even before land cover, the pattern is
-          already uneven.
-        `,
-        bullets: []
-      },
-      {
-        id: "forest",
-        label: "Step 1 · Forests (▲)",
-        title: "Forests in the path of intensifying rain",
-        img: "landcover/diff_seasonal_ISM_forest.png",
-        caption:
-          "Triangles highlight major forested areas overlaid on the ISM rainfall change.",
-        body: `
-          Many forested slopes and foothill regions sit in zones where monsoon
-          rainfall intensifies. That means more frequent landslides, soil
-          erosion, and tree-fall events where terrain is already unstable.
-        `,
-        bullets: [
-          "Protect upstream forests that slow run-off and buffer floods.",
-          "Avoid clear-cutting or road building on the steepest, wettest slopes.",
-          "Use nature-based slope stabilization instead of only concrete walls."
-        ]
-      },
-      {
-        id: "grassland",
-        label: "Step 2 · Grasslands (●)",
-        title: "Grasslands caught between flood and drought",
-        img: "landcover/diff_seasonal_ISM_grassland.png",
-        caption:
-          "Circles mark grassland regions intersecting changes in ISM rainfall.",
-        body: `
-          Some grasslands near river corridors see heavier rains and more
-          saturated soils, while areas toward the drier edge of the monsoon
-          season trend toward longer dry spells. Livelihoods based on grazing
-          feel both sides of this shift.
-        `,
-        bullets: [
-          "Plan rotational grazing to avoid over-stressing drying grasslands.",
-          "Protect floodplain grasslands that can safely store excess water.",
-          "Use restored grasslands as buffers around high-risk river channels."
-        ]
-      },
-      {
-        id: "cropland",
-        label: "Step 3 · Croplands (■)",
-        title: "Croplands under uneven monsoon change",
-        img: "landcover/diff_seasonal_ISM_cropland.png",
-        caption:
-          "Squares show major cropland zones overlaid on the ISM rainfall change.",
-        body: `
-          In core monsoon croplands, stronger downpours threaten flooding and
-          crop damage. At the edges of the monsoon, weaker seasonal rains and
-          longer dry spells challenge rain-fed agriculture, even within the same
-          country.
-        `,
-        bullets: [
-          "In wetter zones: improve drainage, diversify crops, and protect grain storage from floods.",
-          "In drying zones: expand micro-irrigation and drought-tolerant varieties.",
-          "Use seasonal forecasts and crop insurance to manage year-to-year swings."
-        ]
-      },
-      {
-        id: "all",
-        label: "Step 4 · Putting it all together",
-        title: "What does this mean for people under the ISM?",
-        img: "landcover/diff_seasonal_ISM_all.png",
-        caption:
-          "All land covers together: forests, grasslands, and croplands overlaid on changing rainfall.",
-        body: `
-          When we overlay land cover on rainfall change, we see exactly which
-          forests, farms, and grasslands sit in the path of intensifying or
-          weakening rains. Those are the places where targeted adaptation
-          matters most.
-        `,
-        bullets: [
-          "The same monsoon can create flood risk in one district and drought stress in another.",
-          "Local land cover controls whether extra rain becomes recharge, run-off, or disaster.",
-          "Adaptation works best when it matches specific land covers and communities, not just regional averages."
-        ],
-        isFinal: true
-      }
-    ]
-  },
-
-  WAM: {
-    name: "West African Monsoon",
-    steps: [
-      {
-        id: "base",
-        label: "Step 0 · Overview",
-        title: "Uneven drying and wetting across the Sahel",
-        img: "landcover/diff_seasonal_WAM_base.png",
-        caption:
-          "Change in seasonal rainfall between the 1990s and 2100s across the West African Monsoon region.",
-        body: `
-          In WAM, some central Sahel areas trend wetter, while other inland and
-          coastal zones show reduced seasonal rainfall. Communities living side
-          by side can experience very different water futures.
-        `,
-        bullets: []
-      },
-      {
-        id: "forest",
-        label: "Step 1 · Forests (▲)",
-        title: "Fragmented forests and rain shifts",
-        img: "landcover/diff_seasonal_WAM_forest.png",
-        caption:
-          "Triangles show remaining forest patches under changing WAM rainfall.",
-        body: `
-          Remaining forest patches, especially in the south, often lie in zones
-          with changing rainfall intensity. Drier conditions can increase fire
-          risk, while heavier rains can trigger erosion on degraded slopes.
-        `,
-        bullets: [
-          "Prioritize protecting intact forest patches that stabilize soils and store moisture.",
-          "Combine reforestation with fire-smart land management in drying forests.",
-          "Avoid further fragmenting forests in areas that are already drying."
-        ]
-      },
-      {
-        id: "grassland",
-        label: "Step 2 · Grasslands & savannas (●)",
-        title: "Sahelian grasslands and savannas on the edge",
-        img: "landcover/diff_seasonal_WAM_grassland.png",
-        caption:
-          "Circles highlight grassland and savanna zones intersecting WAM rainfall changes.",
-        body: `
-          Pasture-dominated grasslands and savannas are tightly linked to
-          rainfall. Where rains strengthen, vegetation can recover, but where
-          drying continues, grazing pressure and soil degradation intensify.
-        `,
-        bullets: [
-          "Support mobile and flexible grazing routes that track reliable rainfall.",
-          "Invest in soil restoration and contour bunds where grasslands are drying.",
-          "Use seasonal forecasts to guide pastoral movements and avoid conflict."
-        ]
-      },
-      {
-        id: "cropland",
-        label: "Step 3 · Croplands (■)",
-        title: "Rain-fed croplands facing higher variability",
-        img: "landcover/diff_seasonal_WAM_cropland.png",
-        caption:
-          "Squares show cropland areas under West African Monsoon rainfall shifts.",
-        body: `
-          Much of West Africa’s food production relies on rain-fed crops. In
-          some belts, stronger rains mean more flood and erosion risk; elsewhere,
-          drying shortens growing seasons and increases crop failure.
-        `,
-        bullets: [
-          "Promote drought-tolerant and early-maturing crop varieties in drying zones.",
-          "Strengthen small-scale water harvesting and soil moisture conservation.",
-          "Protect valley bottoms and lowlands that act as natural irrigation buffers."
-        ]
-      },
-      {
-        id: "all",
-        label: "Step 4 · Putting it all together",
-        title: "What does this mean for people under the WAM?",
-        img: "landcover/diff_seasonal_WAM_all.png",
-        caption:
-          "All land covers together under changing West African Monsoon rainfall.",
-        body: `
-          Overlaying land cover on WAM rainfall change reveals where grazing
-          systems, rain-fed farms, and remaining forests all feel the same
-          monsoon differently. Adaptation must reflect that patchwork reality.
-        `,
-        bullets: [
-          "There is no single ‘Sahel story’ – different land systems face different risks.",
-          "Link rangeland, cropland, and forest management plans to the same rainfall data.",
-          "Adaptation policies work best when they are co-designed with local land users."
-        ],
-        isFinal: true
-      }
-    ]
-  },
-
-  SAM: {
-    name: "South American Monsoon",
-    steps: [
-      {
-        id: "base",
-        label: "Step 0 · Overview",
-        title: "Concentrating rain along the equator",
-        img: "landcover/diff_seasonal_SAM_base.png",
-        caption:
-          "Change in seasonal rainfall between the 1990s and 2100s across the South American Monsoon region.",
-        body: `
-          The SAM shows wetter conditions across parts of the northern Amazon
-          and equatorial belt, while large areas farther south and west trend
-          drier. This split reshapes both rainforest and agricultural zones.
-        `,
-        bullets: []
-      },
-      {
-        id: "forest",
-        label: "Step 1 · Forests (▲)",
-        title: "Amazon forests between intensification and drying",
-        img: "landcover/diff_seasonal_SAM_forest.png",
-        caption:
-          "Triangles mark major forest areas overlaid on SAM rainfall change.",
-        body: `
-          Northern forests in wetter zones face more intense downpours and
-          floodplain changes, while southern and edge forests risk longer dry
-          seasons and higher fire danger when rains weaken.
-        `,
-        bullets: [
-          "Protect intact forests that buffer both flood peaks and dry-season flows.",
-          "Limit deforestation and burning in regions trending drier and hotter.",
-          "Use floodplain zoning to keep new infrastructure out of the highest-risk areas."
-        ]
-      },
-      {
-        id: "grassland",
-        label: "Step 2 · Grasslands & savannas (●)",
-        title: "Savannas and grasslands at the drying frontier",
-        img: "landcover/diff_seasonal_SAM_grassland.png",
-        caption:
-          "Circles show grassland and savanna regions within the SAM rainfall shifts.",
-        body: `
-          As some savanna and grassland regions dry, fire seasons lengthen and
-          ecosystems become more vulnerable to conversion and degradation.
-        `,
-        bullets: [
-          "Manage fire carefully in drying savannas to avoid runaway burn cycles.",
-          "Support ranchers and communities to maintain ground cover and soil health.",
-          "Protect remaining natural grasslands that act as buffers around forests."
-        ]
-      },
-      {
-        id: "cropland",
-        label: "Step 3 · Croplands (■)",
-        title: "Agricultural belts under shifting SAM rains",
-        img: "landcover/diff_seasonal_SAM_cropland.png",
-        caption:
-          "Squares indicate key cropland zones under South American Monsoon rainfall change.",
-        body: `
-          Major agricultural belts across Brazil and neighboring countries sit
-          in the transition between wetter northern and drier southern trends.
-          A small shift in rainfall can strongly affect planting calendars and
-          yields.
-        `,
-        bullets: [
-          "Use diversified cropping and staggered planting dates to spread risk.",
-          "Invest in soil moisture conservation and small reservoirs in drying belts.",
-          "Plan new irrigation carefully to avoid over-drawing rivers and aquifers."
-        ]
-      },
-      {
-        id: "all",
-        label: "Step 4 · Putting it all together",
-        title: "What does this mean for people under the SAM?",
-        img: "landcover/diff_seasonal_SAM_all.png",
-        caption:
-          "All land covers together under changing South American Monsoon rainfall.",
-        body: `
-          Combining rainfall change with land cover shows how forests, savannas,
-          and croplands are all exposed in different ways. This is exactly the
-          scale where climate adaptation, forest protection, and agricultural
-          planning need to talk to each other.
-        `,
-        bullets: [
-          "Rainfall change alone doesn’t tell us who is affected – land cover fills that gap.",
-          "Forest loss in drying regions can lock in hotter, drier local climates.",
-          "Coordinated planning across forest, farm, and savanna landscapes is essential."
-        ],
-        isFinal: true
-      }
-    ]
-  }
-};
-
-let journeyObserver = null;
+let journeyScroller = null;
 let currentJourneyId = null;
 
-function buildLandcoverJourney(monsoonId) {
-  const journey = monsoonJourneys[monsoonId];
-  if (!journey) return;
+function initLandcoverJourney() {
+  const choiceButtons = document.querySelectorAll(".monsoon-choice-card");
+  const backBtn = document.getElementById("journey-back-btn-bottom");
 
-  currentJourneyId = monsoonId;
+  if (!choiceButtons.length || !backBtn) return;
 
-  const journeySection = document.getElementById("landcover-journey");
-  const triggersContainer = document.getElementById("journey-steps");
-
-  const mapImg = document.getElementById("journey-map-img");
-  const mapCaption = document.getElementById("journey-map-caption");
-  const labelEl = document.getElementById("journey-step-label");
-  const titleEl = document.getElementById("journey-step-title");
-  const bodyEl = document.getElementById("journey-step-body");
-  const bulletsEl = document.getElementById("journey-step-bullets");
-  const backBtn = document.getElementById("journey-back-btn");
-
-  if (!journeySection || !triggersContainer) return;
-
-  // Clear old triggers
-  triggersContainer.innerHTML = "";
-
-  journey.steps.forEach((step, idx) => {
-    const t = document.createElement("div");
-    t.className = "journey-step-trigger";
-    t.dataset.stepIndex = idx;
-    triggersContainer.appendChild(t);
+  choiceButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.monsoon;
+      buildLandcoverJourney(id);
+    });
   });
 
-  // Helper to render step into sticky panel
-  function renderStep(index) {
-    const step = journey.steps[index];
-    if (!step) return;
-
-    labelEl.textContent = step.label;
-    titleEl.textContent = step.title;
-    bodyEl.textContent = step.body.trim();
-    bulletsEl.innerHTML = "";
-
-    if (step.bullets && step.bullets.length) {
-      step.bullets.forEach((txt) => {
-        const li = document.createElement("li");
-        li.textContent = txt;
-        bulletsEl.appendChild(li);
-      });
+  backBtn.addEventListener("click", () => {
+    const chooser = document.getElementById("landcover-chooser");
+    if (chooser) {
+      chooser.scrollIntoView({ behavior: "smooth" });
     }
-
-    mapImg.src = step.img;
-    mapCaption.textContent = step.caption || "";
-
-    if (step.isFinal) {
-      backBtn.style.display = "inline-flex";
-    } else {
-      backBtn.style.display = "none";
-    }
-  }
-
-  // Initial render
-  renderStep(0);
-
-  // Set up observer
-  if (journeyObserver) {
-    journeyObserver.disconnect();
-  }
-
-  const triggers = Array.from(
-    document.querySelectorAll(".journey-step-trigger")
-  );
-
-  journeyObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const idx = parseInt(entry.target.dataset.stepIndex, 10);
-          renderStep(idx);
-        }
-      });
-    },
-    { threshold: 0.55 }
-  );
-
-  triggers.forEach((t) => journeyObserver.observe(t));
-
-  // Show section and scroll into view
-  journeySection.classList.add("is-active");
-  journeySection.scrollIntoView({ behavior: "smooth" });
+  });
 }
+
 
 function initLandcoverJourney() {
   const choiceButtons = document.querySelectorAll(".monsoon-choice-card");
@@ -1125,10 +768,351 @@ function initLandcoverJourney() {
   });
 }
 
+/* =========================================
+ * LAND COVER JOURNEY CONFIG
+ * =======================================*/
+
+const monsoonJourneys = {
+  ISM: {
+    name: "Indian Summer Monsoon",
+    region: "South Asia",
+    steps: [
+      {
+        label: "Step 1 · Baseline",
+        img: "landcover/diff_seasonal_ISM_base.png",
+        caption: "Change in seasonal rainfall for the ISM region without land-cover symbols.",
+        title: "Start with the big picture",
+        body: "This map compares late-20th-century monsoon rainfall to the end of the 21st century across South Asia. Blues mark areas that become wetter; reds show areas that dry out.",
+        bullets: []
+      },
+      {
+        label: "Step 2 · Forests (triangles)",
+        img: "landcover/diff_seasonal_ISM_forest.png",
+        caption: "Triangles mark forested areas overlaid on the rainfall change map.",
+        title: "Forests on steeper slopes face rising flood and landslide risk",
+        body: "In many Himalayan and Western Ghats forests, heavier monsoon rainfall stacks on steep terrain.",
+        bullets: [
+          "Heavier downpours increase landslides and erosion.",
+          "Reforestation and slope stabilization help keep soil in place.",
+          "Protecting intact forests can buffer downstream flooding."
+        ]
+      },
+      {
+        label: "Step 3 · Grasslands & wetlands (circles)",
+        img: "landcover/diff_seasonal_ISM_grassland.png",
+        caption: "Circles highlight grassland and wetland areas.",
+        title: "Floodplains and wetlands store or lose water",
+        body: "Where rainfall increases, healthy wetlands can spread out flood peaks; where rainfall drops, these systems can dry and lose function.",
+        bullets: [
+          "Restoring wetlands helps absorb peak flows.",
+          "Avoid building hard infrastructure in natural floodplains.",
+          "Protect seasonal wetlands that recharge groundwater."
+        ]
+      },
+      {
+        label: "Step 4 · Croplands (squares)",
+        img: "landcover/diff_seasonal_ISM_cropland.png",
+        caption: "Squares mark major cropland areas.",
+        title: "Croplands feel every shift in timing and totals",
+        body: "Changes in rainfall fall directly on farms in the Indo-Gangetic Plain and peninsular India.",
+        bullets: [
+          "Crop choices may need to shift toward more drought- or flood-tolerant varieties.",
+          "Diversifying crops and improving drainage reduces risk from extremes.",
+          "Better seasonal forecasts help farmers plan around shifting monsoon behavior."
+        ]
+      },
+      {
+        label: "Step 5 · All land covers together",
+        img: "landcover/diff_seasonal_ISM_all.png",
+        caption: "All land-cover symbols combined on the rainfall change map.",
+        title: "Different landscapes, different risks",
+        body: "Forests, wetlands, and croplands sit inside the same shifting monsoon, but the impacts and solutions look different in each place.",
+        bullets: [
+          "Policies need to be tailored by land use, not just by region.",
+          "The same rainfall change can be a flood risk in one place and a drought risk in another."
+        ]
+      }
+    ]
+  },
+
+  WAM: {
+    name: "West African Monsoon",
+    region: "Sahel & West Africa",
+    steps: [
+      {
+        label: "Step 1 · Baseline",
+        img: "landcover/diff_seasonal_WAM_base.png",
+        caption: "Seasonal rainfall change across the WAM region without land-cover symbols.",
+        title: "A monsoon with sharp north–south contrasts",
+        body: "Future rainfall shifts differently across the Sahel, coastal West Africa, and inland regions.",
+        bullets: []
+      },
+      {
+        label: "Step 2 · Forests",
+        img: "landcover/diff_seasonal_WAM_forest.png",
+        caption: "Forested zones overlaid on rainfall change.",
+        title: "Forest fragments face both drying and downpours",
+        body: "Remaining forest areas experience more variable rainfall, stressing biodiversity and local water supply.",
+        bullets: [
+          "Protecting forest corridors helps species migrate as climate shifts.",
+          "Community forestry can pair conservation with livelihoods."
+        ]
+      },
+      {
+        label: "Step 3 · Grasslands & savannas",
+        img: "landcover/diff_seasonal_WAM_grassland.png",
+        caption: "Grassland and savanna systems across the Sahel.",
+        title: "Pastoral systems live on the edge of change",
+        body: "Grazing lands respond quickly to rainfall anomalies.",
+        bullets: [
+          "Supporting mobile herding routes can reduce overgrazing hot spots.",
+          "Water points and fodder reserves buffer dry years."
+        ]
+      },
+      {
+        label: "Step 4 · Croplands",
+        img: "landcover/diff_seasonal_WAM_cropland.png",
+        caption: "Cropland areas overlaid on rainfall change.",
+        title: "Rain-fed farms depend on a narrower rainy season",
+        body: "Shorter or weaker rainy seasons can reduce yields and increase year-to-year volatility.",
+        bullets: [
+          "Soil-moisture conservation and agroforestry help hold water in the root zone.",
+          "Diversifying income beyond a single staple crop reduces household risk."
+        ]
+      },
+      {
+        label: "Step 5 · All land covers together",
+        img: "landcover/diff_seasonal_WAM_all.png",
+        caption: "All land-cover types combined.",
+        title: "Multiple land uses sharing one stressed monsoon",
+        body: "Water decisions for cities, farms, forests, and grazing lands all draw on the same changing rainfall budget.",
+        bullets: [
+          "Integrated basin-scale planning is key to avoid conflicts.",
+          "Early-warning systems can help communities adapt in advance."
+        ]
+      }
+    ]
+  },
+
+  SAM: {
+    name: "South American Monsoon",
+    region: "Amazon & Brazil",
+    steps: [
+      {
+        label: "Step 1 · Baseline",
+        img: "landcover/diff_seasonal_SAM_base.png",
+        caption: "Rainfall change across the SAM region without land cover.",
+        title: "A monsoon shifting toward the equator",
+        body: "Northern Amazon tends to get wetter while parts of southern Brazil dry out.",
+        bullets: []
+      },
+      {
+        label: "Step 2 · Forests",
+        img: "landcover/diff_seasonal_SAM_forest.png",
+        caption: "Amazon forests overlaid on rainfall change.",
+        title: "Rainforest stability depends on both rain and land use",
+        body: "Even where rainfall increases, deforestation can push forests toward more fire-prone states.",
+        bullets: [
+          "Reducing deforestation and degradation limits fire risk.",
+          "Forest restoration can help recycle moisture back into the atmosphere."
+        ]
+      },
+      {
+        label: "Step 3 · Grasslands & savannas",
+        img: "landcover/diff_seasonal_SAM_grassland.png",
+        caption: "Grassland and savanna regions such as the Cerrado.",
+        title: "Transition zones feel drought and fire first",
+        body: "These ecosystems are especially sensitive to drier conditions and land-use change.",
+        bullets: [
+          "Protecting remaining savannas prevents irreversible biome shifts.",
+          "Fire-management plans are crucial under hotter, drier extremes."
+        ]
+      },
+      {
+        label: "Step 4 · Croplands",
+        img: "landcover/diff_seasonal_SAM_cropland.png",
+        caption: "Cropland regions across Brazil and neighbors.",
+        title: "Expanding agriculture collides with changing rain",
+        body: "Soy, cattle, and other agricultural expansion often overlaps with areas trending drier.",
+        bullets: [
+          "Shifting planting dates and varieties can track changing rainy seasons.",
+          "Limiting deforestation in upstream catchments supports downstream water security."
+        ]
+      },
+      {
+        label: "Step 5 · All land covers together",
+        img: "landcover/diff_seasonal_SAM_all.png",
+        caption: "All land covers on top of the rainfall change map.",
+        title: "A shared monsoon, many possible futures",
+        body: "The Amazon basin’s climate future depends on both emissions pathways and local land-use choices.",
+        bullets: [
+          "Keeping forests standing protects regional rainfall patterns.",
+          "Coordinated policies across countries are needed because the monsoon ignores borders."
+        ]
+      }
+    ]
+  }
+};
 
 /* =========================================
- * 6. INIT – RADIAL + SCROLLY
+ * LAND COVER JOURNEY – STACKED STEPS
  * =======================================*/
+
+function buildLandcoverJourney(monsoonId) {
+  const journey = monsoonJourneys[monsoonId];
+  if (!journey) return;
+
+  const section = document.getElementById("landcover-journey");
+  const container = document.getElementById("journey-steps-container");
+
+  if (!section || !container) return;
+
+  // clear old content
+  container.innerHTML = "";
+
+  journey.steps.forEach((step) => {
+    const stepEl = document.createElement("article");
+    stepEl.className = "journey-step";
+
+    const inner = document.createElement("div");
+    inner.className = "journey-step-inner";
+
+    // LEFT: map
+    const mapWrap = document.createElement("div");
+    mapWrap.className = "journey-map";
+
+    const img = document.createElement("img");
+    img.src = step.img;
+    img.alt = step.caption || step.title || journey.name;
+    mapWrap.appendChild(img);
+
+    if (step.caption) {
+      const cap = document.createElement("div");
+      cap.className = "journey-map-caption";
+      cap.textContent = step.caption;
+      mapWrap.appendChild(cap);
+    }
+
+    // RIGHT: text
+    const textWrap = document.createElement("div");
+    textWrap.className = "journey-text";
+
+    const label = document.createElement("div");
+    label.className = "journey-step-label";
+    label.textContent = step.label;
+    textWrap.appendChild(label);
+
+    const title = document.createElement("h3");
+    title.textContent = step.title;
+    textWrap.appendChild(title);
+
+    const body = document.createElement("p");
+    body.textContent = step.body;
+    textWrap.appendChild(body);
+
+    if (step.bullets && step.bullets.length) {
+      const ul = document.createElement("ul");
+      step.bullets.forEach((b) => {
+        const li = document.createElement("li");
+        li.textContent = b;
+        ul.appendChild(li);
+      });
+      textWrap.appendChild(ul);
+    }
+
+    inner.appendChild(mapWrap);
+    inner.appendChild(textWrap);
+    stepEl.appendChild(inner);
+    container.appendChild(stepEl);
+  });
+
+  // fade in on scroll
+  const allSteps = Array.from(container.querySelectorAll(".journey-step"));
+  const obs = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+        }
+      });
+    },
+    { threshold: 0.3 }
+  );
+  allSteps.forEach((s) => obs.observe(s));
+
+  initJourneyScrollReveal(section);  // or container, both work
+
+  section.classList.add("is-active");
+  section.scrollIntoView({ behavior: "smooth" });
+}
+
+function initJourneyScrollReveal(container) {
+  const steps = Array.from(container.querySelectorAll(".journey-step"));
+  if (!steps.length) return;
+
+  // Fallback if IntersectionObserver isn't supported
+  if (!("IntersectionObserver" in window)) {
+    steps.forEach(step => step.classList.add("is-visible"));
+    return;
+  }
+
+  let currentActive = null;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      // pick the step with the highest intersection ratio
+      let best = null;
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (!best || entry.intersectionRatio > best.intersectionRatio) {
+            best = entry;
+          }
+        }
+      });
+
+      if (!best) return;
+
+      const target = best.target;
+      if (target === currentActive) return;
+
+      currentActive = target;
+
+      // make ONLY this step visible
+      steps.forEach((step) => {
+        step.classList.toggle("is-visible", step === target);
+      });
+    },
+    {
+      threshold: [0.25, 0.5, 0.75], // track when each step comes into the middle
+    }
+  );
+
+  steps.forEach((step) => observer.observe(step));
+
+  // start with the first step visible
+  steps[0].classList.add("is-visible");
+}
+
+function initLandcoverJourney() {
+  const choiceButtons = document.querySelectorAll(".monsoon-choice-card");
+  const backBtn = document.getElementById("journey-back-btn-bottom");
+
+  if (!choiceButtons.length || !backBtn) return;
+
+  choiceButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.monsoon; // "ISM", "WAM", or "SAM"
+      buildLandcoverJourney(id);
+    });
+  });
+
+  backBtn.addEventListener("click", () => {
+    const chooser = document.getElementById("landcover-chooser");
+    if (chooser) {
+      chooser.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+}
 
 window.addEventListener("load", () => {
   createRadialChartMulti({
@@ -1159,7 +1143,7 @@ window.addEventListener("load", () => {
   });
 
   initImpactScrolly();
-  initLandcoverJourney(); 
+  initLandcoverJourney();   // <- THIS is the key line you were missing
 });
 
 /* =========================================
