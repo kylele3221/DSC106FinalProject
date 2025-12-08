@@ -124,7 +124,7 @@ window.addEventListener("load", () => {
     .ringLat("lat")
     .ringLng("lng")
     .ringAltitude(0.01)
-    .ringMaxRadius(5.0) // was ~3.0 before – now a larger circle around each beacon
+    .ringMaxRadius(12.0) // was ~3.0 before – now a larger circle around each beacon
     .ringPropagationSpeed(1.8)
     .ringRepeatPeriod(1800)
     .ringColor((d) => (t) => {
