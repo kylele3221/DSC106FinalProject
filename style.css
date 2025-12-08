@@ -1029,18 +1029,6 @@ html {
   display: block;
 }
 
-/* Captions */
-.difference-caption {
-  margin-top: 0.9rem;
-  max-width: 420px;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  font-size: 0.9rem;
-  line-height: 1.65;
-  color: #d6ebff;
-}
-
 /* ---- RESPONSIVE FALLBACK ---- */
 @media (max-width: 1000px) {
   /* stack into 2 + 1 */
