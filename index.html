@@ -540,6 +540,62 @@
   </section>
 
 
+  <!-- ============ LAND COVER MONSOON CHOOSER ============ -->
+  <section id="landcover-chooser" class="section landcover-chooser">
+    <h2 class="landcover-title">Explore Land Cover Under Changing Monsoons</h2>
+    <p class="landcover-intro">
+      Select a monsoon to follow how rainfall changes interact with different land
+      covers – forests, grasslands, and croplands – and what kinds of local
+      solutions might help.
+    </p>
+
+    <div class="monsoon-choice-grid">
+      <button class="monsoon-choice-card" data-monsoon="ISM">
+        <h3>Explore ISM’s Land Cover</h3>
+        <p>Indian Summer Monsoon · South Asia</p>
+      </button>
+
+      <button class="monsoon-choice-card" data-monsoon="WAM">
+        <h3>Explore WAM’s Land Cover</h3>
+        <p>West African Monsoon · Sahel & West Africa</p>
+      </button>
+
+      <button class="monsoon-choice-card" data-monsoon="SAM">
+        <h3>Explore SAM’s Land Cover</h3>
+        <p>South American Monsoon · Amazon & Brazil</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ LAND COVER SCROLLY JOURNEY ============ -->
+  <section id="landcover-journey" class="section journey-section">
+    <!-- Sticky two-column panel (stays fixed while scrolling) -->
+    <div class="journey-sticky">
+      <!-- LEFT: map -->
+      <div class="journey-map">
+        <img
+          id="journey-map-img"
+          alt="Monsoon rainfall and land cover map"
+        />
+        <div id="journey-map-caption" class="journey-map-caption"></div>
+      </div>
+
+      <!-- RIGHT: text -->
+      <div class="journey-text">
+        <div id="journey-step-label" class="journey-step-label"></div>
+        <h3 id="journey-step-title"></h3>
+        <p id="journey-step-body"></p>
+        <ul id="journey-step-bullets"></ul>
+
+        <button id="journey-back-btn" class="journey-back-btn" type="button">
+          Go explore other monsoons
+        </button>
+      </div>
+    </div>
+
+    <!-- Invisible scroll triggers (one per step) -->
+    <div id="journey-steps"></div>
+  </section>
 
 
     <!-- WRITEUP SECTION -->
