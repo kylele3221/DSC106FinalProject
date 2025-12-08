@@ -722,52 +722,6 @@ function initImpactScrolly() {
   updateUI();
 }
 
-let journeyScroller = null;
-let currentJourneyId = null;
-
-function initLandcoverJourney() {
-  const choiceButtons = document.querySelectorAll(".monsoon-choice-card");
-  const backBtn = document.getElementById("journey-back-btn-bottom");
-
-  if (!choiceButtons.length || !backBtn) return;
-
-  choiceButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = btn.dataset.monsoon;
-      buildLandcoverJourney(id);
-    });
-  });
-
-  backBtn.addEventListener("click", () => {
-    const chooser = document.getElementById("landcover-chooser");
-    if (chooser) {
-      chooser.scrollIntoView({ behavior: "smooth" });
-    }
-  });
-}
-
-
-function initLandcoverJourney() {
-  const choiceButtons = document.querySelectorAll(".monsoon-choice-card");
-  const backBtn = document.getElementById("journey-back-btn");
-
-  if (!choiceButtons.length || !backBtn) return;
-
-  choiceButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = btn.dataset.monsoon;
-      buildLandcoverJourney(id);
-    });
-  });
-
-  backBtn.addEventListener("click", () => {
-    const chooser = document.getElementById("landcover-chooser");
-    if (chooser) {
-      chooser.scrollIntoView({ behavior: "smooth" });
-    }
-  });
-}
-
 /* =========================================
  * LAND COVER JOURNEY CONFIG
  * =======================================*/
@@ -955,7 +909,7 @@ const monsoonJourneys = {
 };
 
 /* =========================================
- * LAND COVER JOURNEY – STACKED STEPS
+ * LAND COVER JOURNEY – SIMPLE SCROLL
  * =======================================*/
 
 function buildLandcoverJourney(monsoonId) {
@@ -964,18 +918,21 @@ function buildLandcoverJourney(monsoonId) {
 
   const section = document.getElementById("landcover-journey");
   const container = document.getElementById("journey-steps-container");
-
   if (!section || !container) return;
 
-  // clear old content
+  // Clear old content
   container.innerHTML = "";
+
+  // Wrap all steps in a .journey-steps div
+  const stepsWrapper = document.createElement("div");
+  stepsWrapper.className = "journey-steps";
 
   journey.steps.forEach((step) => {
     const stepEl = document.createElement("article");
     stepEl.className = "journey-step";
 
     const inner = document.createElement("div");
-    inner.className = "journey-step-inner";
+    inner.className = "journey-step-inner"; // optional, if you want extra styling
 
     // LEFT: map
     const mapWrap = document.createElement("div");
@@ -1023,96 +980,39 @@ function buildLandcoverJourney(monsoonId) {
     inner.appendChild(mapWrap);
     inner.appendChild(textWrap);
     stepEl.appendChild(inner);
-    container.appendChild(stepEl);
+    stepsWrapper.appendChild(stepEl);
   });
 
-  // fade in on scroll
-  const allSteps = Array.from(container.querySelectorAll(".journey-step"));
-  const obs = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-        }
-      });
-    },
-    { threshold: 0.3 }
-  );
-  allSteps.forEach((s) => obs.observe(s));
+  container.appendChild(stepsWrapper);
 
-  initJourneyScrollReveal(section);  // or container, both work
-
+  // ensure section is visible and scroll to it
   section.classList.add("is-active");
-  section.scrollIntoView({ behavior: "smooth" });
-}
-
-function initJourneyScrollReveal(container) {
-  const steps = Array.from(container.querySelectorAll(".journey-step"));
-  if (!steps.length) return;
-
-  // Fallback if IntersectionObserver isn't supported
-  if (!("IntersectionObserver" in window)) {
-    steps.forEach(step => step.classList.add("is-visible"));
-    return;
-  }
-
-  let currentActive = null;
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      // pick the step with the highest intersection ratio
-      let best = null;
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (!best || entry.intersectionRatio > best.intersectionRatio) {
-            best = entry;
-          }
-        }
-      });
-
-      if (!best) return;
-
-      const target = best.target;
-      if (target === currentActive) return;
-
-      currentActive = target;
-
-      // make ONLY this step visible
-      steps.forEach((step) => {
-        step.classList.toggle("is-visible", step === target);
-      });
-    },
-    {
-      threshold: [0.25, 0.5, 0.75], // track when each step comes into the middle
-    }
-  );
-
-  steps.forEach((step) => observer.observe(step));
-
-  // start with the first step visible
-  steps[0].classList.add("is-visible");
+  section.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function initLandcoverJourney() {
   const choiceButtons = document.querySelectorAll(".monsoon-choice-card");
-  const backBtn = document.getElementById("journey-back-btn-bottom");
+  const backButtons = document.querySelectorAll(".journey-back-btn");
 
-  if (!choiceButtons.length || !backBtn) return;
+  if (choiceButtons.length === 0) return;
 
   choiceButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      const id = btn.dataset.monsoon; // "ISM", "WAM", or "SAM"
+      const id = btn.dataset.monsoon;   // "ISM", "WAM", "SAM"
       buildLandcoverJourney(id);
     });
   });
 
-  backBtn.addEventListener("click", () => {
-    const chooser = document.getElementById("landcover-chooser");
-    if (chooser) {
-      chooser.scrollIntoView({ behavior: "smooth" });
-    }
+  backButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const chooser = document.getElementById("landcover-chooser");
+      if (chooser) {
+        chooser.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
   });
 }
+
 
 window.addEventListener("load", () => {
   createRadialChartMulti({

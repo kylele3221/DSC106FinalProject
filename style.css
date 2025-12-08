@@ -1478,7 +1478,8 @@ button.impact-nav-right:hover {
 
 .journey-section {
   background: linear-gradient(to bottom, #010413, #020824);
-  display: none;               /* hidden until a monsoon is chosen */
+  display: none;                /* hidden until a monsoon is chosen */
+  padding: 4rem 0 3rem;
 }
 
 .journey-section.is-active {
@@ -1490,29 +1491,19 @@ button.impact-nav-right:hover {
   margin: 0 auto;
 }
 
-/* Container that holds all the landcover steps */
+/* Holds all steps, stacked like normal sections */
 .journey-steps {
   display: flex;
   flex-direction: column;
-  gap: 10vh;              /* vertical space between steps */
+  gap: 8rem;                    /* vertical space between steps */
 }
 
+/* One map + text pair */
 .journey-step {
-  min-height: 100vh;              /* each step ~one screen tall */
   display: flex;
-  align-items: center;
-
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-
-  pointer-events: none;           /* don't interact with hidden steps */
-}
-
-.journey-step.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3rem;
 }
 
 /* left map */
@@ -1577,7 +1568,7 @@ button.impact-nav-right:hover {
 /* bottom button */
 .journey-end {
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 .journey-back-btn {
@@ -1602,6 +1593,13 @@ button.impact-nav-right:hover {
   .journey-step {
     flex-direction: column;
     align-items: flex-start;
-    min-height: auto;
+  }
+
+  .journey-map img {
+    max-width: 100%;
+  }
+
+  .journey-text {
+    max-width: 100%;
   }
 }
