@@ -1,5 +1,3 @@
-// main.js
-
 /***********************
  * 1. RAIN ANIMATION   *
  ***********************/
@@ -209,6 +207,7 @@ window.addEventListener("load", () => {
 
 /* =========================================
  * 4. RADIAL CHART – HISTORIC ONLY
+ *    (NOW USING total_mm = mm/month)
  * =======================================*/
 
 function createRadialChartMulti(config) {
@@ -252,12 +251,12 @@ function createRadialChartMulti(config) {
 
   const seriesList = config.series;
   const seriesData = seriesList.map(() => ({ dataByYear: {} }));
-  let maxPr = 0; // now interpreted as max mm/day
+  let maxPr = 0; // now interpreted as max monthly total (mm/month)
   let isAnimating = false;
   let years = [];
   let playTimer = null;
 
-  // CSV: year,month,pr_mm_per_day_wet (mm/day)
+  // CSV: year,month,total_mm (mm/month)
   function parseCsv(text, idx) {
     const lines = text.trim().split(/\r?\n/);
     lines.shift(); // header
@@ -269,11 +268,11 @@ function createRadialChartMulti(config) {
       if (cols.length < 3) return;
       const y = parseInt(cols[0], 10);
       const m = parseInt(cols[1], 10);
-      const pr = parseFloat(cols[2]); // already in mm/day
-      if (isNaN(y) || isNaN(m) || isNaN(pr)) return;
+      const total = parseFloat(cols[2]); // mm/month
+      if (isNaN(y) || isNaN(m) || isNaN(total)) return;
       if (!store[y]) store[y] = {};
-      store[y][m] = pr;
-      if (pr > maxPr) maxPr = pr; // max mm/day
+      store[y][m] = total;
+      if (total > maxPr) maxPr = total; // track max mm/month
     });
   }
 
@@ -294,9 +293,9 @@ function createRadialChartMulti(config) {
       g.appendChild(circle);
     }
 
-    // numeric labels in mm/day (values already in mm/day)
+    // numeric labels in mm/month
     if (maxPr > 0) {
-      const maxMm = maxPr; // already mm/day
+      const maxMm = maxPr; // mm/month
 
       for (let r = 1; r <= rings; r++) {
         const valueMm = (maxMm * r) / rings;
@@ -307,10 +306,9 @@ function createRadialChartMulti(config) {
         labelText.setAttribute("text-anchor", "middle");
         labelText.setAttribute("fill", "rgba(255,255,255,0.75)");
         labelText.setAttribute("font-size", "0.6rem");
-        labelText.textContent = valueMm.toFixed(2);
+        labelText.textContent = valueMm.toFixed(0); // round to whole mm/month
         g.appendChild(labelText);
       }
-
       // no separate unit label to avoid overlap near January
     }
 
@@ -411,7 +409,7 @@ function createRadialChartMulti(config) {
 
   function showTooltip(evt, year, monthIndex, prVal) {
     if (isNaN(prVal)) return;
-    const mmPerDay = prVal; // already mm/day
+    const mmTotal = prVal; // mm/month
 
     tooltip.style.visibility = "visible";
     tooltip.textContent =
@@ -419,8 +417,8 @@ function createRadialChartMulti(config) {
       " " +
       year +
       ": " +
-      mmPerDay.toFixed(3) +
-      " mm/day";
+      mmTotal.toFixed(1) +
+      " mm/month";
     tooltip.style.left = evt.clientX + 14 + "px";
     tooltip.style.top = evt.clientY + 14 + "px";
   }
@@ -450,7 +448,7 @@ function createRadialChartMulti(config) {
       for (let i = 0; i < 12; i++) {
         const m = i + 1;
         const raw = months[m];
-        const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0; // mm/day
+        const pr = typeof raw === "number" && !isNaN(raw) ? raw : 0; // mm/month
         const r = maxPr ? (pr / maxPr) * maxR : 0;
         const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
         const x = cx + r * Math.cos(angle);
@@ -1023,19 +1021,19 @@ window.addEventListener("load", () => {
     series: [
       {
         id: "ISM",
-        csvFile: "ISM_CESM2_historical_1995_2014_wetday_monthly.csv",
+        csvFile: "ISM_CESM2_historical_1995_2014_monthly_total_precip.csv",
         pathClass: "radial-path-ism",
         dotClass: "radial-dot-ism",
       },
       {
         id: "WAM",
-        csvFile: "WAM_CESM2_historical_1995_2014_wetday_monthly.csv",
+        csvFile: "WAM_CESM2_historical_1995_2014_monthly_total_precip.csv",
         pathClass: "radial-path-wam",
         dotClass: "radial-dot-wam",
       },
       {
         id: "SAM",
-        csvFile: "SAM_CESM2_historical_1995_2014_wetday_monthly.csv",
+        csvFile: "SAM_CESM2_historical_1995_2014_monthly_total_precip.csv",
         pathClass: "radial-path-sam",
         dotClass: "radial-dot-sam",
       },
