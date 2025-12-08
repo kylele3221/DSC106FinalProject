@@ -43,6 +43,9 @@ updateRainOpacity();
 /**********************************
  * 3. GLOBE + MONSOON POINTS      *
  **********************************/
+/**********************************
+ * 3. GLOBE + MONSOON POINTS      *
+ **********************************/
 
 window.addEventListener("load", () => {
   const globeEl = document.getElementById("monsoon-globe");
@@ -52,7 +55,6 @@ window.addEventListener("load", () => {
     {
       id: "ISM",
       name: "Indian Summer Monsoon",
-      // updated bounds
       latMin: 5,
       latMax: 28,
       lonMin: 68,
@@ -62,7 +64,6 @@ window.addEventListener("load", () => {
     {
       id: "WAM",
       name: "West African Monsoon",
-      // updated bounds
       latMin: -40,
       latMax: 15,
       lonMin: -25,
@@ -72,7 +73,6 @@ window.addEventListener("load", () => {
     {
       id: "SAMS",
       name: "South American Monsoon",
-      // updated bounds
       latMin: -15,
       latMax: 15,
       lonMin: -90,
@@ -89,76 +89,9 @@ window.addEventListener("load", () => {
     color: r.color,
   }));
 
-  // Map monsoon IDs to hover images (update paths to match your repo)
-  const monsoonHoverImages = {
-    ISM: "img/monsoon_regions/ISM_from_texture.png",
-    WAM: "img/monsoon_regions/WAM_from_texture.png",
-    SAMS: "img/monsoon_regions/SAMS_from_texture.png"
-  };
-
   const worldGlobe = Globe()(globeEl);
 
-  // Tooltip DOM elements for globe hover image
-  const globeTooltip = document.getElementById("monsoon-tooltip");
-  const globeTooltipImg = document.getElementById("monsoon-tooltip-img");
-
-  // Track last mouse position over the globe
-  let lastMouseX = 0;
-  let lastMouseY = 0;
-
-  globeEl.addEventListener("mousemove", (e) => {
-    lastMouseX = e.clientX;
-    lastMouseY = e.clientY;
-
-    // If tooltip is visible, keep it following the mouse
-    if (globeTooltip && globeTooltip.classList.contains("is-visible")) {
-      positionTooltipNearCursor();
-    }
-  });
-
-  function positionTooltipNearCursor() {
-    if (!globeTooltip) return;
-
-    const offset = 18; // pixels away from cursor
-    let x = lastMouseX + offset;
-    let y = lastMouseY + offset;
-
-    // Simple bounds check so it doesn't go off-screen
-    const tooltipRect = globeTooltip.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    if (x + tooltipRect.width > vw - 8) {
-      x = lastMouseX - tooltipRect.width - offset;
-    }
-    if (y + tooltipRect.height > vh - 8) {
-      y = lastMouseY - tooltipRect.height - offset;
-    }
-
-    globeTooltip.style.left = `${x}px`;
-    globeTooltip.style.top = `${y}px`;
-  }
-
-  function showMonsoonTooltip(id) {
-    if (!globeTooltip || !globeTooltipImg) return;
-    const src = monsoonHoverImages[id];
-    if (!src) return;
-
-    globeTooltipImg.src = src;
-    const region = monsoonRegions.find((r) => r.id === id);
-    globeTooltipImg.alt = region ? region.name : id;
-
-    // position it before making visible
-    globeTooltip.classList.add("is-visible");
-    positionTooltipNearCursor();
-  }
-
-  function hideMonsoonTooltip() {
-    if (!globeTooltip) return;
-    globeTooltip.classList.remove("is-visible");
-  }
-
-  // Base globe style (original)
+  // Base globe style
   worldGlobe
     .globeImageUrl(
       "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
@@ -183,15 +116,15 @@ window.addEventListener("load", () => {
     .pointRadius(1.0)
     .pointColor((d) => d.color)
     .pointResolution(32)
-    .pointLabel(null);
+    .pointLabel(null); // disable default text tooltip
 
-  // === PULSING RINGS (made a bit bigger) ===
+  // === PULSING RINGS ===
   worldGlobe
     .ringsData(monsoonPoints)
     .ringLat("lat")
     .ringLng("lng")
     .ringAltitude(0.01)
-    .ringMaxRadius(12.0) // was ~3.0 before – now a larger circle around each beacon
+    .ringMaxRadius(12.0)
     .ringPropagationSpeed(1.8)
     .ringRepeatPeriod(1800)
     .ringColor((d) => (t) => {
@@ -214,19 +147,78 @@ window.addEventListener("load", () => {
   controls.enableZoom = false;
   controls.enablePan = false;
 
-  function resizeGlobe() {
-    const { clientWidth, clientHeight } = globeEl;
-    if (clientWidth && clientHeight) {
-      worldGlobe.width(clientWidth);
-      worldGlobe.height(clientHeight);
-    }
-  }
-  window.addEventListener("resize", resizeGlobe);
-  resizeGlobe();
+  // === HOVER IMAGE TOOLTIP ===
+  const monsoonHoverImages = {
+    ISM: "img/monsoon_regions/ISM_from_texture.png",
+    WAM: "img/monsoon_regions/WAM_from_texture.png",
+    SAMS: "img/monsoon_regions/SAMS_from_texture.png"
+  };
 
-  // === TEXT CARDS + CLICK HANDLERS ===
+  const globeTooltip = document.getElementById("monsoon-tooltip");
+  const globeTooltipImg = document.getElementById("monsoon-tooltip-img");
+
+  let lastMouseX = 0;
+  let lastMouseY = 0;
+
+  globeEl.addEventListener("mousemove", (e) => {
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+
+    if (globeTooltip && globeTooltip.classList.contains("is-visible")) {
+      positionTooltipNearCursor();
+    }
+  });
+
+  function positionTooltipNearCursor() {
+    if (!globeTooltip) return;
+
+    const offset = 18;
+    let x = lastMouseX + offset;
+    let y = lastMouseY + offset;
+
+    const tooltipRect = globeTooltip.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    if (x + tooltipRect.width > vw - 8) {
+      x = lastMouseX - tooltipRect.width - offset;
+    }
+    if (y + tooltipRect.height > vh - 8) {
+      y = lastMouseY - tooltipRect.height - offset;
+    }
+
+    globeTooltip.style.left = `${x}px`;
+    globeTooltip.style.top = `${y}px`;
+  }
+
+  function showMonsoonTooltip(id) {
+    if (!globeTooltip || !globeTooltipImg) return;
+    const src = monsoonHoverImages[id];
+    if (!src) return;
+
+    globeTooltipImg.src = src;
+    const region = monsoonRegions.find((r) => r.id === id);
+    globeTooltipImg.alt = region ? region.name : id;
+
+    globeTooltip.classList.add("is-visible");
+    positionTooltipNearCursor();
+  }
+
+  function hideMonsoonTooltip() {
+    if (!globeTooltip) return;
+    globeTooltip.classList.remove("is-visible");
+  }
+
+  worldGlobe.onPointHover((d) => {
+    if (d && d.id) showMonsoonTooltip(d.id);
+    else hideMonsoonTooltip();
+  });
+
+  // === TEXT CARDS + ROTATION TOGGLE ===
   const stepEls = document.querySelectorAll(".monsoon-step");
-  let autoRotateStopped = false;
+
+  let isAutoRotating = true;
+  let clickFromPoint = false;
 
   function setActiveCard(id) {
     stepEls.forEach((el) => {
@@ -234,12 +226,24 @@ window.addEventListener("load", () => {
     });
   }
 
-  function stopAutoRotateOnce() {
-    if (!autoRotateStopped) {
-      controls.autoRotate = false;
-      autoRotateStopped = true;
-    }
+  function setAutoRotate(on) {
+    isAutoRotating = on;
+    controls.autoRotate = on;
   }
+
+  function toggleAutoRotate() {
+    setAutoRotate(!isAutoRotating);
+  }
+
+  // Click on globe background: toggle rotation
+  globeEl.addEventListener("click", () => {
+    if (clickFromPoint) {
+      // click was actually on a point — don't toggle
+      clickFromPoint = false;
+      return;
+    }
+    toggleAutoRotate();
+  });
 
   function focusMonsoon(id, animate = true) {
     const region = monsoonPoints.find((r) => r.id === id);
@@ -257,35 +261,36 @@ window.addEventListener("load", () => {
     setActiveCard(id);
   }
 
+  // Card clicks
   stepEls.forEach((step) => {
     step.addEventListener("click", () => {
       const id = step.getAttribute("data-monsoon"); // "ISM", "WAM", "SAMS"
-      stopAutoRotateOnce();
+      setAutoRotate(false);
       focusMonsoon(id, true);
     });
   });
 
+  // Globe point clicks
   worldGlobe.onPointClick((d) => {
     if (!d || !d.id) return;
-    stopAutoRotateOnce();
+    clickFromPoint = true;      // tells globeEl click not to toggle
+    setAutoRotate(false);
     focusMonsoon(d.id, true);
   });
 
-  worldGlobe.onPointHover((d) => {
-    if (d && d.id) {
-      showMonsoonTooltip(d.id);
-    } else {
-      hideMonsoonTooltip();
+  function resizeGlobe() {
+    const { clientWidth, clientHeight } = globeEl;
+    if (clientWidth && clientHeight) {
+      worldGlobe.width(clientWidth);
+      worldGlobe.height(clientHeight);
     }
-  });
+  }
+  window.addEventListener("resize", resizeGlobe);
+  resizeGlobe();
 
   // initial state
   focusMonsoon("ISM", false);
 });
-
-
-
-
 
 /* =========================================
  * 4. RADIAL CHART – HISTORIC ONLY
