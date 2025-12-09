@@ -1522,7 +1522,7 @@ button.impact-nav-right:hover {
 .journey-images-column {
   display: flex;
   flex-direction: column;
-  gap: 6rem;          /* spacing between maps */
+  gap: 50rem;          /* spacing between maps */
 }
 
 .journey-image-step {
@@ -1550,9 +1550,11 @@ button.impact-nav-right:hover {
 /* Right column: text stays pinned, just swaps content */
 .journey-text-panel {
   position: sticky;
-  top: 20vh;          /* where the text "sticks" in the viewport */
+  top: 20vh;
   align-self: flex-start;
   max-width: 520px;
+
+  justify-self: center;     /* <-- centers the panel within the right column */
 }
 
 .journey-step-label {
