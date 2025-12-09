@@ -834,7 +834,6 @@ const monsoonJourneys = {
     region: "South Asia",
     steps: [
       {
-        label: "Baseline",
         img: "landcover/diff_seasonal_ISM_base.png",
         caption: "Change in seasonal rainfall for the ISM region",
         title: "Start with the big picture",
@@ -842,10 +841,9 @@ const monsoonJourneys = {
         bullets: []
       },
       {
-        label: "Forests",
         img: "landcover/diff_seasonal_ISM_forest.png",
         caption: "Triangles mark forested areas overlaid on the rainfall change map.",
-        title: "Forests on steeper slopes face rising flood and landslide risk",
+        title: "Forests",
         body: "In the Eastern Himalayas, projected drying weakens forest moisture and increases the risk of drought stress, wildfire, and ecosystem decline. In contrast, forests across the Deccan Plateau sit beneath much heavier monsoon rainfall, where steep terrain and saturated soils raise the risk of landslides, erosion, and flash flooding.",
         bullets: [
           "Protect forest cover to retain moisture, reduce wildfire risk, and stabilize fragile drying soils",
@@ -854,10 +852,9 @@ const monsoonJourneys = {
         ]
       },
       {
-        label: "Grasslands & wetlands",
         img: "landcover/diff_seasonal_ISM_grassland.png",
         caption: "Circles highlight grassland and wetland areas.",
-        title: "Floodplains and wetlands store or lose water",
+        title: "Grasslands & Wetlands",
         body: "Across the Himalayas, higher monsoon rainfall increases flood peaks, testing wetlands’ ability to slow and store excess water.",
         bullets: [
           "Restore and protect wetlands to absorb flood surges and reduce downstream flooding",
@@ -865,25 +862,13 @@ const monsoonJourneys = {
         ]
       },
       {
-        label: "Croplands",
         img: "landcover/diff_seasonal_ISM_cropland.png",
         caption: "Squares mark major cropland areas.",
-        title: "Croplands feel every shift in timing and totals",
+        title: "Croplands",
         body: "Across the Deccan Plateau and central India, rising monsoon rainfall increases the risk of waterlogging, crop disease, and soil erosion. Meanwhile, parts of the eastern Indo-Gangetic Plain and Northeast India face declining seasonal rainfall, increasing drought stress and irrigation demand even within regions traditionally supported by monsoons.",
         bullets: [
           "For wetter croplands: Improve drainage systems and adopt flood-tolerant or shorter-season crop varieties",
           "For drier croplands: Shift toward drought-tolerant crops, expand water-use efficiency, and protect groundwater supplies",
-        ]
-      },
-      {
-        label: "All Land cCvers",
-        img: "landcover/diff_seasonal_ISM_all.png",
-        caption: "All land-cover symbols combined on the rainfall change map.",
-        title: "Different landscapes, different risks",
-        body: "Forests, wetlands, and croplands sit inside the same shifting monsoon, but the impacts and solutions look different in each place.",
-        bullets: [
-          "Policies need to be tailored by land use, not just by region.",
-          "The same rainfall change can be a flood risk in one place and a drought risk in another."
         ]
       }
     ]
@@ -894,55 +879,48 @@ const monsoonJourneys = {
     region: "Sahel & West Africa",
     steps: [
       {
-        label: "Baseline",
         img: "landcover/diff_seasonal_WAM_base.png",
         caption: "Seasonal rainfall change across the WAM region.",
-        title: "A monsoon with sharp north–south contrasts",
+        title: "Start with the big picture",
         body: "Future rainfall shifts differently across the Sahel, coastal West Africa, and inland regions.",
         bullets: []
       },
       {
-        label: "Forests",
         img: "landcover/diff_seasonal_WAM_forest.png",
         caption: "Forested zones overlaid on rainfall change.",
-        title: "Forest fragments face both drying and downpours",
-        body: "Remaining forest areas experience more variable rainfall, stressing biodiversity and local water supply.",
+        title: "Forests",
+        body: "Forests cluster almost entirely inside blue zones.",
         bullets: [
-          "Protecting forest corridors helps species migrate as climate shifts.",
-          "Community forestry can pair conservation with livelihoods."
+          "Expand reforestation and buffer zones to stabilize soils and protect downstream farming communities",
+          "Preserve intact forests to absorb runoff and limit erosion"
         ]
       },
       {
-        label: "Grasslands & Savannas",
         img: "landcover/diff_seasonal_WAM_savanna.png",
-        caption: "Grassland and savanna systems across the Sahel.",
-        title: "Pastoral systems live on the edge of change",
-        body: "Grazing lands respond quickly to rainfall anomalies.",
+        caption: "Savanna systems across the Sahel.",
+        title: "Savannas",
+        body: "Unlike forest zones or croplands, these regions show only modest changes in total rainfall, falling mostly in lightly wetter conditions.",
         bullets: [
-          "Supporting mobile herding routes can reduce overgrazing hot spots.",
-          "Water points and fodder reserves buffer dry years."
+          "Manage grazing pressure and soil health to prevent savanna degradation from pushing further deforestation into neighboring forest zones, where heavier rainfall already increases erosion and flood risk",
         ]
       },
       {
-        label: "Croplands",
+        img: "landcover/diff_seasonal_WAM_grassland.png",
+        caption: "Grassland systems across the Sahel.",
+        title: "Grasslands & Wetlands",
+        body: "Most sites show little change overall, but scattered zones swing wetter or drier, hinting at locally uneven impacts on grazing and water supply.",
+        bullets: [
+          "Manage grazing pressure and soil health to prevent savanna degradation from pushing further deforestation into neighboring forest zones, where heavier rainfall already increases erosion and flood risk",
+        ]
+      },
+      {
         img: "landcover/diff_seasonal_WAM_cropland.png",
         caption: "Cropland areas overlaid on rainfall change.",
-        title: "Rain-fed farms depend on a narrower rainy season",
-        body: "Shorter or weaker rainy seasons can reduce yields and increase year-to-year volatility.",
+        title: "Croplands",
+        body: "Across the West African Monsoon region, croplands lie in both increasing-rainfall coastal belts and drying interior or Sahel transition zones, exposing farmers to opposite climate pressures within the same food system.",
         bullets: [
-          "Soil-moisture conservation and agroforestry help hold water in the root zone.",
-          "Diversifying income beyond a single staple crop reduces household risk."
-        ]
-      },
-      {
-        label: "All land covers",
-        img: "landcover/diff_seasonal_WAM_all.png",
-        caption: "All land-cover types combined.",
-        title: "Multiple land uses sharing one stressed monsoon",
-        body: "Water decisions for cities, farms, forests, and grazing lands all draw on the same changing rainfall budget.",
-        bullets: [
-          "Integrated basin-scale planning is key to avoid conflicts.",
-          "Early-warning systems can help communities adapt in advance."
+          "For wetter croplands: Improve drainage and soil management to reduce flooding and erosion amplified by intensified rainfall flowing out of nearby forested hills",
+          "For drier croplands: Shift toward drought-tolerant crops and water-conserving practices to limit yield loss and reduce pressure to clear adjacent forests and savannas"
         ]
       }
     ]
@@ -953,57 +931,43 @@ const monsoonJourneys = {
     region: "Amazon & Brazil",
     steps: [
       {
-        label: "Baseline",
         img: "landcover/diff_seasonal_SAM_base.png",
         caption: "Rainfall change across the SAM region without land cover.",
-        title: "A monsoon shifting toward the equator",
+        title: "Start with the big picture",
         body: "Northern Amazon tends to get wetter while parts of southern Brazil dry out.",
         bullets: []
       },
       {
-        label: "Forests",
         img: "landcover/diff_seasonal_SAM_forest.png",
         caption: "Amazon forests overlaid on rainfall change.",
-        title: "Rainforest stability depends on both rain and land use",
-        body: "Even where rainfall increases, deforestation can push forests toward more fire-prone states.",
+        title: "Forests",
+        body: "Most of the Amazon rainforest sits within zones where South American Monsoon rainfall is projected to decline, exposing forests to increasing drought stress, wildfire risk, and potential ecosystem dieback.",
         bullets: [
-          "Reducing deforestation and degradation limits fire risk.",
-          "Forest restoration can help recycle moisture back into the atmosphere."
+          "Protect intact forests to retain moisture recycling and reduce fire vulnerability during prolonged dry seasons",
+          "Forest restoration can help recycle moisture back into the atmosphere",
+          "Limit deforestation and burning, which amplify drought impacts and weaken rainfall recycling"
         ]
       },
       {
-        label: "Grasslands & savannas",
+        img: "landcover/diff_seasonal_WAM_savanna.png",
+        caption: "Savanna systems across the Sahel.",
+        title: "Savannas",
+        body: "Savannas sit between the drying Amazon interior and the wetter eastern and coastal regions.",
+        bullets: [
+          "For drier savannas: Protect grasslands to slow desertification and act as buffers against wildfire spread from forests",
+          "For wetter savannas: Use erosion control and landscape planning to manage runoff intensifying as rainfall increases"
+        ]
+      },
+      {
         img: "landcover/diff_seasonal_SAM_grassland.png",
         caption: "Grassland and savanna regions such as the Cerrado.",
-        title: "Transition zones feel drought and fire first",
-        body: "These ecosystems are especially sensitive to drier conditions and land-use change.",
+        title: "Grasslands & Wetlands",
+        body: "Grasslands and wetlands lie mostly in zones where monsoon rainfall is increasing, even as the nearby Amazon rainforest experiences widespread drying",
         bullets: [
-          "Protecting remaining savannas prevents irreversible biome shifts.",
-          "Fire-management plans are crucial under hotter, drier extremes."
+          "Restore wetlands to absorb excess rainfall generated as atmospheric moisture shifts away from drying forest regions",
+          "Avoid hard infrastructure in natural drainage corridors to preserve flood buffering capacity"
         ]
       },
-      {
-        label: "Croplands",
-        img: "landcover/diff_seasonal_SAM_cropland.png",
-        caption: "Cropland regions across Brazil and neighbors.",
-        title: "Expanding agriculture collides with changing rain",
-        body: "Soy, cattle, and other agricultural expansion often overlaps with areas trending drier.",
-        bullets: [
-          "Shifting planting dates and varieties can track changing rainy seasons.",
-          "Limiting deforestation in upstream catchments supports downstream water security."
-        ]
-      },
-      {
-        label: "All Land Covers",
-        img: "landcover/diff_seasonal_SAM_all.png",
-        caption: "All land covers on top of the rainfall change map.",
-        title: "A shared monsoon, many possible futures",
-        body: "The Amazon basin’s climate future depends on both emissions pathways and local land-use choices.",
-        bullets: [
-          "Keeping forests standing protects regional rainfall patterns.",
-          "Coordinated policies across countries are needed because the monsoon ignores borders."
-        ]
-      }
     ]
   }
 };
