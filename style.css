@@ -815,75 +815,44 @@ html {
 }
 
 /* ===========================
-   REGIONAL DEEP DIVES FIXES
-=========================== */
+   REGIONAL DEEP DIVES BLOCK
+   =========================== */
 
-.section-title {
+.section-deep-dive {
   position: relative;
   z-index: 6;
   background: linear-gradient(to bottom, var(--navy-soft), #010413);
   text-align: center;
+  padding-top: 3rem;   /* smaller than generic .section */
+  padding-bottom: 3rem;
 }
 
-/* Main title */
+.deep-dive-header {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 .deep-dive-title {
   font-size: clamp(2rem, 4vw, 2.8rem);
-  margin: 2.5rem 0 0;
   color: var(--accent);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  margin-bottom: 1.5rem;  /* tightens space to text */
+}
+
+.deep-dive-text {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--text-subtle);
+  max-width: 900px;
+  margin: 0.25rem auto;
 }
 
 .deep-dive-text.emphasis {
   color: #ffffff;
-  margin-top: 16px;
+  margin-top: 0.75rem;
 }
 
-/* ========================= */
-/* Regional Deep Dive Captions */
-/* ========================= */
-
-.regional-captions {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2.5rem;
-  margin: 2.5rem auto 1rem auto;
-  max-width: 1400px;
-  padding: 0 3rem;
-}
-
-.caption-card {
-  color: #e8f2ff;
-  font-size: 0.95rem;
-  line-height: 1.55;
-}
-
-.caption-title {
-  font-weight: 600;
-  font-size: 1.05rem;
-  margin-bottom: 0.4rem;
-  color: #bde9ff;
-}
-
-.caption-text strong {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.regional-takeaway {
-  text-align: center;
-  margin: 2.5rem auto 3.5rem auto;
-  max-width: 900px;
-  padding: 0 2rem;
-
-  color: #cce7ff;
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.regional-takeaway strong {
-  color: #ffffff;
-}
 
 
 /* ========================= */

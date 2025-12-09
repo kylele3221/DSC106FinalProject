@@ -916,7 +916,7 @@ const monsoonJourneys = {
       },
       {
         label: "Step 3 · Grasslands & savannas",
-        img: "landcover/diff_seasonal_WAM_grassland.png",
+        img: "landcover/diff_seasonal_WAM_savanna.png",
         caption: "Grassland and savanna systems across the Sahel.",
         title: "Pastoral systems live on the edge of change",
         body: "Grazing lands respond quickly to rainfall anomalies.",
