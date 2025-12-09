@@ -1129,28 +1129,52 @@ function buildLandcoverJourney(monsoonId) {
   section.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function initLandcoverJourney() {
-  const choiceButtons = document.querySelectorAll(".monsoon-choice-card");
-  const backButtons = document.querySelectorAll(".journey-back-btn");
+let currentJourneyId = null;
 
-  if (choiceButtons.length === 0) return;
+function initLandcoverJourney() {
+  const choiceButtons   = document.querySelectorAll(".monsoon-choice-card");
+  const journeySection  = document.getElementById("landcover-journey");
+  const journeyContainer = document.getElementById("journey-steps-container");
+
+  if (!choiceButtons.length || !journeySection || !journeyContainer) return;
+
+  // fully hide journey + clear content + clear active state
+  function resetJourney() {
+    currentJourneyId = null;
+    journeySection.classList.remove("is-active");
+    journeyContainer.innerHTML = "";
+    choiceButtons.forEach(btn => btn.classList.remove("is-active"));
+  }
 
   choiceButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.monsoon;   // "ISM", "WAM", "SAM"
+      if (!id) return;
+
+      const isOpen = journeySection.classList.contains("is-active");
+
+      // 🔁 If this monsoon is already open, clicking again closes it
+      if (isOpen && currentJourneyId === id) {
+        resetJourney();
+
+        const chooser = document.getElementById("landcover-chooser");
+        if (chooser) {
+          chooser.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        return;
+      }
+
+      // otherwise open / switch to this monsoon journey
+      currentJourneyId = id;
+      choiceButtons.forEach(b =>
+        b.classList.toggle("is-active", b === btn)
+      );
+
       buildLandcoverJourney(id);
     });
   });
-
-  backButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const chooser = document.getElementById("landcover-chooser");
-      if (chooser) {
-        chooser.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    });
-  });
 }
+
 
 
 window.addEventListener("load", () => {

@@ -1489,9 +1489,6 @@ button.impact-nav-right:hover {
 /* ===========================
    LAND COVER SCROLLY JOURNEY
    =========================== */
-/* ===========================
-   LAND COVER SCROLLY JOURNEY
-   =========================== */
 
 .journey-section {
   background: linear-gradient(to bottom, #010413, #020824);
@@ -1603,3 +1600,38 @@ button.impact-nav-right:hover {
     gap: 4rem;
   }
 }
+
+/* ===========================
+   JOURNEY BACK BUTTON
+   =========================== */
+
+.journey-end {
+  width: 100%;
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.journey-back-btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: rgba(2, 8, 36, 0.9);
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.journey-back-btn:hover {
+  background: var(--accent);
+  color: var(--navy);
+  transform: translateY(-2px);
+}
+
+.journey-back-btn:active {
+  transform: translateY(0);
+}
+
