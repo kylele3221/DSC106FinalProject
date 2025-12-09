@@ -1640,3 +1640,28 @@ button.impact-nav-right:hover {
   transform: translateY(0);
 }
 
+/* FINAL CLOSING STATEMENT */
+.final-statement {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  padding: 4rem 2rem;
+
+  background: linear-gradient(to bottom, rgba(3,8,30,0), rgba(3,8,30,0.7));
+}
+
+.final-statement p {
+  max-width: 900px;
+
+  font-size: clamp(1.2rem, 2.2vw, 1.9rem);
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+
+  text-transform: none; /* ✅ disables ALL CAPS */
+  font-weight: 500;
+
+  color: #cfefff;
+}

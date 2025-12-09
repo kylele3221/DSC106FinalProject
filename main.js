@@ -1097,6 +1097,7 @@ function initLandcoverJourney() {
   const choiceButtons   = document.querySelectorAll(".monsoon-choice-card");
   const journeySection  = document.getElementById("landcover-journey");
   const journeyContainer = document.getElementById("journey-steps-container");
+  const backBtn          = document.getElementById("journey-back-btn-bottom");
 
   if (!choiceButtons.length || !journeySection || !journeyContainer) return;
 
@@ -1135,6 +1136,17 @@ function initLandcoverJourney() {
       buildLandcoverJourney(id);
     });
   });
+
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      resetJourney();  // hide current journey, clear steps, remove active state
+
+      const chooser = document.getElementById("landcover-chooser");
+      if (chooser) {
+        chooser.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
 }
 
 
