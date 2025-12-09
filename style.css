@@ -1489,6 +1489,9 @@ button.impact-nav-right:hover {
 /* ===========================
    LAND COVER SCROLLY JOURNEY
    =========================== */
+/* ===========================
+   LAND COVER SCROLLY JOURNEY
+   =========================== */
 
 .journey-section {
   background: linear-gradient(to bottom, #010413, #020824);
@@ -1505,47 +1508,50 @@ button.impact-nav-right:hover {
   margin: 0 auto;
 }
 
-/* Holds all steps, stacked like normal sections */
-.journey-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 8rem;                    /* vertical space between steps */
-}
-
-/* One map + text pair */
-.journey-step {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+/* Two-column layout:
+   left = scrolling images, right = sticky text */
+.journey-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
   gap: 3rem;
+  align-items: flex-start;
+  padding: 0 2rem;
 }
 
-/* left map */
-.journey-map {
+/* Left column: stack all maps vertically */
+.journey-images-column {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.7rem;
+  gap: 6rem;          /* spacing between maps */
 }
 
-.journey-map img {
+.journey-image-step {
+  margin: 0;
+}
+
+.journey-image-step img {
   width: 100%;
   max-width: 520px;
   border-radius: 16px;
   border: 1px solid rgba(191, 232, 255, 0.24);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
   background: #020824;
+  display: block;
+  margin: 0 auto;
 }
 
-.journey-map-caption {
+.journey-image-step figcaption {
+  margin-top: 0.7rem;
   font-size: 0.9rem;
   color: var(--text-subtle);
   text-align: center;
-  max-width: 520px;
 }
 
-/* right text */
-.journey-text {
+/* Right column: text stays pinned, just swaps content */
+.journey-text-panel {
+  position: sticky;
+  top: 20vh;          /* where the text "sticks" in the viewport */
+  align-self: flex-start;
   max-width: 520px;
 }
 
@@ -1557,63 +1563,41 @@ button.impact-nav-right:hover {
   margin-bottom: 0.4rem;
 }
 
-.journey-text h3 {
+.journey-text-panel h3 {
   font-size: 1.2rem;
   margin-bottom: 0.7rem;
 }
 
-.journey-text p {
+.journey-text-panel p {
   font-size: 0.9rem;
   line-height: 1.7;
   color: var(--text-subtle);
   margin-bottom: 0.6rem;
 }
 
-.journey-text ul {
+.journey-text-panel ul {
   padding-left: 1.2rem;
   margin-bottom: 0.6rem;
 }
 
-.journey-text li {
+.journey-text-panel li {
   font-size: 0.9rem;
   margin-bottom: 0.25rem;
 }
 
-/* bottom button */
-.journey-end {
-  text-align: center;
-  margin-top: 2rem;
-}
-
-.journey-back-btn {
-  margin-top: 0.6rem;
-  padding: 0.7rem 1.5rem;
-  border-radius: 999px;
-  border: 1px solid var(--accent);
-  background: transparent;
-  color: var(--accent);
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.journey-back-btn:hover {
-  background: var(--accent);
-  color: var(--navy);
-}
-
-/* Stack on mobile, don’t force full height */
+/* Mobile: stack, no sticky */
 @media (max-width: 900px) {
-  .journey-step {
-    flex-direction: column;
-    align-items: flex-start;
+  .journey-layout {
+    grid-template-columns: 1fr;
+    padding: 0 1.5rem;
   }
 
-  .journey-map img {
-    max-width: 100%;
+  .journey-text-panel {
+    position: static;
+    margin-top: 2rem;
   }
 
-  .journey-text {
-    max-width: 100%;
+  .journey-images-column {
+    gap: 4rem;
   }
 }

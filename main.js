@@ -836,7 +836,7 @@ const monsoonJourneys = {
       {
         label: "Step 1 · Baseline",
         img: "landcover/diff_seasonal_ISM_base.png",
-        caption: "Change in seasonal rainfall for the ISM region without land-cover symbols.",
+        caption: "Change in seasonal rainfall for the ISM region",
         title: "Start with the big picture",
         body: "This map compares late-20th-century monsoon rainfall to the end of the 21st century across South Asia. Blues mark areas that become wetter; reds show areas that dry out.",
         bullets: []
@@ -898,7 +898,7 @@ const monsoonJourneys = {
       {
         label: "Step 1 · Baseline",
         img: "landcover/diff_seasonal_WAM_base.png",
-        caption: "Seasonal rainfall change across the WAM region without land-cover symbols.",
+        caption: "Seasonal rainfall change across the WAM region.",
         title: "A monsoon with sharp north–south contrasts",
         body: "Future rainfall shifts differently across the Sahel, coastal West Africa, and inland regions.",
         bullets: []
@@ -1013,81 +1013,118 @@ const monsoonJourneys = {
 /* =========================================
  * LAND COVER JOURNEY – SIMPLE SCROLL
  * =======================================*/
-
 function buildLandcoverJourney(monsoonId) {
   const journey = monsoonJourneys[monsoonId];
   if (!journey) return;
 
-  const section = document.getElementById("landcover-journey");
+  const section   = document.getElementById("landcover-journey");
   const container = document.getElementById("journey-steps-container");
   if (!section || !container) return;
 
   // Clear old content
   container.innerHTML = "";
 
-  // Wrap all steps in a .journey-steps div
-  const stepsWrapper = document.createElement("div");
-  stepsWrapper.className = "journey-steps";
+  // Two-column layout: left = images, right = sticky text
+  const layout    = document.createElement("div");
+  layout.className = "journey-layout";
 
-  journey.steps.forEach((step) => {
-    const stepEl = document.createElement("article");
-    stepEl.className = "journey-step";
+  const imagesCol = document.createElement("div");
+  imagesCol.className = "journey-images-column";
 
-    const inner = document.createElement("div");
-    inner.className = "journey-step-inner"; // optional, if you want extra styling
+  const textPanel = document.createElement("aside");
+  textPanel.className = "journey-text-panel";
 
-    // LEFT: map
-    const mapWrap = document.createElement("div");
-    mapWrap.className = "journey-map";
+  const labelEl  = document.createElement("div");
+  labelEl.className = "journey-step-label";
+
+  const titleEl  = document.createElement("h3");
+  const bodyEl   = document.createElement("p");
+  const bulletsEl = document.createElement("ul");
+
+  textPanel.appendChild(labelEl);
+  textPanel.appendChild(titleEl);
+  textPanel.appendChild(bodyEl);
+  textPanel.appendChild(bulletsEl);
+
+  layout.appendChild(imagesCol);
+  layout.appendChild(textPanel);
+  container.appendChild(layout);
+
+  // Build the scrolling image steps on the left
+  journey.steps.forEach((step, index) => {
+    const fig = document.createElement("figure");
+    fig.className = "journey-image-step";
+    fig.dataset.index = index;
 
     const img = document.createElement("img");
     img.src = step.img;
     img.alt = step.caption || step.title || journey.name;
-    mapWrap.appendChild(img);
+    fig.appendChild(img);
 
     if (step.caption) {
-      const cap = document.createElement("div");
-      cap.className = "journey-map-caption";
+      const cap = document.createElement("figcaption");
       cap.textContent = step.caption;
-      mapWrap.appendChild(cap);
+      fig.appendChild(cap);
     }
 
-    // RIGHT: text
-    const textWrap = document.createElement("div");
-    textWrap.className = "journey-text";
+    imagesCol.appendChild(fig);
+  });
 
-    const label = document.createElement("div");
-    label.className = "journey-step-label";
-    label.textContent = step.label;
-    textWrap.appendChild(label);
+  const figures = Array.from(
+    imagesCol.querySelectorAll(".journey-image-step")
+  );
 
-    const title = document.createElement("h3");
-    title.textContent = step.title;
-    textWrap.appendChild(title);
+  // Helper to fill the sticky text panel
+  function renderText(idx) {
+    const step = journey.steps[idx];
+    labelEl.textContent = step.label || "";
+    titleEl.textContent = step.title || "";
+    bodyEl.textContent  = step.body || "";
 
-    const body = document.createElement("p");
-    body.textContent = step.body;
-    textWrap.appendChild(body);
-
+    bulletsEl.innerHTML = "";
     if (step.bullets && step.bullets.length) {
-      const ul = document.createElement("ul");
       step.bullets.forEach((b) => {
         const li = document.createElement("li");
         li.textContent = b;
-        ul.appendChild(li);
+        bulletsEl.appendChild(li);
       });
-      textWrap.appendChild(ul);
     }
+  }
 
-    inner.appendChild(mapWrap);
-    inner.appendChild(textWrap);
-    stepEl.appendChild(inner);
-    stepsWrapper.appendChild(stepEl);
-  });
+  let activeIndex = 0;
+  renderText(activeIndex);
+  if (figures[0]) figures[0].classList.add("is-active");
 
-  container.appendChild(stepsWrapper);
+  function setActive(idx) {
+    if (idx === activeIndex) return;
+    activeIndex = idx;
 
-  // ensure section is visible and scroll to it
+    figures.forEach((fig, i) =>
+      fig.classList.toggle("is-active", i === idx)
+    );
+    renderText(idx);
+  }
+
+  // Scroll logic: when an image is roughly in the middle, update text
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const idx = parseInt(entry.target.dataset.index, 10);
+          if (Number.isInteger(idx)) setActive(idx);
+        });
+      },
+      {
+        root: null,
+        threshold: 0.6  // ≈ when the image is mostly in view (near middle)
+      }
+    );
+
+    figures.forEach((fig) => observer.observe(fig));
+  }
+
+  // Show section & scroll to it
   section.classList.add("is-active");
   section.scrollIntoView({ behavior: "smooth", block: "start" });
 }
