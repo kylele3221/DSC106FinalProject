@@ -1412,30 +1412,38 @@ button.impact-nav-right:hover {
   text-align: center;
 }
 
+/* wrap TITLE + PARAGRAPH as one block */
+.landcover-header {
+  max-width: 960px;
+  margin: 0 auto 5rem auto;   /* <=== controls gap above CARDS */
+}
+
+/* big heading */
 .landcover-title {
   font-size: clamp(2rem, 3.5vw, 2.6rem);
   color: #bde9ff;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
+/* explanatory text under the heading */
 .landcover-intro {
-  max-width: 820px;
-  margin: 0 auto 3rem auto;   /* more space under the text */
   font-size: 0.98rem;
-  color: var(--text-subtle);
   line-height: 1.6;
+  color: var(--text-subtle);
 }
 
+/* the 3 cards row */
 .monsoon-choice-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.8rem;
   max-width: 1100px;
-  margin: 2.5rem auto 0 auto !important;  /* force buttons lower */
+  margin: 0 auto;        /* no weird top margins here */
 }
 
+/* card styling */
 .monsoon-choice-card {
   padding: 1.6rem 1.4rem;
   border-radius: 1.1rem;
@@ -1444,7 +1452,10 @@ button.impact-nav-right:hover {
   color: var(--text-main);
   text-align: left;
   cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .monsoon-choice-card h3 {
@@ -1463,9 +1474,15 @@ button.impact-nav-right:hover {
   border-color: var(--accent);
 }
 
+/* stack cards on mobile */
 @media (max-width: 900px) {
   .monsoon-choice-grid {
     grid-template-columns: 1fr;
+  }
+
+  .landcover-header {
+    margin-bottom: 3rem;
+    padding-inline: 1.5rem;
   }
 }
 
