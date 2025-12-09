@@ -157,14 +157,14 @@
     </section>
 
     <!-- Section takeaway -->
-
-    <h2 class="difference-title">
+     <section class="seasonal-summary">
+      <h2 class="difference-title">
       Watching each season unfold reveals how monsoon rains move year to year, but it masks the deeper pattern.
-    </h2>
-
-    <h2 class="difference-title">
-      When we compare the late 20th century to the end of this century, we can see where rainfall is truly redistributing.
-    </h2>
+      </h2>
+      <h2 class="difference-title">
+        When we compare the late 20th century to the end of this century, we can see where rainfall is truly redistributing.
+      </h2>
+    </section>
 
 
         <!-- ===== SEASONAL DIFFERENCE MAPS ===== -->
@@ -708,9 +708,9 @@
         wam.src = wamPath;
         sam.src = samsPath;
 
-        ismCap.textContent  = `${MONTH_LABEL[fISM.month] || fISM.month} · Indian Summer Monsoon – ${fISM.decade}`;
-        wamCap.textContent  = `${MONTH_LABEL[fWAM.month] || fWAM.month} · West African Monsoon – ${fWAM.decade}`;
-        samCap.textContent  = `${MONTH_LABEL[fSAMS.month] || fSAMS.month} · South American Monsoon – ${fSAMS.decade}`;
+        ismCap.textContent  = `${MONTH_LABEL[fISM.month] || fISM.month} – ${fISM.decade}`;
+        wamCap.textContent  = `${MONTH_LABEL[fWAM.month] || fWAM.month} – ${fWAM.decade}`;
+        samCap.textContent  = `${MONTH_LABEL[fSAMS.month] || fSAMS.month} – ${fSAMS.decade}`;
       }
 
       // Initial frame

@@ -834,7 +834,7 @@ const monsoonJourneys = {
     region: "South Asia",
     steps: [
       {
-        label: "Step 1 · Baseline",
+        label: "Baseline",
         img: "landcover/diff_seasonal_ISM_base.png",
         caption: "Change in seasonal rainfall for the ISM region",
         title: "Start with the big picture",
@@ -842,43 +842,41 @@ const monsoonJourneys = {
         bullets: []
       },
       {
-        label: "Step 2 · Forests (triangles)",
+        label: "Forests",
         img: "landcover/diff_seasonal_ISM_forest.png",
         caption: "Triangles mark forested areas overlaid on the rainfall change map.",
         title: "Forests on steeper slopes face rising flood and landslide risk",
-        body: "In many Himalayan and Western Ghats forests, heavier monsoon rainfall stacks on steep terrain.",
+        body: "In the Eastern Himalayas, projected drying weakens forest moisture and increases the risk of drought stress, wildfire, and ecosystem decline. In contrast, forests across the Deccan Plateau sit beneath much heavier monsoon rainfall, where steep terrain and saturated soils raise the risk of landslides, erosion, and flash flooding.",
         bullets: [
-          "Heavier downpours increase landslides and erosion.",
-          "Reforestation and slope stabilization help keep soil in place.",
-          "Protecting intact forests can buffer downstream flooding."
+          "Protect forest cover to retain moisture, reduce wildfire risk, and stabilize fragile drying soils",
+          "Reforestation and slope stabilization help keep soil in place",
+          "Protecting intact forests can buffer downstream flooding"
         ]
       },
       {
-        label: "Step 3 · Grasslands & wetlands (circles)",
+        label: "Grasslands & wetlands",
         img: "landcover/diff_seasonal_ISM_grassland.png",
         caption: "Circles highlight grassland and wetland areas.",
         title: "Floodplains and wetlands store or lose water",
-        body: "Where rainfall increases, healthy wetlands can spread out flood peaks; where rainfall drops, these systems can dry and lose function.",
+        body: "Across the Himalayas, higher monsoon rainfall increases flood peaks, testing wetlands’ ability to slow and store excess water.",
         bullets: [
-          "Restoring wetlands helps absorb peak flows.",
-          "Avoid building hard infrastructure in natural floodplains.",
-          "Protect seasonal wetlands that recharge groundwater."
+          "Restore and protect wetlands to absorb flood surges and reduce downstream flooding",
+          "Avoid building hard infrastructure in natural floodplains, which blocks water spread"
         ]
       },
       {
-        label: "Step 4 · Croplands (squares)",
+        label: "Croplands",
         img: "landcover/diff_seasonal_ISM_cropland.png",
         caption: "Squares mark major cropland areas.",
         title: "Croplands feel every shift in timing and totals",
-        body: "Changes in rainfall fall directly on farms in the Indo-Gangetic Plain and peninsular India.",
+        body: "Across the Deccan Plateau and central India, rising monsoon rainfall increases the risk of waterlogging, crop disease, and soil erosion. Meanwhile, parts of the eastern Indo-Gangetic Plain and Northeast India face declining seasonal rainfall, increasing drought stress and irrigation demand even within regions traditionally supported by monsoons.",
         bullets: [
-          "Crop choices may need to shift toward more drought- or flood-tolerant varieties.",
-          "Diversifying crops and improving drainage reduces risk from extremes.",
-          "Better seasonal forecasts help farmers plan around shifting monsoon behavior."
+          "For wetter croplands: Improve drainage systems and adopt flood-tolerant or shorter-season crop varieties",
+          "For drier croplands: Shift toward drought-tolerant crops, expand water-use efficiency, and protect groundwater supplies",
         ]
       },
       {
-        label: "Step 5 · All land covers together",
+        label: "All Land cCvers",
         img: "landcover/diff_seasonal_ISM_all.png",
         caption: "All land-cover symbols combined on the rainfall change map.",
         title: "Different landscapes, different risks",
@@ -896,7 +894,7 @@ const monsoonJourneys = {
     region: "Sahel & West Africa",
     steps: [
       {
-        label: "Step 1 · Baseline",
+        label: "Baseline",
         img: "landcover/diff_seasonal_WAM_base.png",
         caption: "Seasonal rainfall change across the WAM region.",
         title: "A monsoon with sharp north–south contrasts",
@@ -904,7 +902,7 @@ const monsoonJourneys = {
         bullets: []
       },
       {
-        label: "Step 2 · Forests",
+        label: "Forests",
         img: "landcover/diff_seasonal_WAM_forest.png",
         caption: "Forested zones overlaid on rainfall change.",
         title: "Forest fragments face both drying and downpours",
@@ -915,7 +913,7 @@ const monsoonJourneys = {
         ]
       },
       {
-        label: "Step 3 · Grasslands & savannas",
+        label: "Grasslands & Savannas",
         img: "landcover/diff_seasonal_WAM_savanna.png",
         caption: "Grassland and savanna systems across the Sahel.",
         title: "Pastoral systems live on the edge of change",
@@ -926,7 +924,7 @@ const monsoonJourneys = {
         ]
       },
       {
-        label: "Step 4 · Croplands",
+        label: "Croplands",
         img: "landcover/diff_seasonal_WAM_cropland.png",
         caption: "Cropland areas overlaid on rainfall change.",
         title: "Rain-fed farms depend on a narrower rainy season",
@@ -937,7 +935,7 @@ const monsoonJourneys = {
         ]
       },
       {
-        label: "Step 5 · All land covers together",
+        label: "All land covers",
         img: "landcover/diff_seasonal_WAM_all.png",
         caption: "All land-cover types combined.",
         title: "Multiple land uses sharing one stressed monsoon",
@@ -955,7 +953,7 @@ const monsoonJourneys = {
     region: "Amazon & Brazil",
     steps: [
       {
-        label: "Step 1 · Baseline",
+        label: "Baseline",
         img: "landcover/diff_seasonal_SAM_base.png",
         caption: "Rainfall change across the SAM region without land cover.",
         title: "A monsoon shifting toward the equator",
@@ -963,7 +961,7 @@ const monsoonJourneys = {
         bullets: []
       },
       {
-        label: "Step 2 · Forests",
+        label: "Forests",
         img: "landcover/diff_seasonal_SAM_forest.png",
         caption: "Amazon forests overlaid on rainfall change.",
         title: "Rainforest stability depends on both rain and land use",
@@ -974,7 +972,7 @@ const monsoonJourneys = {
         ]
       },
       {
-        label: "Step 3 · Grasslands & savannas",
+        label: "Grasslands & savannas",
         img: "landcover/diff_seasonal_SAM_grassland.png",
         caption: "Grassland and savanna regions such as the Cerrado.",
         title: "Transition zones feel drought and fire first",
@@ -985,7 +983,7 @@ const monsoonJourneys = {
         ]
       },
       {
-        label: "Step 4 · Croplands",
+        label: "Croplands",
         img: "landcover/diff_seasonal_SAM_cropland.png",
         caption: "Cropland regions across Brazil and neighbors.",
         title: "Expanding agriculture collides with changing rain",
@@ -996,7 +994,7 @@ const monsoonJourneys = {
         ]
       },
       {
-        label: "Step 5 · All land covers together",
+        label: "All Land Covers",
         img: "landcover/diff_seasonal_SAM_all.png",
         caption: "All land covers on top of the rainfall change map.",
         title: "A shared monsoon, many possible futures",

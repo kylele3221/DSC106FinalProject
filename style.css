@@ -853,7 +853,12 @@ html {
   margin-top: 0.75rem;
 }
 
-
+.seasonal-summary,
+.summary-text {
+  max-width: 980px;        /* narrows reading measure */
+  margin: 0 auto 3rem;    /* center horizontally */
+  padding: 0 2rem;        /* breathing room on small screens */
+}
 
 /* ========================= */
 /* Mobile responsiveness */
